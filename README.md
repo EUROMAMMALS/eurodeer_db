@@ -1,5 +1,5 @@
-# eurodeer_db
-This repository contains the database structure, SQL-queries and documentation that are interesting for sharing among EuroDEER managers, curators and users.
+# *[EURODEER project](www.eurodeer.org)* - code for database and data management/development
+This repository contains the database structure, SQL-queries and documentation used to maintain and update the EURODEER database. It is shared among database managers, curators and users.
 
 > The repository is devided in five subdirectories: 
 * 1. data_management
