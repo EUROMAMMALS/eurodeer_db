@@ -1,9 +1,9 @@
 # [EURODEER project](www.eurodeer.org)
 **Code for database and data management/development**
 
-This repository contains the database structure, SQL-queries and documentation used to maintain and update the EURODEER database. It is shared among database managers, curators and users.
+This repository contains the database structure, SQL queries and documentation used to maintain and update the EURODEER database. It is shared among database managers, curators and users.
 
-The repository is devided in subdirectories: 
+The repository is divided in subdirectories: 
 * **data_management**: Data management (SQL code and functions for quality checks and data import, export, screening)
 * **data_analysis**: Data analysis (SQL code and functions for specific analysis performed inside and outside the database)
 * **db_tools**: Database tools (Database functions, including pl/R, used to specifically deal with wildlife tracking data)
