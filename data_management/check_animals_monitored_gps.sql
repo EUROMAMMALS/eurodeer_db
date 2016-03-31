@@ -21,3 +21,11 @@ SELECT DISTINCT animals_id FROM main.gps_sensors_animals WHERE animals_id NOT IN
 
 -- Complete info on all deployments with no data associated
 SELECT start_time - end_time, * FROM main.gps_sensors_animals WHERE animals_id IN (SELECT DISTINCT animals_id FROM main.gps_sensors_animals WHERE animals_id NOT IN (SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id)) ORDER BY start_time - end_time;
+
+-- Summary with number of animals with no deployment of any sensors grouped per study area
+-- This makes use of the new columns used to mark monitored/deployed animals, which is updated with the info from the related tables in the db
+SELECT b.study_areas_id, b.study_name, a.num 
+FROM main.study_areas b,
+(SELECT study_areas_id , count(*) as num FROM main.animals where gps_deployed = 'f' and activity_deployed= 'f' and vhf_deployed = 'f' group by study_areas_id) a
+WHERE a.study_areas_id = b.study_areas_id
+order by b.study_areas_id;
