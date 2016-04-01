@@ -36,4 +36,16 @@ from
 main.animals as a, 
 (SELECT animals_original_id, study_areas_id FROM main.animals group by animals_original_id, study_areas_id having count(*) > 1) as b 
 where a.animals_original_id = b.animals_original_id and a.study_areas_id = b.study_areas_id
-ORDER BY animals_original_id
+ORDER BY animals_original_id;
+
+-- Check if data with no info or collars deployed have a record in animals_capture table
+SELECT 
+a.animals_id, a.study_areas_id, a.first_capture_date, b.* 
+FROM 
+(SELECT * FROM main.animals where gps_deployed = 'f' and activity_deployed= 'f' and vhf_deployed = 'f') a
+LEFT JOIN
+main.animals_captures b
+ON
+a.animals_id = b.animals_id
+order by 
+b.animals_id, a.study_areas_id
