@@ -35,5 +35,5 @@ SELECT a.*
 from 
 main.animals as a, 
 (SELECT animals_original_id, study_areas_id FROM main.animals group by animals_original_id, study_areas_id having count(*) > 1) as b 
-where a.animals_original_id = b.animals_original_id and a.study_areas_id = b.study_areas_id and a.study_areas_id = 19
+where a.animals_original_id = b.animals_original_id and a.study_areas_id = b.study_areas_id
 ORDER BY animals_original_id
