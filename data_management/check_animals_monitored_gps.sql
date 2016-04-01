@@ -49,3 +49,20 @@ ON
 a.animals_id = b.animals_id
 order by 
 b.animals_id, a.study_areas_id
+
+-- Associations animals - GPS collars with no data
+SELECT study_areas_id, end_monitoring_code, start_time - end_time, * 
+FROM main.gps_sensors_animals, main.animals 
+WHERE gps_sensors_animals.animals_id NOT IN (SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id)
+AND animals.animals_id = gps_sensors_animals.animals_id
+ORDER BY end_monitoring_code, abs(extract(epoch from start_time - end_time));
+
+-- Number of deployments with no gps data associated per research group, with number of deployments longer/shorter then 5 days
+SELECT study_areas_id, end_monitoring_code, count(*) total_deployments,
+sum( case WHEN abs(extract(epoch from start_time - end_time)) > 60*60*24*5 THEN 1 ELSE 0 end) as long_monitor
+FROM main.gps_sensors_animals, main.animals 
+WHERE gps_sensors_animals.animals_id NOT IN (SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id)
+AND animals.animals_id = gps_sensors_animals.animals_id
+group by study_areas_id, end_monitoring_code
+ORDER BY study_areas_id;
+
