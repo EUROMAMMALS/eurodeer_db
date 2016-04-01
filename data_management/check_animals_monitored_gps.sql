@@ -29,3 +29,11 @@ FROM main.study_areas b,
 (SELECT study_areas_id , count(*) as num FROM main.animals where gps_deployed = 'f' and activity_deployed= 'f' and vhf_deployed = 'f' group by study_areas_id) a
 WHERE a.study_areas_id = b.study_areas_id
 order by b.study_areas_id;
+
+-- List of all animals with the same original id (in the same study area) -> potential duplicates
+SELECT a.* 
+from 
+main.animals as a, 
+(SELECT animals_original_id, study_areas_id FROM main.animals group by animals_original_id, study_areas_id having count(*) > 1) as b 
+where a.animals_original_id = b.animals_original_id and a.study_areas_id = b.study_areas_id and a.study_areas_id = 19
+ORDER BY animals_original_id
