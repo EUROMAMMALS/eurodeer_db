@@ -10,7 +10,7 @@ formatted pdf using weasyprint (http://weasyprint.readthedocs.org/en/latest/inst
 Note that the data dictionary is intended for Postgres instances
 that are thoroughly documented using Postgres comments. 
 
-## Adjustments 
+## Adjustments to pypostgreports
 
   * Different styling than pypostgreports, closer to the postgres reporting standard.
   * For our specific database: Experimental script for html cleaning (WORK IN PROGRESS) 
