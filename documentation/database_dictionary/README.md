@@ -1,10 +1,11 @@
-# Adjusted version of pypostgreports (https://github.com/kylejmcintyre/pypostgreports.git)
+# Adjusted version of pypostgreports 
 
 A collection of generic "reports" that can be run on a Postgres 
 database including a data dictionary generator as well as a 
 database size report. This is a slightly adjusted python script 
-derived from pypostgreports and includes guidelines for how to 
-transform the html to a well formatted pdf. 
+derived from pypostgreports (https://github.com/kylejmcintyre/pypostgreports.git) 
+and includes guidelines for how to transform the html to a well 
+formatted pdf. 
 
 Note that the data dictionary is intended for Postgres instances
 that are thoroughly documented using Postgres comments. 
