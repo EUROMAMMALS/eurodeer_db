@@ -4,7 +4,7 @@ A collection of generic "reports" that can be run on a Postgres
 database including a data dictionary generator as well as a 
 database size report. This is a slightly adjusted python script 
 derived from pypostgreports (https://github.com/kylejmcintyre/pypostgreports.git) 
-and includes guidelines for how to transform the html to a well 
+and includes guidelines for how to transform the html-report to a well 
 formatted pdf. 
 
 Note that the data dictionary is intended for Postgres instances
@@ -12,7 +12,7 @@ that are thoroughly documented using Postgres comments.
 
 ## Adjustments 
 
-  * Different styling closer to the postgres reporting standard.
+  * Different styling than pypostgreports, closer to the postgres reporting standard.
   * For our specific database: Experimental script for html cleaning (WORK IN PROGRESS) 
   * Conversion from html to pdf or png (http://weasyprint.readthedocs.org/en/latest/install.html) 
 
