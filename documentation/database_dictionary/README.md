@@ -92,4 +92,4 @@ in the current working directory.
 
 ## Example
 
-Pull database_dictionary folder and open 'Data_Dictionary_Script.sh' for a bash-script with the whole procedure.
+Pull database_dictionary directory and open 'Data_Dictionary_Script.sh' for a bash-script with the whole procedure.
