@@ -16,9 +16,9 @@
     sed '/[<]h4[>]This schema stores the raw activity data that have still to be (partially) processed to be analyzed and merged together.[<][/]h4[>]/,/[<]h2[>]/{//!d}' | # remove tables schema activity_data_raw
     sed '/[<]h4[>]standard public schema[<][/]h4[>]/,/[<]h2[>]/{//!d}'  | # remove tables schema public 
     sed '/Elements stored in this schema can be deleted at any time by the database administrator.[<][/]h4[>]/,/[<]h2[>]/{//!d}' | # remove tables schema temp 
-    sed  '/No other users will have access to this schema.[<][/]h4[>]/,/[<]h2[>]/{//!d}' > 2_data_dictionary_processed.html # remove tables schema's ws
+    sed  '/No other users will have access to this schema.[<][/]h4[>]/,/[<]h2[>]/{//!d}' > 2_DATA_DICTIONARY.html # remove tables schema's ws
 
-# Remove manually duplicated rows for "notes", "geom_mcp_individuals", "geom_traj_buffer" (I don't know how to automate) -> open "2_data_dictionary_processed.html" to find these duplicates -> Saved as 3_DATA_DICTIONARY.html
+# Remove manually duplicated rows for "notes", "geom_mcp_individuals", "geom_traj_buffer" (I don't know how to automate) -> open "3_DATA_DICTIONARY.html" to find these duplicates -> overwrite 2_DATA_DICTIONARY.html
 
 # 3. Optionally add table of content in html file (copy paste in html and remove #)
     
@@ -41,9 +41,8 @@
 
 ## CONVERT HTML DICTIONARY TO PDF
 
-weasyprint 3_DATA_DICTIONARY.html -e UTF8 -f pdf -s report.css 3_DATA_DICTIONARY.pdf
+weasyprint 2_DATA_DICTIONARY.html -e UTF8 -f pdf -s report.css 2_DATA_DICTIONARY.pdf
 
 ## REMOVE REDUNDANT FILES
 
-rm 2_data_dictionary_processed.html
 rm data_dictionary.html
