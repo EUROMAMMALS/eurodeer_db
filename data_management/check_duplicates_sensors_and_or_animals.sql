@@ -48,21 +48,10 @@ main.animals as a,
 (SELECT animals_original_id, study_areas_id FROM main.animals group by animals_original_id, study_areas_id having count(*) > 1) as b 
 where a.animals_original_id = b.animals_original_id and a.study_areas_id = b.study_areas_id) order by animals_id;
 
--- DUPLICATE ANIMALS-SENSORS 
--- 2 List of all animals-sensors with duplicate animals-sensors id (possible) -> check start and end times to confirm potential duplicates
+-- 3 DUPLICATE ANIMALS-SENSORS 
+-- 3a List of all animals-sensors with duplicate animals-sensors id (possible) -> check start and end times to confirm potential duplicates
 SELECT a.*
 from
 main.gps_sensors_animals as a,
 (SELECT animals_id, gps_sensors_id FROM main.gps_sensors_animals group by gps_sensors_id, animals_id having count(*) > 1) as b
 where a.animals_id = b.animals_id and a.gps_sensors_id = b.gps_sensors_id;
-
-
-
-
-
-
-
-
-
-
-
