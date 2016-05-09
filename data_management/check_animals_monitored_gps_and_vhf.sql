@@ -23,4 +23,7 @@ FROM
   main.vhf_sensors_animals
 WHERE 
   animals.animals_id = gps_sensors_animals.animals_id AND
-  animals.animals_id = vhf_sensors_animals.animals_id;
+  animals.animals_id = vhf_sensors_animals.animals_id
+ORDER BY
+  animals.study_areas_id, 
+  animals.animals_id
