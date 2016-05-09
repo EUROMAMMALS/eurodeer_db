@@ -2,7 +2,6 @@
 
 -- List of animals derived from gps_data_animals (animals with data)
 SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id;
-
 -- List of animals derived from gps_sensors_animals (animals with deployment)
 SELECT DISTINCT animals_id FROM main.gps_sensors_animals;
 
@@ -20,7 +19,7 @@ FROM main.study_areas b,
 WHERE a.study_areas_id = b.study_areas_id
 order by b.study_areas_id;
 
--- Check if data with no info or collars deployed have a record in animals_capture table
+-- Check if animals with no info on any collar deployed (i.e. never collared) have a record in animals_capture table
 SELECT 
 a.animals_id, a.study_areas_id, a.first_capture_date, b.* 
 FROM 
@@ -30,7 +29,21 @@ main.animals_captures b
 ON
 a.animals_id = b.animals_id
 order by 
-b.animals_id, a.study_areas_id
+death, a.study_areas_id,  b.animals_id
+
+-- Check animals with no info on any collar deployed (i.e. never collared) and without any record in the table animals_capture table
+SELECT 
+a.animals_id, a.study_areas_id, a.first_capture_date, b.* 
+FROM 
+(SELECT * FROM main.animals where gps_deployed = 'f' and activity_deployed= 'f' and vhf_deployed = 'f') a
+LEFT JOIN
+main.animals_captures b
+ON
+a.animals_id = b.animals_id
+WHERE
+b.animals_id IS NULL
+order by 
+death, a.study_areas_id,  a.animals_id
 
 -- Associations animals - GPS collars with no data
 SELECT study_areas_id, end_monitoring_code, start_time - end_time, * 
