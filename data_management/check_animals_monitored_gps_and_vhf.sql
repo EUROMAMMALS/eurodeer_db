@@ -4,8 +4,8 @@ SELECT *
   where 
   gps_deployed = 't' and vhf_deployed = 't'
 
--- Select deployment info of animals monitored with both vhf and gps to veriy that monitoring interval and capture dates are consistent
-SELECT 
+-- Select deployment info of animals monitored with both vhf and gps to verify that monitoring interval and capture dates are consistent
+SELECT
   animals.animals_id, 
   animals.study_areas_id, 
   animals.first_capture_date, 
