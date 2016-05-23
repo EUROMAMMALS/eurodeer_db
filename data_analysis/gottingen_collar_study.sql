@@ -13,9 +13,26 @@ group by
 order by 
   study_areas_id;
 
--- Number of individual per area/sex/age (age at first capture) [question 2]
+-- Start and end of monitoring per project [question 6]
 SELECT 
-  study_areas_id, sex, age_class_description, count(*) 
+  animals.study_areas_id, 
+  MIN(gps_sensors_animals.start_time)::DATE start_monitoring, 
+  max(gps_sensors_animals.end_time)::DATE end_monitoring
+FROM 
+  main.gps_sensors_animals, 
+  main.animals
+WHERE 
+  animals.animals_id = gps_sensors_animals.animals_id AND 
+  end_time is not null
+GROUP BY 
+  animals.study_areas_id
+  order by 
+  animals.study_areas_id;
+
+
+-- Number of individual per area/sex/age (age at first capture) [question 7]
+SELECT 
+  study_areas_id, 'Capreolus capreolus', sex, age_class_description, count(*) 
 FROM 
 	(SELECT distinct
 	  animals.study_areas_id, 
@@ -34,7 +51,7 @@ GROUP BY
 ORDER BY
   study_areas_id, sex, age_class_description;
   
--- Number of collars per area/brand/year [question 3]
+-- Number of collars per area/brand/year [question 8]
 SELECT 
   animals.study_areas_id,
   gps_sensors.vendor, 
@@ -68,7 +85,7 @@ ORDER BY
 SELECT 
   study_areas_id,
   lu_end_monitoring.end_monitoring_description, 
-  count(gps_sensors_animals.gps_sensors_id)
+  count(gps_sensors_animals.gps_sensors_id) number_sensors
 FROM 
   main.gps_sensors_animals, 
   lu_tables.lu_end_monitoring,
@@ -82,3 +99,21 @@ GROUP BY
 ORDER BY 
   study_areas_id,
   lu_end_monitoring.end_monitoring_description;
+  
+-- Success rate [questions 15-16-17]
+SELECT 
+  animals.study_areas_id, 
+  count(gps_data_animals.gps_validity_code) expected,
+  sum(CASE WHEN gps_validity_code = 1 THEN 1 ELSE 0 END) successful,
+  sum(CASE WHEN gps_validity_code = 0 THEN 1 ELSE 0 END) unsuccesful,
+  sum(CASE WHEN gps_validity_code > 1 THEN 1 ELSE 0 END) wrong_data
+FROM 
+  main.animals, 
+  main.gps_data_animals
+WHERE 
+  animals.animals_id = gps_data_animals.animals_id AND
+  gps_validity_code != 14
+GROUP BY   
+  study_areas_id
+ORDER BY
+  study_areas_id;
