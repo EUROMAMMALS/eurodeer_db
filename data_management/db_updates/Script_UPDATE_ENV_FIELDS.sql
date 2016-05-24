@@ -67,6 +67,15 @@ group by studies_id) as foo where defined_boundaries = 0 and study_areas.study_a
 update main.study_areas set geom_mcp_individuals = foo.qq from (select studies_id as ww,st_multi(st_buffer((st_multi(st_union(geom)))::geometry(multipolygon, 4326)::geography, 500)::geometry)qq from analysis.view_convexhull group by studies_id) as foo where defined_boundaries = 0 and study_areas.study_areas_id = foo.ww;
 
 -- 
+DROP TABLE IF EXISTS temp.locations_24h;
+CREATE TABLE temp.locations_24h AS 
+SELECT study_areas_id, animals_id, geom, acquisition_time FROM (
+    SELECT animals_id, geom, study_areas_id, row_number() over (partition by study_areas_id, animals_id, acquisition_time::date order by study_areas_id, animals_id, acquisition_time) rownr, acquisition_time ù
+    FROM main.gps_data_animals join main.animals using (animals_id) 
+    WHERE gps_validity_code = 1) x
+WHERE rownr = 1 order by study_areas_id, animals_id, acquisition_time;
+
+
 DROP TABLE IF EXISTS temp.locations_24h_traj;
 CREATE TABLE temp.locations_24h_traj AS
 SELECT animals_id,
