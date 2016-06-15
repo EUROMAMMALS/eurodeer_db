@@ -12,7 +12,39 @@ group by
   study_areas_id, study_name, name
 order by 
   study_areas_id;
-
+  
+-- Land cover classes distribution for each study area (in percentage, from Corine Land Cover 2006) [question 6]
+WITH studyareas_landcover AS
+    (
+    SELECT 
+      study_areas_id,
+      (stats).value AS lc_id, 
+      (stats).count AS num_pixels
+    FROM (
+      SELECT 
+        study_areas_id, 
+        ST_ValueCount(ST_Union(ST_Clip(rast ,ST_Transform(geom_mcp_individuals,3035))))  stats
+      FROM
+        main.study_areas,
+        env_data.corine_land_cover_2006
+      WHERE
+        ST_Intersects (rast, ST_Transform(geom_mcp_individuals,3035))
+      GROUP BY 
+        study_areas_id) a
+    )
+SELECT
+  study_areas_id,
+  clc_l3_code,
+  label3,
+  ((num_pixels * 1.0 / (sum(num_pixels) over (PARTITION BY study_areas_id)))*100)::numeric(6,3) AS percentage
+FROM 
+  studyareas_landcover,
+  env_data.corine_land_cover_legend
+WHERE
+  grid_code = lc_id
+ORDER BY
+  study_areas_id, clc_l3_code;
+  
 -- Start and end of monitoring per project [question 6]
 SELECT 
   animals.study_areas_id, 
@@ -80,6 +112,34 @@ ORDER BY
   gps_sensors.vendor, 
   gps_sensors.model,
   extract(year from gps_sensors_animals.start_time);
+
+-- Count how many collars per study areas grouped by maximum delay in seconds (from the supposed acquisition) [question 10]
+SELECT
+  study_areas_id,
+  sum(CASE WHEN classx = 1 THEN 1 ELSE 0 END) AS less60,
+  sum(CASE WHEN classx = 2 THEN 1 ELSE 0 END) AS less90,
+  sum(CASE WHEN classx = 3 THEN 1 ELSE 0 END) AS less180,
+  sum(CASE WHEN classx = 4 THEN 1 ELSE 0 END) AS less300
+FROM
+  main.animals,
+(SELECT 
+  animals_id, 
+  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300)))::integer,
+  CASE
+    WHEN  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300))) <= 60 then 1
+    WHEN  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300))) <= 90 THEN 2
+    WHEN  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300))) <= 180 THEN 3
+    WHEN  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300))) <= 300 THEN 4 END classx
+FROM 
+  main.gps_data_animals
+where 
+  gps_validity_code in (0,1) 
+group by 
+  animals_id) a
+WHERE
+  a.animals_id = animals.animals_id
+GROUP BY 
+  study_areas_id;
 
 -- End of deployment [question 13]
 SELECT 
