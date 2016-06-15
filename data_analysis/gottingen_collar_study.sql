@@ -114,6 +114,16 @@ ORDER BY
   extract(year from gps_sensors_animals.start_time);
 
 -- Count how many collars per study areas grouped by maximum delay in seconds (from the supposed acquisition) [question 10]
+WITH diff_time AS 
+(SELECT 
+  animals_id, 
+  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300)))::integer AS diff
+FROM 
+  main.gps_data_animals
+where 
+  gps_validity_code in (0,1)
+group by 
+  animals_id)
 SELECT
   study_areas_id,
   sum(CASE WHEN classx = 1 THEN 1 ELSE 0 END) AS less60,
@@ -124,18 +134,14 @@ FROM
   main.animals,
 (SELECT 
   animals_id, 
-  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300)))::integer,
-  CASE
-    WHEN  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300))) <= 60 then 1
-    WHEN  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300))) <= 90 THEN 2
-    WHEN  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300))) <= 180 THEN 3
-    WHEN  max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300))) <= 300 THEN 4 END classx
+    CASE
+    WHEN diff <= 60 then 1
+    WHEN diff <= 90 THEN 2
+    WHEN diff <= 180 THEN 3
+    WHEN diff <= 300 THEN 4 END classx
 FROM 
-  main.gps_data_animals
-where 
-  gps_validity_code in (0,1) 
-group by 
-  animals_id) a
+  diff_time
+) a
 WHERE
   a.animals_id = animals.animals_id
 GROUP BY 
