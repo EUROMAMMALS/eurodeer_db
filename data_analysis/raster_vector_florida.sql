@@ -196,35 +196,6 @@ gdal_translate -of GTIFF "PG:host=eurodeer2.fmach.it dbname=eurodeer_db user='po
 	ORDER BY
 	  label3, months;
 
--- Calculate the percentage of each land cover class for all the fixes of animal 782
-	WITH locations_landcover AS
-		(
-		SELECT
-		  sex,  
-		  st_value(rast,st_transform(geom, 3035)) AS lc_id,
-		  count(*) AS number_locations
-		FROM 
-		  demo_florida.gps_data_animals,
-		  demo_florida.land_cover,
-		  main.animals
-		 WHERE
-		  animals.animals_id = gps_data_animals.animals_id AND
-		  gps_validity_code = 1 AND
-		  st_intersects(st_transform(geom, 3035), rast)
-		GROUP BY sex, lc_id
-		) 
-	SELECT
-	  sex,
-	  label3,
-	  (number_locations *1.0 / sum(number_locations) OVER (partition by sex))::numeric(5,4) AS percentage
-	FROM 
-	  locations_landcover,
-	  env_data.corine_land_cover_legend
-	WHERE
-	  grid_code = lc_id 
-	ORDER BY
-	  sex, percentage DESC;
-
 -- Set up raster time series into the database 
 -- Import MODIS NDVI time series (not SQL)
 raster2pgsql.exe -C -r -t 128x128 -F -M -R -N -3000 C:/modis/MOD*.tif demo_florida.ndvi_modis | psql.exe -d eurodeer_db -U postgres -p 5432
