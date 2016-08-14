@@ -13,7 +13,7 @@ group by
 order by 
   study_areas_id;
   
--- Land cover classes distribution for each study area (in percentage, from Corine Land Cover 2006) [question 6]
+-- Land cover classes distribution for each study area (in percentage, from Corine Land Cover 2006) [question 5]
 WITH studyareas_landcover AS
     (
     SELECT 
@@ -77,7 +77,8 @@ FROM
 	  lu_tables.lu_age_class
 	WHERE 
 	  animals.animals_id = gps_sensors_animals.animals_id AND
-	  lu_age_class.age_class_code = animals.age_class_code_capture) a
+	  lu_age_class.age_class_code = animals.age_class_code_capture AND
+	  gps_data) a
 GROUP BY
   study_areas_id, sex, age_class_description
 ORDER BY
@@ -114,16 +115,34 @@ ORDER BY
   extract(year from gps_sensors_animals.start_time);
 
 -- Count how many collars per study areas grouped by maximum delay in seconds (from the supposed acquisition) [question 10]
-WITH diff_time AS 
+WITH 
+
+diff_time AS 
 (SELECT 
-  animals_id, 
+  gps_sensors_id, 
   max(extract( epoch from acquisition_time -  tools.snap_timestamp(acquisition_time, 300)))::integer AS diff
 FROM 
   main.gps_data_animals
 where 
   gps_validity_code in (0,1)
 group by 
-  animals_id)
+  gps_sensors_id),
+  
+sensors_area AS
+(SELECT 
+  gps_sensors.gps_sensors_id, 
+  animals.study_areas_id
+FROM 
+  main.gps_sensors, 
+  main.gps_sensors_animals, 
+  main.animals
+WHERE 
+  gps_sensors.gps_sensors_id = gps_sensors_animals.gps_sensors_id AND
+  animals.animals_id = gps_sensors_animals.animals_id
+GROUP BY
+  gps_sensors.gps_sensors_id, 
+  animals.study_areas_id)
+   
 SELECT
   study_areas_id,
   sum(CASE WHEN classx = 1 THEN 1 ELSE 0 END) AS less60,
@@ -131,40 +150,40 @@ SELECT
   sum(CASE WHEN classx = 3 THEN 1 ELSE 0 END) AS less180,
   sum(CASE WHEN classx = 4 THEN 1 ELSE 0 END) AS less300
 FROM
-  main.animals,
-(SELECT 
-  animals_id, 
+  sensors_area,
+  (SELECT 
+    gps_sensors_id, 
     CASE
     WHEN diff <= 60 then 1
     WHEN diff <= 90 THEN 2
     WHEN diff <= 180 THEN 3
     WHEN diff <= 300 THEN 4 END classx
-FROM 
-  diff_time
-) a
+  FROM 
+    diff_time
+  ) a
 WHERE
-  a.animals_id = animals.animals_id
+  a.gps_sensors_id = sensors_area.gps_sensors_id
 GROUP BY 
-  study_areas_id;
+  study_areas_id;  
 
 -- End of deployment [question 13]
 SELECT 
   study_areas_id,
-  lu_end_monitoring.end_monitoring_description, 
+  lu_end_deployment.end_deployment_description, 
   count(gps_sensors_animals.gps_sensors_id) number_sensors
 FROM 
   main.gps_sensors_animals, 
-  lu_tables.lu_end_monitoring,
+  lu_tables.lu_end_deployment,
   main.animals
 WHERE 
-  gps_sensors_animals.end_monitoring_code = lu_end_monitoring.end_monitoring_code AND
+  gps_sensors_animals.end_deployment_code = lu_end_deployment.end_deployment_code AND
   gps_sensors_animals.animals_id = animals.animals_id
 GROUP BY
   study_areas_id,
-  lu_end_monitoring.end_monitoring_description
+  lu_end_deployment.end_deployment_description
 ORDER BY 
   study_areas_id,
-  lu_end_monitoring.end_monitoring_description;
+  lu_end_deployment.end_deployment_description;
   
 -- Success rate [questions 15-16-17]
 SELECT 
