@@ -202,3 +202,19 @@ GROUP BY
   study_areas_id
 ORDER BY
   study_areas_id;
+
+-- Number of deployments per study area [extra question]
+SELECT 
+  study_areas_id, 
+  count(*) num_deployments, 
+  min(start_time::date) first_start, 
+  max(end_time::date) last_end
+FROM 
+  main.gps_sensors_animals,
+  main.animals
+WHERE
+  animals.animals_id = gps_sensors_animals.animals_id
+GROUP BY 
+  study_areas_id
+ORDER BY 
+  study_areas_id;
