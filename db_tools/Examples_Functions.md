@@ -1,6 +1,6 @@
 # FUNCTIONS 
 
-** This file provides examples for the most important functions available in the schema tools.**
+**This file provides examples for the most important functions available in the schema tools.**
 
 ## CONTENT 
  
