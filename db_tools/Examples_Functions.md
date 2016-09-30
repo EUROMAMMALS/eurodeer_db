@@ -90,8 +90,9 @@ data_traj<- as.ltraj(xy=data_traj_raw[,c("x","y")], date=as.POSIXct(data_traj_ra
 ```
 
 
-## tools.regularize (NOTE: the function only works on gps data that is already in the database)
+## tools.regularize 
 
+**(NOTE: the function only works on gps data that is already in the database)**
 This function creates a complete, regular time series of locations from main.view_locations_set using an 
 individual id, a time interval (in seconds), a buffer time (in seconds, which corresponds to the accepted delay 
 of GPS recording), a starting time (if no value is defined, the first record of the animal data set is taken), 
