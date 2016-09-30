@@ -24,7 +24,7 @@ WKT, with its associated SRID, a timestamp to give the date and a time zone.
 SELECT tools.daylight('POINT(11.001 46.001)', 4326, '2012-09-01'::timestamp, 'UTC');
 ```
 
-**Example 2**
+**Example for animal 770**
 ```sql
 SELECT acquisition_time, 
 (tools.daylight(ST_AsText(geom), 4326, acquisition_time::timestamp, 'UTC'))[1] as sunset, 
@@ -41,7 +41,6 @@ the id of the animal and the timestamp. According to the age class at first capt
 the class by 1 every time the animal goes through a defined day of the year (1st April).
 
 **Example**
-
 ```sql
 SELECT tools.age_class(animals_id, acquisition_time),
 animals_id, acquisition_time, geom, longitude, latitude, gps_validity_code  
@@ -60,7 +59,7 @@ the fact that small changes can occur because of the delay in receiving the GPS 
 for the buffer is 600 seconds(10 minutes). The function is directly computed on "main.view_locations_set" 
 (locations_set structure) and on the whole data set of the selected animal.
 
-**Examples**
+**Examples for animal 770**
 ```sql
 SELECT * FROM tools.detect_bursts(770); -- default (buffer 60*10 (10 min))
 SELECT * FROM tools.detect_bursts(770, 60*5); -- buffer 5 min
@@ -79,7 +78,6 @@ the buffer (see function tools.bursts_report) and return a set of locations whic
 bursts. This function at the moment works on an animal at a time.
 
 **An example of use in R** 
-
 ```R
 # get the data 
 data_traj_raw <- sqlQuery(channel, "select * from tools.traj_bursts(771,60*10);")
@@ -101,7 +99,6 @@ is used, otherwise a "virtual" record is created (with empty geometry). The outp
 "location_set" (animals_id integer, acquisition_time timestamp with time zone, geom geometry).
 
 **Examples for animal 770**
-
 ```sql
 SELECT animals_id, acquisition_time, st_astext(geom) FROM tools.regularize(770, 60*60*2, 60*10); --2h interval
 SELECT animals_id, acquisition_time, st_astext(geom) FROM tools.regularize(770, 60*60*4, 60*10); --4h interval
@@ -112,7 +109,6 @@ SELECT animals_id, acquisition_time, geom FROM tools.regularize(770, 60*60*4, 60
 ```
 
 **Examples for multiple animals (770,771) where start_time and end_time are costumized**
-
 ```sql
 -- METHOD 1
 SELECT 
@@ -139,7 +135,6 @@ SELECT (tools.regularize(animals_id, (60*60*4), (60*10),start_time,end_time)).* 
 ```
 
 **Example for multiple animals (770,771) where start_time and end_time are costumized and linked back to the main table**
-
 ```sql
 WITH regularized AS 
 (
@@ -163,7 +158,6 @@ It checks for all locations with NULL geometry. If these locations have a previo
 new geometry is calculated interpolating their geometry.
 
 **examples for animal 770**
-
 ```sql
 SELECT (tools.interpolate(770)).*; --12h threshold
 SELECT (tools.interpolate(770,'main.view_locations_set',60*60*4)).*; -- 4h threshold
@@ -171,7 +165,6 @@ SELECT (tools.interpolate(770,'main.view_locations_set',60*60*8)).*; -- 8h thres
 ```
 
 **Examples for multiple animals (770,771)**
-
 ```sql
 SELECT (tools.interpolate(animals_id,'main.view_locations_set',60*60*8)).* FROM main.animals WHERE animals_id in (770,771); -- for 2 animals 
 SELECT (tools.interpolate(animals_id,'main.view_locations_set',60*60*8)).* FROM main.gps_data_animals WHERE animals_id in (770,771) GROUP BY animals_id; -- for 2 animals
@@ -189,7 +182,6 @@ input table. it is also possible to specify the starting and ending point of the
 table with the structure "geom_parameters".
 
 **Example for animal 770**
-
 ```sql
 SELECT (tools.geom_parameters(770)).*; -- default settings (interval = 60*60*4 (4h), buffer = 60*5 (10 min)) 
 SELECT (tools.geom_parameters(770, 60*60*2, 60*10)).*; -- 2h interval and 10 min buffer   
@@ -198,7 +190,6 @@ SELECT (tools.geom_parameters(770, 60*60*12, 60*10)).*; -- 12h interval and 10 m
 ```
 
 **Example for multiple animals (770,771) where start_time and end_time are costumized** 
-
 ```sql
 SELECT 
 (tools.geom_parameters(animals_id, 
@@ -211,7 +202,6 @@ GROUP BY animals_id;
 ```
 
 **Example for multiple animals (770,771) where start_time and end_time are costumized and linked back to the main table** 
-
 ```sql
 WITH geom_parameters AS 
 (
@@ -233,7 +223,6 @@ by the three points and the speed (meters per hour). The animals_id, minimum dis
 provided as input.
 
 **Example to detect suspicious locations for the animals of study area 1**  
-
 ```sql
 WITH a AS 
 (
