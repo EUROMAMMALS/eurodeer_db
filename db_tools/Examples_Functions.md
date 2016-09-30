@@ -30,7 +30,7 @@ SELECT acquisition_time,
 (tools.daylight(ST_AsText(geom), 4326, acquisition_time::timestamp, 'UTC'))[1] as sunset, 
 (tools.daylight(ST_AsText(geom), 4326, acquisition_time::timestamp, 'UTC'))[2] as sunrise 
 FROM main.gps_data_animals 
-WHERE animals_id = 1 AND gps_validity_code = 1 
+WHERE animals_id = 770 AND gps_validity_code = 1 
 ORDER BY acquisition_time;
 ```
 
@@ -72,13 +72,11 @@ SELECT (tools.detect_bursts(animals_id, 60*5)).* FROM main.animals WHERE animals
 SELECT (tools.detect_bursts(animals_id, 60*5)).* FROM main.animals WHERE study_areas_id in (1); -- all animals of 1 study area
 ```
 
-
 ## tools.traj_bursts
 
 This function generates a data set to be used to create a ltraj object in R. It gets the animal_id and 
 the buffer (see function tools.bursts_report) and return a set of locations which have a tag for the specific 
 bursts. This function at the moment works on an animal at a time.
-
 
 **An example of use in R** 
 
@@ -88,7 +86,6 @@ data_traj_raw <- sqlQuery(channel, "select * from tools.traj_bursts(771,60*10);"
 # create an ltraj object
 data_traj<- as.ltraj(xy=data_traj_raw[,c("x","y")], date=as.POSIXct(data_traj_raw[,"acquisition_epoch"], origin="1970-01-01 01:00:00"), id =data_traj_raw[,"animals_id"], burst=data_traj_raw[,"burst"])
 ```
-
 
 ## tools.regularize 
 
@@ -114,7 +111,7 @@ SELECT animals_id, acquisition_time, st_astext(geom) FROM tools.regularize(770, 
 SELECT animals_id, acquisition_time, geom FROM tools.regularize(770, 60*60*4, 60*10);
 ```
 
-**Example for multiple animals (770,771) where start_time and end_time are costumized**
+**Examples for multiple animals (770,771) where start_time and end_time are costumized**
 
 ```sql
 -- METHOD 1
@@ -173,7 +170,7 @@ SELECT (tools.interpolate(770,'main.view_locations_set',60*60*4)).*; -- 4h thres
 SELECT (tools.interpolate(770,'main.view_locations_set',60*60*8)).*; -- 8h threshold
 ```
 
-**examples for multiple animals (770,771)**
+**Examples for multiple animals (770,771)**
 
 ```sql
 SELECT (tools.interpolate(animals_id,'main.view_locations_set',60*60*8)).* FROM main.animals WHERE animals_id in (770,771); -- for 2 animals 
@@ -229,7 +226,6 @@ WITH geom_parameters AS
 )
 SELECT geom_parameters.*, geom, longitude, latitude  FROM geom_parameters LEFT OUTER JOIN main.gps_data_animals USING (animals_id, acquisition_time); 
 ```
-
 
 ## tools.outlier_detection
 Function that detects outliers based on the distance to the previous and next location, and the angle made
