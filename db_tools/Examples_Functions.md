@@ -4,8 +4,8 @@
 
 ## CONTENT 
  
-* [toolsdaylight](## toolsdaylight)
-* [toolsage_class](## toolsage_class)
+* [tools.daylight](## tools.daylight)
+* [tools.age_class](## tools.age_class)
 * **tools.detect_bursts**
 * **tools.traj_bursts**
 * **tools.regularize**
@@ -14,7 +14,7 @@
 * **tools.outlier_detection**
 
 
-## toolsdaylight
+## tools.daylight
 
 This function returns the sunrise and sunset times (as a text array) for a spatial point expressed as a 
 WKT, with its associated SRID, a timestamp to give the date and a time zone. 
@@ -34,7 +34,7 @@ WHERE animals_id = 770 AND gps_validity_code = 1
 ORDER BY acquisition_time;
 ```
 
-## toolsage_class
+## tools.age_class
 
 This function returs the age class at the acquisition time of a location. It has two input parameters: 
 the id of the animal and the timestamp. According to the age class at first capture, the function increases 
