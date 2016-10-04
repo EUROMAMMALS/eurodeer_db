@@ -4,8 +4,8 @@
 
 ## CONTENT 
  
-* [tools.daylight](## tools.daylight)
-* [tools.age_class](## tools.age_class)
+* [toolsdaylight](## tools.daylight)
+* [toolsage_class](## tools.age_class)
 * **tools.detect_bursts**
 * **tools.traj_bursts**
 * **tools.regularize**
