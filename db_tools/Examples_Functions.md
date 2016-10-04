@@ -33,7 +33,7 @@ FROM main.gps_data_animals
 WHERE animals_id = 770 AND gps_validity_code = 1 
 ORDER BY acquisition_time;
 ```
-######[-                              to content                              -](#content)
+######[-to content-](#content)
 
 ##age_class
 
@@ -47,6 +47,7 @@ SELECT tools.age_class(animals_id, acquisition_time),
 animals_id, acquisition_time, geom, longitude, latitude, gps_validity_code  
 FROM main.gps_data_animals where animals_id in (770, 771);
 ```
+######[-to content-](#content)
 
 ##detect_bursts 
 
@@ -71,6 +72,7 @@ SELECT * FROM tools.detect_bursts(770, 60*5); -- buffer 5 min
 SELECT (tools.detect_bursts(animals_id, 60*5)).* FROM main.animals WHERE animals_id in (771,770); -- 2 animals 
 SELECT (tools.detect_bursts(animals_id, 60*5)).* FROM main.animals WHERE study_areas_id in (1); -- all animals of 1 study area
 ```
+######[-to content-](#content)
 
 ##traj_bursts
 
@@ -85,6 +87,7 @@ data_traj_raw <- sqlQuery(channel, "select * from tools.traj_bursts(771,60*10);"
 # create an ltraj object
 data_traj<- as.ltraj(xy=data_traj_raw[,c("x","y")], date=as.POSIXct(data_traj_raw[,"acquisition_epoch"], origin="1970-01-01 01:00:00"), id =data_traj_raw[,"animals_id"], burst=data_traj_raw[,"burst"])
 ```
+######[-to content-](#content)
 
 ##regularize 
 
@@ -150,6 +153,7 @@ WITH regularized AS
 )
 SELECT regularized.*, gps_validity_code FROM regularized LEFT OUTER JOIN main.gps_data_animals USING (animals_id, acquisition_time);
 ```
+######[-to content-](#content)
 
 ##interpolate 
 
@@ -171,6 +175,7 @@ SELECT (tools.interpolate(animals_id,'main.view_locations_set',60*60*8)).* FROM 
 SELECT (tools.interpolate(animals_id,'main.view_locations_set',60*60*8)).* FROM main.gps_data_animals WHERE animals_id in (770,771) GROUP BY animals_id; -- for 2 animals
 SELECT (tools.interpolate(animals_id,'main.view_locations_set',60*60*8)).* FROM main.animals WHERE study_areas_id in (1); -- for all animals of 1 study area
 ```
+######[-to content-](#content)
 
 ##geom_parameters
 This function creates a table with the geometrical parameters of the data set (reference: previous location): 
@@ -217,6 +222,7 @@ WITH geom_parameters AS
 )
 SELECT geom_parameters.*, geom, longitude, latitude  FROM geom_parameters LEFT OUTER JOIN main.gps_data_animals USING (animals_id, acquisition_time); 
 ```
+######[-to content-](#content)
 
 ##outlier_detection
 Function that detects outliers based on the distance to the previous and next location, and the angle made
@@ -233,4 +239,5 @@ SELECT study_areas_id, b.animals_id, error
 FROM a JOIN main.gps_data_animals b ON (error = gps_data_animals_id) JOIN main.animals USING (animals_id) 
 ORDER BY study_areas_id, b.animals_id;
 ```
+######[-to content-](#content)
 
