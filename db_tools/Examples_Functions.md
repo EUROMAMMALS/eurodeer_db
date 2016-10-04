@@ -13,7 +13,7 @@
 * [geom_parameters](#geom_parameters)
 * [outlier_detection](#outlier_detection)
 
-[back to content](#CONTENT)
+[back to content](#content)
 ##daylight
 
 This function returns the sunrise and sunset times (as a text array) for a spatial point expressed as a 
