@@ -4,17 +4,17 @@
 
 ## CONTENT 
  
-* [tools.daylight](#tools.daylight)
-* [tools.age_class](## tools.age_class)
-* **tools.detect_bursts**
-* **tools.traj_bursts**
-* **tools.regularize**
-* **tools.interpolate**
-* **tools.geom_parameters**
-* **tools.outlier_detection**
+* [daylight](#daylight)
+* [age_class](#age_class)
+* [detect_bursts](#detect_bursts)
+* [traj_bursts](#traj_bursts)
+* [regularize](#regularize)
+* [interpolate](#interpolate)
+* [geom_parameters](#geom_parameters)
+* [outlier_detection](#outlier_detection)
 
 
-##toolsdaylight
+##daylight
 
 This function returns the sunrise and sunset times (as a text array) for a spatial point expressed as a 
 WKT, with its associated SRID, a timestamp to give the date and a time zone. 
@@ -34,7 +34,7 @@ WHERE animals_id = 770 AND gps_validity_code = 1
 ORDER BY acquisition_time;
 ```
 
-## tools.age_class
+##age_class
 
 This function returs the age class at the acquisition time of a location. It has two input parameters: 
 the id of the animal and the timestamp. According to the age class at first capture, the function increases 
@@ -47,7 +47,7 @@ animals_id, acquisition_time, geom, longitude, latitude, gps_validity_code
 FROM main.gps_data_animals where animals_id in (770, 771);
 ```
 
-## tools.detect_bursts 
+##detect_bursts 
 
 This function gives the "bursts" for a defined animal. Bursts are groups of consecutive locations with 
 the same frequency (or time interval). It gets an animal id and a buffer (in seconds) as input parameters 
@@ -71,7 +71,7 @@ SELECT (tools.detect_bursts(animals_id, 60*5)).* FROM main.animals WHERE animals
 SELECT (tools.detect_bursts(animals_id, 60*5)).* FROM main.animals WHERE study_areas_id in (1); -- all animals of 1 study area
 ```
 
-## tools.traj_bursts
+##traj_bursts
 
 This function generates a data set to be used to create a ltraj object in R. It gets the animal_id and 
 the buffer (see function tools.bursts_report) and return a set of locations which have a tag for the specific 
@@ -85,7 +85,7 @@ data_traj_raw <- sqlQuery(channel, "select * from tools.traj_bursts(771,60*10);"
 data_traj<- as.ltraj(xy=data_traj_raw[,c("x","y")], date=as.POSIXct(data_traj_raw[,"acquisition_epoch"], origin="1970-01-01 01:00:00"), id =data_traj_raw[,"animals_id"], burst=data_traj_raw[,"burst"])
 ```
 
-## tools.regularize 
+##regularize 
 
 **(NOTE: the function only works on gps data that is already in the database)**
 This function creates a complete, regular time series of locations from main.view_locations_set using an 
@@ -150,7 +150,7 @@ WITH regularized AS
 SELECT regularized.*, gps_validity_code FROM regularized LEFT OUTER JOIN main.gps_data_animals USING (animals_id, acquisition_time);
 ```
 
-## tools.interpolate 
+##interpolate 
 
 This function accepts as input an animals_id and a locations_set (by default, the main.view_locations_set). 
 It checks for all locations with NULL geometry. If these locations have a previous and next valid location 
@@ -171,7 +171,7 @@ SELECT (tools.interpolate(animals_id,'main.view_locations_set',60*60*8)).* FROM 
 SELECT (tools.interpolate(animals_id,'main.view_locations_set',60*60*8)).* FROM main.animals WHERE study_areas_id in (1); -- for all animals of 1 study area
 ```
 
-## tools.geom_parameters
+##geom_parameters
 This function creates a table with the geometrical parameters of the data set (reference: previous location): 
 time gap with the previous point, time gap with the previous-previous point, distance to the previous point, 
 speed of the last step, distance from the first point of the data set, absolute angle (previous location), 
@@ -217,7 +217,7 @@ WITH geom_parameters AS
 SELECT geom_parameters.*, geom, longitude, latitude  FROM geom_parameters LEFT OUTER JOIN main.gps_data_animals USING (animals_id, acquisition_time); 
 ```
 
-## tools.outlier_detection
+##outlier_detection
 Function that detects outliers based on the distance to the previous and next location, and the angle made
 by the three points and the speed (meters per hour). The animals_id, minimum distance and maximum angle can be 
 provided as input.
