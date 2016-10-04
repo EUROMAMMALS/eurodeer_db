@@ -4,8 +4,8 @@
 
 ## CONTENT 
  
-* [tools.daylight](## tools.daylight)
-* [tools.age_class](## tools.age_class)
+* [toolsdaylight](##toolsdaylight)
+* [tools.age_class](##tools.age_class)
 * **tools.detect_bursts**
 * **tools.traj_bursts**
 * **tools.regularize**
@@ -14,7 +14,7 @@
 * **tools.outlier_detection**
 
 
-## tools.daylight
+## toolsdaylight
 
 This function returns the sunrise and sunset times (as a text array) for a spatial point expressed as a 
 WKT, with its associated SRID, a timestamp to give the date and a time zone. 
