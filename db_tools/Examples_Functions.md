@@ -2,7 +2,7 @@
 
 **This file provides examples for the most important functions available in the schema tools.**
 
-## CONTENT 
+##CONTENT 
  
 * [daylight](#daylight)
 * [age_class](#age_class)
@@ -13,7 +13,7 @@
 * [geom_parameters](#geom_parameters)
 * [outlier_detection](#outlier_detection)
 
-
+[back to content](#CONTENT)
 ##daylight
 
 This function returns the sunrise and sunset times (as a text array) for a spatial point expressed as a 
@@ -33,7 +33,6 @@ FROM main.gps_data_animals
 WHERE animals_id = 770 AND gps_validity_code = 1 
 ORDER BY acquisition_time;
 ```
-[back to content](#CONTENT)
 
 
 ##age_class
