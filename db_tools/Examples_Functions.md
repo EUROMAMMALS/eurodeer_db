@@ -13,7 +13,7 @@
 * [geom_parameters](#geom_parameters)
 * [outlier_detection](#outlier_detection)
 
-[back to content](#content)
+
 ##daylight
 
 This function returns the sunrise and sunset times (as a text array) for a spatial point expressed as a 
@@ -33,7 +33,7 @@ FROM main.gps_data_animals
 WHERE animals_id = 770 AND gps_validity_code = 1 
 ORDER BY acquisition_time;
 ```
-
+[to content](#content)
 
 ##age_class
 
