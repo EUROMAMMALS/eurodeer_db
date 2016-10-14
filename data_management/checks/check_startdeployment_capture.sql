@@ -1,17 +1,17 @@
 -- GPS deployments not associated with captures
-SELECT 
+SELECT animals.study_areas_id,
   gps_sensors_animals.animals_id, 
   gps_sensors_animals.start_time, 
   animals_captures.gps_sensors_animals_id
-FROM 
-  main.gps_sensors_animals
+FROM main.animals join
+  main.gps_sensors_animals using (animals_id)
 left join 
-  main.animals_captures
+  main.animals_captures 
 on 
   gps_sensors_animals.gps_sensors_animals_id = animals_captures.gps_sensors_animals_id
 WHERE
-  animals_captures.animals_id IS NULL;
-
+  animals_captures.animals_id IS NULL order by study_areas_id;
+  
 -- Animals collared with GPS with no records in capture table
 SELECT 
   study_areas_id, 
@@ -24,7 +24,7 @@ ON
   animals.animals_id = animals_captures.animals_id
 WHERE
   animals_captures.animals_id IS NULL AND 
-  animals._deployed 
+  animals.gps_deployed 
 ORDER BY 
     study_areas_id;
 
