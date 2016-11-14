@@ -32,15 +32,6 @@ where age_class_code_capture is NOT null AND year_birth is NOT null AND year_bir
 order by study_areas_id, year_birth;
 
 -- Animals fawns at capture but estimated birth is not consistent
--- (Question: are both 1 and 0 possible?)
-SELECT study_areas_id, animals_id, animals_original_id, first_capture_date, age_class_code_capture,  year_birth, year_birth_exact, extract(year from first_capture_date) - year_birth
-FROM main.animals
-where 
-  extract(year from first_capture_date) - year_birth not in (0,1)AND
-  age_class_code_capture = 1
-order by extract(year from first_capture_date) - year_birth;
-
--- ANSWER to Question: are both 1 and 0 possible? Shouldn't it be rather like this:
 (
 SELECT study_areas_id, animals_id, animals_original_id, first_capture_date, age_class_code_capture,  year_birth, year_birth_exact, extract(year from first_capture_date) - year_birth diff_capture_birth, 'type1' error_type
 FROM main.animals
@@ -59,15 +50,6 @@ order by extract(year from first_capture_date) - year_birth
 
 
 -- Animals yearling at capture but estimated birth is not consistent
--- (Question: are both 2 and 1 possible?)
-SELECT study_areas_id, animals_id, animals_original_id, first_capture_date, age_class_code_capture,  year_birth, year_birth_exact, extract(year from first_capture_date) - year_birth
-FROM main.animals
-where 
-  extract(year from first_capture_date) - year_birth not in (2,1)AND
-  age_class_code_capture = 2
-order by extract(year from first_capture_date) - year_birth;
-
--- ANSWER to Question: are both 2 and 1 possible? Shouldn't it be rather like this:
 (
 SELECT study_areas_id, animals_id, animals_original_id, first_capture_date, age_class_code_capture,  year_birth, year_birth_exact, extract(year from first_capture_date) - year_birth diff_capture_birth, 'type1' error_type
 FROM main.animals
@@ -85,15 +67,6 @@ order by extract(year from first_capture_date) - year_birth
 ) order by error_type, study_areas_id
 
 -- Animals adult at capture but estimated birth is not consistent
--- (Question: is 2 possible for year difference?)
-SELECT study_areas_id, animals_id, animals_original_id, first_capture_date, age_class_code_capture,  year_birth, year_birth_exact, extract(year from first_capture_date) - year_birth
-FROM main.animals
-where 
-  extract(year from first_capture_date) - year_birth < 2 AND
-  age_class_code_capture = 3
-order by extract(year from first_capture_date) - year_birth;
-
--- ANSWER Question: is 2 possible for year difference? Shouldn't it be like this? 
 (
 SELECT study_areas_id, animals_id, animals_original_id, first_capture_date, age_class_code_capture,  year_birth, year_birth_exact, extract(year from first_capture_date) - year_birth, 'type1' error_type
 FROM main.animals
