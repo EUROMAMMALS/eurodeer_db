@@ -48,7 +48,6 @@ where extract(month from first_capture_date) >= 4 AND
 order by extract(year from first_capture_date) - year_birth
 ) order by error_type, study_areas_id
 
-
 -- Animals yearling at capture but estimated birth is not consistent
 (
 SELECT study_areas_id, animals_id, animals_original_id, first_capture_date, age_class_code_capture,  year_birth, year_birth_exact, extract(year from first_capture_date) - year_birth diff_capture_birth, 'type1' error_type
