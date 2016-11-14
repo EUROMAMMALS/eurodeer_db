@@ -12,34 +12,21 @@ WHERE c.animals_id IS NULL AND a.gps_deployed
 ORDER BY study_areas_id;
 
 -- Captures associated to multiple GPS deployments
-SELECT 
-  gps_sensors_animals_id, count(gps_sensors_animals_id)
-FROM 
-  main.animals_captures
-GROUP BY 
-  gps_sensors_animals_id
-HAVING 
-  count(gps_sensors_animals_id) > 1;
+SELECT gps_sensors_animals_id, count(gps_sensors_animals_id)
+FROM main.animals_captures
+GROUP BY gps_sensors_animals_id
+HAVING count(gps_sensors_animals_id) > 1;
 
 -- Time shift between GPS deployments and captures > 1 day
 SELECT 
-  gps_sensors_animals.animals_id, 
-  gps_sensors_animals.start_time, 
-  animals_captures.gps_sensors_animals_id, 
-  animals_captures.capture_timestamp,
+  a.animals_id, 
+  a.start_time, 
+  b.gps_sensors_animals_id, 
+  b.capture_timestamp,
   start_time - capture_timestamp as timeshift
-FROM 
-  main.gps_sensors_animals
-left join 
-  main.animals_captures
-on 
-  gps_sensors_animals.gps_sensors_animals_id = animals_captures.gps_sensors_animals_id
-WHERE
-  animals_captures.animals_id IS NOT NULL AND
-  @(start_time::date - capture_timestamp::date) > 1
-order by 
-    gps_sensors_animals.animals_id, 
-    @(start_time::date - capture_timestamp::date) DESC;
+FROM main.gps_sensors_animals a LEFT JOIN main.animals_captures b using (gps_sensors_animals_id) 
+WHERE b.animals_id IS NOT NULL AND @(start_time::date - capture_timestamp::date) > 1
+ORDER BY a.animals_id, @(start_time::date - capture_timestamp::date) DESC;
 
 -- GPS deployments before related capture
 SELECT 
