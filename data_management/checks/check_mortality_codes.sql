@@ -66,6 +66,7 @@ ORDER BY count, study_areas_id
 ---------------------------------------------------------------------
 ---------------------------------------------------------------------
 
+
 -- Statistics on end of deployment and mortality (vhf deployments)
 SELECT
   b.mortality_code, mortality_description,
