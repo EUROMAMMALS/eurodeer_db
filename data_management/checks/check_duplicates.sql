@@ -23,6 +23,7 @@ main.gps_sensors as a,
 (SELECT gps_sensors_original_id, research_groups_id FROM main.gps_sensors group by gps_sensors_original_id, research_groups_id having count(*) > 1) as b
 where a.gps_sensors_original_id = b.gps_sensors_original_id and a.research_groups_id = b.research_groups_id) order by gps_sensors_id;
 
+
 --VHF 
 -- 1a List of all sensors with the same original id (in the same research group) -> potential duplicates
 SELECT a.*
@@ -38,7 +39,6 @@ from
 main.vhf_sensors as a,
 (SELECT vhf_sensors_original_id, research_groups_id FROM main.vhf_sensors group by vhf_sensors_original_id, research_groups_id having count(*) > 1) as b
 where a.vhf_sensors_original_id = b.vhf_sensors_original_id and a.research_groups_id = b.research_groups_id) order by vhf_sensors_id;
-
 
 -- 1c Check which of those vhf_sensor_ids are used in the vhf_data_animals table 
 SELECT DISTINCT vhf_sensors_id from main.vhf_data_animals where vhf_sensors_id in (
@@ -127,7 +127,7 @@ from x join main.animals_captures a using (animals_id, capture_timestamp)
 ORDER BY study_areas_id, animals_id, capture_timestamp
 
 
--- CONTACT DATA 
+-- 5 DUPLICATE CONTACTS 
 -- Are there duplicate contacts? 
 SELECT count(*), animals_id, contact_timestamp, study_areas_id
 FROM main.animals_contacts join main.animals using (animals_id)
