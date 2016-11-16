@@ -12,10 +12,10 @@ SELECT
   gps_sensors_animals.start_time, 
   gps_sensors_animals.end_time, 
   gps_sensors_animals.mortality_code, 
-  gps_sensors_animals.end_monitoring_code, 
+  gps_sensors_animals.end_deployment_code, 
   vhf_sensors_animals.start_time, 
   vhf_sensors_animals.end_time, 
-  vhf_sensors_animals.end_monitoring_code, 
+  vhf_sensors_animals.end_deployment_code, 
   vhf_sensors_animals.mortality_code
 FROM 
   main.animals, 
