@@ -40,9 +40,9 @@ from env_data.slope_srtm
 WHERE slope_srtm is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
 
 UPDATE main.gps_data_animals
-SET aspect_srtm = st_value(rast,geom) 
+SET aspect_srtm_east_ccw = st_value(rast,geom) 
 from env_data.aspect_srtm
-WHERE aspect_srtm is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+WHERE aspect_srtm_east_ccw is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
 
 UPDATE main.gps_data_animals
 SET altitude_aster = st_value(rast,geom) 
@@ -55,9 +55,9 @@ from env_data.slope_aster
 WHERE slope_aster is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
 
 UPDATE main.gps_data_animals
-SET aspect_aster = st_value(rast,geom) 
+SET aspect_aster_east_ccw = st_value(rast,geom) 
 from env_data.aspect_aster
-WHERE aspect_aster is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+WHERE aspect_aster_east_ccw is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
 
 -- Update the study areas boundaries
 update main.study_areas set geom = foo.qq from (select studies_id as ww, (st_multi(st_convexhull(st_collect(geom)))) qq from analysis.view_convexhull  
