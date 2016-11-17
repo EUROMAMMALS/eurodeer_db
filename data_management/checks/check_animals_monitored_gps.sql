@@ -19,45 +19,26 @@ FROM main.study_areas b,
 WHERE a.study_areas_id = b.study_areas_id
 order by b.study_areas_id;
 
--- Check if animals with no info on any collar deployed (i.e. never collared) have a record in animals_capture table
-SELECT 
-a.animals_id, a.study_areas_id, a.first_capture_date, b.* 
-FROM 
-(SELECT * FROM main.animals where gps_deployed = 'f' and activity_deployed= 'f' and vhf_deployed = 'f') a
-LEFT JOIN
-main.animals_captures b
-ON
-a.animals_id = b.animals_id
-order by 
-death, a.study_areas_id,  b.animals_id
-
 -- Check animals with no info on any collar deployed (i.e. never collared) and without any record in the table animals_capture table
-SELECT 
-a.animals_id, a.study_areas_id, a.first_capture_date, b.* 
-FROM 
-(SELECT * FROM main.animals where gps_deployed = 'f' and activity_deployed= 'f' and vhf_deployed = 'f') a
-LEFT JOIN
-main.animals_captures b
-ON
-a.animals_id = b.animals_id
-WHERE
-b.animals_id IS NULL
-order by 
-death, a.study_areas_id,  a.animals_id
+SELECT a.animals_id, a.study_areas_id, a.first_capture_date, b.* 
+FROM (SELECT * FROM main.animals where gps_deployed = 'f' and activity_deployed= 'f' and vhf_deployed = 'f') a
+LEFT JOIN main.animals_captures b USING (animals_id)
+WHERE b.animals_id IS NULL
+ORDER BY death, a.study_areas_id,  a.animals_id
 
 -- Associations animals - GPS collars with no data
-SELECT study_areas_id, end_monitoring_code, start_time - end_time, * 
+SELECT study_areas_id, end_deployment_code, start_time - end_time, * 
 FROM main.gps_sensors_animals, main.animals 
 WHERE gps_sensors_animals.animals_id NOT IN (SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id)
 AND animals.animals_id = gps_sensors_animals.animals_id
-ORDER BY end_monitoring_code, abs(extract(epoch from start_time - end_time));
+ORDER BY end_deployment_code, abs(extract(epoch from start_time - end_time));
 
 -- Number of deployments with no gps data associated per research group, with number of deployments longer/shorter then 5 days
-SELECT study_areas_id, end_monitoring_code, count(*) total_deployments,
+SELECT study_areas_id, end_deployment_code, count(*) total_deployments,
 sum( case WHEN abs(extract(epoch from start_time - end_time)) > 60*60*24*5 THEN 1 ELSE 0 end) as long_monitor
 FROM main.gps_sensors_animals, main.animals 
 WHERE gps_sensors_animals.animals_id NOT IN (SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id)
 AND animals.animals_id = gps_sensors_animals.animals_id
-group by study_areas_id, end_monitoring_code
+group by study_areas_id, end_deployment_code
 ORDER BY study_areas_id;
 
