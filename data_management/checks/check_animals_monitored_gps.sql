@@ -42,3 +42,35 @@ AND animals.animals_id = gps_sensors_animals.animals_id
 group by study_areas_id, end_deployment_code
 ORDER BY study_areas_id;
 
+-- Is there an overlap in end_time and start_time of consecutive deployments to a specific animal?
+-- QUERY 1 - giving each gps_sensors_animals_id in different row 
+WITH y AS (
+  WITH x AS (
+    SELECT *, end_time - lead(start_time) OVER (PARTITION BY animals_id ORDER BY animals_id, start_time),
+    end_time - lead(start_time) OVER (PARTITION BY animals_id ORDER BY animals_id, start_time) > interval '00:00:00' bool 
+    FROM main.gps_sensors_animals ORDER BY bool 
+  )
+  SELECT a.*,a.end_time - lead(a.start_time) OVER (PARTITION BY animals_id ORDER BY animals_id, a.start_time) > interval '00:00:00' bool2
+  FROM x JOIN main.gps_sensors_animals a USING (animals_id) WHERE bool = TRUE 
+  ORDER BY animals_id, start_time 
+)
+SELECT gps_sensors_animals_id, animals_id, start_time, end_time FROM y where (bool2 is null OR bool2 = TRUE)
+ORDER BY animals_id, start_time
+-- QUERY 2 - giving pairs of gps_sensors_animals_ids in each row 
+-- end_time 1 overlaps with start_time2
+WITH x AS (
+    SELECT *, end_time - lead(start_time) OVER (PARTITION BY animals_id ORDER BY animals_id, start_time) overlap,
+    lead(start_time) OVER (PARTITION BY animals_id ORDER BY animals_id, start_time) start_time2, 
+    lead(end_time) OVER (PARTITION BY animals_id ORDER BY animals_id, start_time) end_time2,
+    lead(gps_sensors_animals_id) OVER (PARTITION BY animals_id ORDER BY animals_id, start_time) gps_sensors_animals_id2,
+    end_time - lead(start_time) OVER (PARTITION BY animals_id ORDER BY animals_id, start_time) > interval '00:00:00' bool 
+    FROM main.gps_sensors_animals ORDER BY bool 
+  )
+  SELECT animals_id,gps_sensors_id, gps_sensors_animals_id, start_time start_time1, end_time end_time1, gps_sensors_animals_id2, start_time2, end_time2, overlap FROM x WHERE bool = TRUE 
+  ORDER BY animals_id, start_time 
+
+
+
+
+
+
