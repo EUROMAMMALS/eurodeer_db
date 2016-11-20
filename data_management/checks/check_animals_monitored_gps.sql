@@ -54,7 +54,9 @@ WITH y AS (
   FROM x JOIN main.gps_sensors_animals a USING (animals_id) WHERE bool = TRUE 
   ORDER BY animals_id, start_time 
 )
-SELECT gps_sensors_animals_id, animals_id, start_time, end_time FROM y where (bool2 is null OR bool2 = TRUE)
+SELECT study_areas_id, gps_sensors_animals_id, animals_id, animals_original_id, gps_sensors_original_id, start_time, end_time 
+FROM y JOIN main.animals USING (animals_id) JOIN main.gps_sensors USING (gps_sensors_id) 
+WHERE (bool2 is null OR bool2 = TRUE)
 ORDER BY animals_id, start_time
 -- QUERY 2 - giving pairs of gps_sensors_animals_ids in each row 
 -- end_time 1 overlaps with start_time2
@@ -66,8 +68,8 @@ WITH x AS (
     end_time - lead(start_time) OVER (PARTITION BY animals_id ORDER BY animals_id, start_time) > interval '00:00:00' bool 
     FROM main.gps_sensors_animals ORDER BY bool 
   )
-  SELECT animals_id,gps_sensors_id, gps_sensors_animals_id, start_time start_time1, end_time end_time1, gps_sensors_animals_id2, start_time2, end_time2, overlap FROM x WHERE bool = TRUE 
-  ORDER BY animals_id, start_time 
+  SELECT study_areas_id, animals_original_id, x.animals_id,gps_sensors_id, gps_sensors_animals_id, start_time start_time1, end_time end_time1, gps_sensors_animals_id2, start_time2, end_time2, overlap FROM x join main.animals USING (animals_id) WHERE bool = TRUE 
+  ORDER BY study_areas_id, animals_id, start_time 
 
 
 
