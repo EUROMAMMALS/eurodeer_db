@@ -276,3 +276,15 @@ left join
    q.animals_id = b.animals_id
 order by 
   difference_time_capture;
+  
+  
+-- animals with more than 1 deployment
+WITH x AS ( 
+SELECT count(*), animals_id FROM main.gps_sensors_animals group by animals_id HAVING count(*) > 1 
+)
+SELECT capture_timestamp - start_time, animals_id, gps_sensors_id, capture_timestamp, start_time, end_time, a.gps_sensors_animals_id sensor_animals,
+b.gps_sensors_animals_id capture_sensor_animal, collared 
+FROM x JOIN main.animals_captures b USING (animals_id) JOIN main.gps_sensors_animals a USING (animals_id)  
+WHERE capture_timestamp::date between start_time::date -interval '1 day' and end_time::date - interval '1 day'
+ORDER BY animals_id, gps_sensors_id, capture_timestamp
+
