@@ -5,10 +5,10 @@ SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id;
 -- List of animals derived from gps_sensors_animals (animals with deployment)
 SELECT DISTINCT animals_id FROM main.gps_sensors_animals;
 
--- GPS deployed but no data
+-- animals with a GPS deployed but there is no data
 SELECT DISTINCT animals_id FROM main.gps_sensors_animals WHERE animals_id NOT IN (SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id);
 
--- Complete info on all deployments with no data associated
+-- Complete info on all animals with no data associated (NOTE: does not account for the deployment)
 SELECT start_time - end_time, * FROM main.gps_sensors_animals WHERE animals_id IN (SELECT DISTINCT animals_id FROM main.gps_sensors_animals WHERE animals_id NOT IN (SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id)) ORDER BY start_time - end_time;
 
 -- Summary with number of animals with no deployment of any sensors grouped per study area
