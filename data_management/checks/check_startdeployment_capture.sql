@@ -288,3 +288,21 @@ FROM x JOIN main.animals_captures b USING (animals_id) JOIN main.gps_sensors_ani
 WHERE capture_timestamp::date between start_time::date -interval '1 day' and end_time::date - interval '1 day'
 ORDER BY animals_id, gps_sensors_id, capture_timestamp
 
+-- animals that have no capture event with an associated gps_sensors_animals_id or vhf_sensors_animals_id
+WITH z AS (
+	WITH y AS (
+		WITH x AS (
+		SELECT animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, count(*) nr
+		FROM main.animals_captures GROUP bY animals_id, gps_sensors_animals_id, vhf_sensors_animals_id ORDER BY animals_id
+		)
+	SELECT count(*) cnt, animals_id FROM x GROUP BY animals_id 
+	)
+	SELECT animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, count(*) nr, cnt
+	FROM main.animals_captures JOIN y using (animals_id) 
+	GROUP bY animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, cnt  
+	ORDER BY animals_id
+)
+SELECT * FROM z WHERE gps_sensors_animals_id is null and vhf_sensors_animals_id is null and nr = 1 and cnt = 1 
+
+
+
