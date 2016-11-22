@@ -27,3 +27,9 @@ FROM
 ORDER BY
   a.study_areas_id, a.animals_id)
 SELECT * FROM x WHERE (deployment_after_first_capture_gps = FALSE OR deployment_after_first_capture_vhf = FALSE)  
+
+-- overlap between vhf and gps deployment (not necessarily wrong)
+SELECT study_areas_id, a.animals_id, a.vhf_sensors_id, a.start_time, a.end_time, b.gps_sensors_id, b.start_time, b.end_time  
+FROM main.gps_sensors_animals b JOIN main.vhf_sensors_animals a USING (animals_id) join main.animals using (animals_id)
+WHERE (a.end_time::date between b.start_time::date and b.end_time::date or a.start_time::date between b.start_time::date and b.end_time::date)
+ORDER BY animals_id, a.start_time 
