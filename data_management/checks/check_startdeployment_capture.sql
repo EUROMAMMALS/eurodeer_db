@@ -278,7 +278,7 @@ order by
   difference_time_capture;
   
   
--- animals with more than 1 deployment
+-- all animals with more than 1 deployment
 WITH x AS ( 
 SELECT count(*), animals_id FROM main.gps_sensors_animals group by animals_id HAVING count(*) > 1 
 )
@@ -289,6 +289,7 @@ WHERE capture_timestamp::date between start_time::date -interval '1 day' and end
 ORDER BY animals_id, gps_sensors_id, capture_timestamp
 
 -- animals that have no capture event with an associated gps_sensors_animals_id or vhf_sensors_animals_id
+-- i.e. none of the captures for this animal is related to a deployment (meaning that the animal should not be in the db (unless capture_results_code = 3?))
 WITH z AS (
 	WITH y AS (
 		WITH x AS (
@@ -303,6 +304,87 @@ WITH z AS (
 	ORDER BY animals_id
 )
 SELECT * FROM z WHERE gps_sensors_animals_id is null and vhf_sensors_animals_id is null and nr = 1 and cnt = 1 
+
+-- animals that have no capture event with an associated vhf_sensors_animals_id (only animals which have an vhf_sensors_animals_id will be included)
+-- VHF
+WITH z AS ( 
+	WITH y AS ( 
+		WITH x AS (
+		SELECT animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, count(*) nr
+		FROM main.animals_captures GROUP bY animals_id, gps_sensors_animals_id, vhf_sensors_animals_id 
+		ORDER BY animals_id
+		)
+		SELECT count(*) cnt, animals_id FROM x GROUP BY animals_id 
+	)
+	SELECT animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, count(*) nr, cnt
+	FROM main.animals_captures JOIN y using (animals_id) 
+	GROUP bY animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, cnt  
+	ORDER BY animals_id
+)
+SELECT study_areas_id, animals_id, a.vhf_sensors_animals_id, b.animals_captures_id 
+FROM z JOIN main.animals using (animals_id) JOIN main.vhf_sensors_animals a using (animals_id) JOIN main.animals_captures b USING (animals_id)
+WHERE z.gps_sensors_animals_id is null and z.vhf_sensors_animals_id is null and nr = 1 and cnt = 1 ORDER bY animals_captures_id
+
+-- animals that have no capture event with an associated gps_sensors_animals_id (only animals which have an gps_sensors_animals_id will be included)
+-- GPS
+WITH z AS (
+	WITH y AS (
+		WITH x AS (
+		SELECT animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, count(*) nr
+		FROM main.animals_captures GROUP bY animals_id, gps_sensors_animals_id, vhf_sensors_animals_id ORDER BY animals_id
+		)
+		SELECT count(*) cnt, animals_id FROM x GROUP BY animals_id 
+	)
+	SELECT animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, count(*) nr, cnt
+	FROM main.animals_captures JOIN y using (animals_id) 
+	GROUP bY animals_id, gps_sensors_animals_id, vhf_sensors_animals_id, cnt  
+	ORDER BY animals_id
+)
+SELECT study_areas_id, animals_id, a.gps_sensors_animals_id, b.animals_captures_id 
+FROM z JOIN main.animals using (animals_id) JOIN main.gps_sensors_animals a using (animals_id) JOIN main.animals_captures b USING (animals_id)
+WHERE z.gps_sensors_animals_id is null and z.vhf_sensors_animals_id is null and nr = 1 and cnt = 1 ORDER bY animals_captures_id
+
+
+-- animals which should have capture_result_code 2 
+-- VHF deployed and animal died due to capture BUT the deployment interval > 1 minute   
+SELECT animals_id, a.animals_captures_id, a.vhf_sensors_animals_id, gps_sensors_animals_id, 
+death, injury, a.notes, death_description,start_time, end_time, capture_timestamp, 
+end_deployment_code, mortality_code, end_time - start_time diff
+FROM main.animals_captures a join main.vhf_sensors_animals using (animals_id) 
+WHERE death = true and mortality_code = 10 and end_time - start_time > '1 minute' 
+-- and capture_timestamp between start_time::date and end_time 
+
+-- animals which should have capture_result_code 2 
+-- GPS deployed and animal died due to capture BUT the deployment interval > 1 minute   
+SELECT animals_id, a.animals_captures_id, a.gps_sensors_animals_id, vhf_sensors_animals_id, 
+death, injury, a.notes, death_description,start_time, end_time, capture_timestamp, 
+end_deployment_code, mortality_code, end_time - start_time diff
+FROM main.animals_captures a join main.gps_sensors_animals using (animals_id) 
+WHERE death = true and mortality_code = 10  and end_time - start_time > '1 minute' 
+and capture_timestamp between start_time::date and end_time 
+ORDER BY diff --capture_timestamp between start_time::date and end_time and end_time - start_time = '1 minute'
+
+
+-- animals which should have capture_result_code 3 or 2? 
+-- VHF deployed and animal died due to capture BUT the deployment interval > 1 minute   
+SELECT animals_id, a.animals_captures_id, a.vhf_sensors_animals_id, gps_sensors_animals_id, 
+death, injury, a.notes, death_description,start_time, end_time, capture_timestamp, 
+end_deployment_code, mortality_code, end_time - start_time diff
+FROM main.animals_captures a join main.vhf_sensors_animals using (animals_id) 
+WHERE death = true and mortality_code = 10 and end_time - start_time = '1 minute' 
+and capture_timestamp::date between start_time::date and end_time 
+
+-- animals which should have capture_result_code 3 or 2? 
+-- GPS deployed and animal died due to capture BUT the deployment interval > 1 minute   
+SELECT animals_id, a.animals_captures_id, a.gps_sensors_animals_id, vhf_sensors_animals_id, 
+death, injury, a.notes, death_description,start_time, end_time, capture_timestamp, 
+end_deployment_code, mortality_code, end_time - start_time diff
+FROM main.animals_captures a join main.gps_sensors_animals using (animals_id) 
+WHERE death = true and mortality_code = 10  and end_time - start_time = '1 minute' 
+and capture_timestamp::date between start_time::date and end_time 
+ORDER BY diff 
+
+
 
 
 
