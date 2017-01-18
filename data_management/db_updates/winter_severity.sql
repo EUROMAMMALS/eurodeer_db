@@ -1,0 +1,46 @@
+--TEST ON A SINGLE TILE (BONDONE)
+SELECT
+  row_number() over() AS id,
+  ST_UNION(st_reclass(rast,1, '0:255, 1:255, 11:255, 25:0, 37:0, 39:0, 50:255, 100:0, 200:200, 254:255, 255:255','16BUI', 255), 'MEAN') AS rast,
+  '2000-10-01'::date AS start_date,
+  '2001-03-31'::DATE AS end_date
+FROM 
+  env_data_ts.snow_modis, 
+  main.study_areas
+WHERE 
+  acquisition_date >= '2000-10-01' AND
+  acquisition_date <= '2001-03-31' AND
+  st_intersects(rast, geom) AND
+  study_areas_id = 1;
+  
+-- CREATE TABLE FIRST TIME (1 year)
+CREATE TABLE data_env_ts.winter_severity AS
+  SELECT
+    ST_UNION(st_reclass(rast,1, '0:255, 1:255, 11:255, 25:0, 37:0, 39:0, 50:255, 100:0, 200:200, 254:255, 255:255','16BUI', 255), 'MEAN') AS rast,
+    '2000-10-01'::date AS start_date,
+    '2001-03-31'::DATE AS end_date,
+    2000 AS reference_year
+  FROM 
+    env_data_ts.snow_modis
+  WHERE 
+    acquisition_date >= '2000-10-01' AND
+    acquisition_date <= '2001-03-31';
+  
+-- ADD PKEY, INDEX AND CONSTRAINTS
+ALTER TABLE data_env_ts.winter_severity ADD COLUMN id SERIAL;
+ALTER TABLE data_env_ts.winter_severity ADD CONSTRAINT winter_severity_pkey PRIMARY KEY(id);
+SELECT AddRasterConstraints('env_data_ts'::name, 'winter_severity'::name, 'rast'::name,'srid', 'blocksize', 'pixel_types', 'nodata_values');
+CREATE INDEX winter_severity_st_convexhull_idx ON data_env_ts.winter_severity USING gist (st_convexhull(rast));
+
+-- INSERT NEW WINTERS (must be run every year, but this is the idea)
+INSERT INTO data_env_ts.winter_severity (rast, start_date, end_date, reference_year)
+  SELECT
+    ST_UNION(st_reclass(rast,1, '0:255, 1:255, 11:255, 25:0, 37:0, 39:0, 50:255, 100:0, 200:200, 254:255, 255:255','16BUI', 255), 'MEAN') AS rast,
+    '2001-10-01'::date AS start_date,
+    '2002-03-31'::DATE AS end_date,
+    2001 AS reference_year
+  FROM 
+    env_data_ts.snow_modis
+  WHERE 
+    acquisition_date >= '2001-10-01' AND
+    acquisition_date <= '2002-03-31';
