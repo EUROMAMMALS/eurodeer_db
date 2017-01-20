@@ -33,3 +33,22 @@ INSERT INTO env_data_ts.winter_severity (rast, start_date, end_date, reference_y
     acquisition_date <= '2002-03-31'
   GROUP BY 
     st_convexhull(rast);
+
+-- EXPORT
+-- First create a table where you union all the tiles of a single year
+CREATE TABLE 
+ temp.raster_export as
+SELECT 
+  st_union(rast) AS rast 
+FROM 
+  env_data_ts.winter_severity 
+where 
+  reference_year = 2001;
+-- Then add constraint
+SELECT AddRasterConstraints('temp'::name, 'raster_export'::name, 'rast'::name);
+
+-- Now you can visualiz e.g. in QGIS (pretty fast) or export to a file using GDAL (very fast on the server, slow for remote users)
+gdal_translate -of GTIFF "PG:host=localhost dbname='eurodeer_db' user='????' password='?????' schema='temp' table='raster_export' mode=2" E:\eurodeer_data\raster\remote_sensing\modis\winter_severity\winter_severity_2001.tif
+
+-- Remove temp table
+DROP TABLE temp.raster_export;
