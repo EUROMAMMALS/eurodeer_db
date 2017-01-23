@@ -1,4 +1,4 @@
-﻿--TO UPDATE THE RED DEER DATA, REPLACE MAIN.GPS_DATA_ANIMALS WITH MAIN_REDDEER.GPS_DATA_ANIMALS
+--TO UPDATE THE RED DEER DATA, REPLACE MAIN.GPS_DATA_ANIMALS WITH MAIN_REDDEER.GPS_DATA_ANIMALS
 
 ----------------
 -- MODIS SNOW --
@@ -22,7 +22,7 @@ END)  ;
 -- MODIS NDVI --
 ----------------
 update main.gps_data_animals
-set ndvi_modis = st_value(rast, geom)
+set ndvi_modis = (st_value(rast, geom))/10000
 from env_data_ts.ndvi_modis
 where
 gps_validity_code = 1 and 
@@ -71,20 +71,17 @@ else  (extract('year' from acquisition_time::date+6)||'-'||extract ('month' from
 ---------------------
 update main.gps_data_animals
 set ndvi_modis_boku =
-trunc((st_value(pre.rast, geom) * (date_trunc('week', acquisition_time::date + 7)::date -acquisition_time::date)::integer +
-st_value(post.rast, geom) * (acquisition_time::date - date_trunc('week', acquisition_time::date)::date))::integer/7)
+(trunc((st_value(pre.rast, geom) * (date_trunc('week', acquisition_time::date + 7)::date -acquisition_time::date)::integer +
+st_value(post.rast, geom) * (acquisition_time::date - date_trunc('week', acquisition_time::date)::date))::integer/7)) * 0.0048 - 0.2
 from  
 env_data_ts.ndvi_modis_boku pre,
-env_data_ts.ndvi_modis_boku post,
+env_data_ts.ndvi_modis_boku post
 where
 ndvi_modis_boku IS NULL AND gps_validity_code = 1 and 
 st_intersects(geom, pre.rast) and 
 st_intersects(geom, post.rast) and 
 date_trunc('week', acquisition_time::date)::date = pre.acquisition_date and 
 date_trunc('week', acquisition_time::date + 7)::date = post.acquisition_date;
-
-
-
 
 
 ------------------------------------------
