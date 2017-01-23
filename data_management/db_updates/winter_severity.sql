@@ -52,3 +52,24 @@ gdal_translate -of GTIFF "PG:host=localhost dbname='eurodeer_db' user='????' pas
 
 -- Remove temp table
 DROP TABLE temp.raster_export;
+
+
+---------------------
+-- rough code to test results
+with point as
+  (select st_setsrid(st_makepoint(11.0711283437237, 46.1327264991473),4326) geom)
+
+SELECT 
+ st_value(a.rast, geom) original_value, st_value(b.rast, geom) value_ws, acquisition_date
+FROM 
+   env_data_ts.snow_modis a, 
+   point,
+   env_data_ts.winter_severity b
+WHERE 
+   acquisition_date >= '2000-10-01' AND
+   acquisition_date <= '2001-03-31' AND
+   reference_year = 2000 and
+   st_intersects(a.rast, geom) and
+   st_intersects(b.rast, geom) 
+order by 
+   original_value;
