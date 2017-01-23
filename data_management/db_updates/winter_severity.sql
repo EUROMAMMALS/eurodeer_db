@@ -1,7 +1,7 @@
 -- CREATE TABLE FIRST TIME (1 year) [about 40 minutes]
 CREATE TABLE env_data_ts.winter_severity AS
   SELECT
-    ST_UNION(st_reclass(rast,1, '0:255, 1:255, 11:255, 25:0, 37:0, 39:0, 50:255, 100:0, 200:200, 254:255, 255:255','16BUI', 255), 'MEAN') AS rast,
+    ST_UNION(st_reclass(rast,1, '0:255, 1:255, 11:255, 25:0, 37:0, 39:0, 50:255, 100:200, 200:200, 254:255, 255:255','16BUI', 255), 'MEAN') AS rast,
     '2000-10-01'::date AS start_date,
     '2001-03-31'::DATE AS end_date,
     2000 AS reference_year
