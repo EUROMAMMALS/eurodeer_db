@@ -13,6 +13,36 @@ main.animals_captures b USING (animals_id)
 WHERE b.animals_id IS NULL 
 ORDER BY death, a.study_areas_id,  a.animals_id
 
+-- Are there the same number of captures with gps deployment in capture table as there are GPS deployments in deployments table 
+SELECT * FROM 
+(
+-- NUMBER OF GPS DEPLOYMENTS 
+SELECT animals_id, count(*) gps_sensors_animals
+FROM main.gps_sensors_animals 
+GROUP BY animals_id) b
+JOIN 
+-- NUMBER OF CAPTURES WITH GPS DEPLOYMENT 
+(SELECT animals_id, count(*) captures_collaring
+FROM main.animals_captures 
+WHERE gps_sensors_animals_id is not null
+GROUP BY animals_id) a USING (animals_id)
+WHERE gps_sensors_animals != captures_collaring
+
+-- Are there the same number of captures with VHF deployment in capture table as there are VHF deployments in deployments table 
+SELECT * FROM 
+(
+-- NUMBER OF VHF DEPLOYMENTS 
+SELECT animals_id, count(*) vhf_sensors_animals
+FROM main.vhf_sensors_animals 
+GROUP BY animals_id) b
+JOIN 
+-- NUMBER OF CAPTURES WITH VHF DEPLOYMENT 
+(SELECT animals_id, count(*) captures_collaring
+FROM main.animals_captures 
+WHERE vhf_sensors_animals_id is not null
+GROUP BY animals_id) a USING (animals_id)
+WHERE vhf_sensors_animals != captures_collaring
+
 -- Animals-Sensors with data but with a deployment interval of 1 minute 
 WITH x AS(
 SELECT * FROM main.gps_sensors_animals WHERE end_time - start_time = interval '1 minute')
