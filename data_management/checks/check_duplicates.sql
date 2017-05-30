@@ -132,7 +132,7 @@ ORDER BY study_areas_id, animals_id, capture_timestamp
 SELECT count(*), animals_id, contact_timestamp, study_areas_id
 FROM main.animals_contacts join main.animals using (animals_id)
 GROUP BY animals_id, contact_timestamp, study_areas_id
-HAVING count(*) > 1
+HAVING count(*) > 1;
 -- Duplicated rows 
 WITH x AS (
 	SELECT count(*), animals_id, contact_timestamp, study_areas_id
@@ -141,3 +141,8 @@ WITH x AS (
 	HAVING count(*) > 1
 	)
 SELECT a.* FROM x join main.animals_contacts a using (animals_id, contact_timestamp)
+-- animals that died twice
+SELECT count(*), study_areas_id, animals_id, death FROM main.animals_contacts 
+JOIN main.animals using (animals_id)
+GROUP BY study_areas_id,animals_id,death
+HAVING count(*) > 1;
