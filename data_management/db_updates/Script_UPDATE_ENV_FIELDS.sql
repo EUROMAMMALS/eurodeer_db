@@ -1,4 +1,3 @@
-﻿
 update main.gps_data_animals 
 set geom = st_setsrid(st_makepoint(longitude,latitude),4326)
 where longitude is not null and latitude is not null AND gps_validity_code in (1,2,3) and geom is null;
@@ -34,50 +33,48 @@ update main.gps_data_animals
 set utm_x = st_x(st_transform(geom, utm_srid)), utm_y = st_y(st_transform(geom, utm_srid))
 where gps_validity_code in (1,2,3) and utm_x is null;
 
-UPDATE main.gps_data_animals
-SET altitude_srtm = st_value(rast,geom) 
-from env_data.dem_srtm
-WHERE altitude_srtm is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+-- DEM+SLOPE+ASPECT COPERNICUS
+update
+  main.gps_data_animals
+set
+  altitude_copernicus = st_value(dem_copernicus.rast, st_transform(gps_data_animals.geom,3035))
+FROM
+  env_data.dem_copernicus, 
+  main.animals
+WHERE 
+  altitude_copernicus is null and
+  and gps_validity_code in (1,2,3) AND
+  animals.animals_id = gps_data_animals.animals_id AND
+  animals.study_areas_id = dem_copernicus.study_areas_id and
+  st_intersects(dem_copernicus.rast,st_transform(gps_data_animals.geom,3035));
 
-UPDATE main.gps_data_animals
-SET slope_srtm = st_value(rast,geom) 
-from env_data.slope_srtm
-WHERE slope_srtm is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+update
+  main.gps_data_animals
+set
+  slope_copernicus = st_value(slope_copernicus.rast, st_transform(gps_data_animals.geom,3035))
+FROM
+  env_data.slope_copernicus, 
+  main.animals
+WHERE 
+  slope_copernicus is null and
+  and gps_validity_code in (1,2,3) AND
+  animals.animals_id = gps_data_animals.animals_id AND
+  animals.study_areas_id = slope_copernicus.study_areas_id and
+  st_intersects(slope_copernicus.rast,st_transform(gps_data_animals.geom,3035));
 
-UPDATE main.gps_data_animals
-SET aspect_srtm_east_ccw = st_value(rast,geom) 
-from env_data.aspect_srtm
-WHERE aspect_srtm_east_ccw is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
-
-UPDATE main.gps_data_animals
-SET altitude_aster = st_value(rast,geom) 
-from env_data.dem_aster
-WHERE altitude_aster is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
-
-UPDATE main.gps_data_animals
-SET slope_aster = st_value(rast,geom) 
-from env_data.slope_aster
-WHERE slope_aster is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
-
-UPDATE main.gps_data_animals
-SET aspect_aster_east_ccw = st_value(rast,geom) 
-from env_data.aspect_aster
-WHERE aspect_aster_east_ccw is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
-
-update main.gps_data_animals
-set altitude_copernicus = st_value(dem_copernicus.rast, st_transform(gps_data_animals.geom,3035))
-FROM env_data.dem_copernicus, main.animals
-WHERE altitude_copernicus is null and animals.animals_id = gps_data_animals.animals_id AND animals.study_areas_id = dem_copernicus.study_areas_id and st_intersects(dem_copernicus.rast,st_transform(gps_data_animals.geom,3035));
-
-update main.gps_data_animals
-set slope_copernicus = st_value(slope_copernicus.rast, st_transform(gps_data_animals.geom,3035))
-FROM env_data.slope_copernicus, main.animals
-WHERE altitude_copernicus is null and animals.animals_id = gps_data_animals.animals_id AND animals.study_areas_id = slope_copernicus.study_areas_id and  st_intersects(slope_copernicus.rast,st_transform(gps_data_animals.geom,3035));
-
-update main.gps_data_animals
-set aspect_copernicus = st_value(aspect_copernicus.rast, st_transform(gps_data_animals.geom,3035))
-FROM env_data.aspect_copernicus, main.animals
-WHERE altitude_copernicus is null and animals.animals_id = gps_data_animals.animals_id AND animals.study_areas_id = aspect_copernicus.study_areas_id and st_intersects(aspect_copernicus.rast,st_transform(gps_data_animals.geom,3035));
+update
+  main.gps_data_animals
+set
+  aspect_copernicus = st_value(aspect_copernicus.rast, st_transform(gps_data_animals.geom,3035))
+FROM
+  env_data.aspect_copernicus, 
+  main.animals
+WHERE 
+  aspect_copernicus is null and
+  and gps_validity_code in (1,2,3) AND
+  animals.animals_id = gps_data_animals.animals_id AND
+  animals.study_areas_id = aspect_copernicus.study_areas_id and
+  st_intersects(aspect_copernicus.rast,st_transform(gps_data_animals.geom,3035));
 
 -- Update the study areas boundaries
 update main.study_areas set geom = foo.qq from (select studies_id as ww, (st_multi(st_convexhull(st_collect(geom)))) qq from analysis.view_convexhull  
@@ -132,7 +129,39 @@ where defined_boundaries = 0 and study_areas.study_areas_id = locations_24h_stud
 update main.study_areas set geom_vhf = foo.qq from (select studies_id as ww, (st_multi(st_convexhull(st_collect(geom)))) qq from analysis.view_convexhull_vhf  
 group by studies_id) as foo where defined_boundaries = 0 and study_areas.study_areas_id = foo.ww;
 
--------------
+-------------------------------------------
+--DEPRECATED: NOW COPERNICUS DEM IS USED --
+-------------------------------------------
+UPDATE main.gps_data_animals
+SET altitude_srtm = st_value(rast,geom) 
+from env_data.dem_srtm
+WHERE altitude_srtm is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+
+UPDATE main.gps_data_animals
+SET slope_srtm = st_value(rast,geom) 
+from env_data.slope_srtm
+WHERE slope_srtm is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+
+UPDATE main.gps_data_animals
+SET aspect_srtm_east_ccw = st_value(rast,geom) 
+from env_data.aspect_srtm
+WHERE aspect_srtm_east_ccw is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+
+UPDATE main.gps_data_animals
+SET altitude_aster = st_value(rast,geom) 
+from env_data.dem_aster
+WHERE altitude_aster is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+
+UPDATE main.gps_data_animals
+SET slope_aster = st_value(rast,geom) 
+from env_data.slope_aster
+WHERE slope_aster is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+
+UPDATE main.gps_data_animals
+SET aspect_aster_east_ccw = st_value(rast,geom) 
+from env_data.aspect_aster
+WHERE aspect_aster_east_ccw is null and gps_validity_code in (1,2,3) and st_intersects(geom, rast) and st_value(rast,geom) != 'NaN';
+
 -- FOR (the very few) LOCATIONS THAT ARE EXACLTY ACROSS TWO IMAGES, A *NULL* VALUE IS RETURNED WHEN INTERSECTED WITH ASTER slope and aspect IMAGES.
 -- TO SOLVE THIS I FORCE A LITTLE TRANSLATION OF HALF A PIXEL
 UPDATE main.gps_data_animals
@@ -169,7 +198,7 @@ from env_data.aspect_aster
 WHERE aspect_aster is null and gps_validity_code in (1,2,3) and st_intersects(ST_Translate(geom, 0, -0.000416), rast) and st_value(rast,ST_Translate(geom, 0, 0.000416)) != 'NaN';
 
 -- Update the value of aspect to -1 where the slope is null or aspect = 0 (convention used in GRASS)
--- I also update aspect calculated from north clockwise (in grass is from east counterclockwise
+-- I also update aspect calculated from north clockwise (in grass is from east counterclockwise)
 UPDATE main.gps_data_animals
    SET aspect_srtm_east_ccw= -1
  WHERE aspect_srtm_east_ccw = 0 or (slope_srtm = 0 and aspect_srtm_east_ccw > -1);
