@@ -33,17 +33,32 @@ update main.gps_data_animals
 set utm_x = st_x(st_transform(geom, utm_srid)), utm_y = st_y(st_transform(geom, utm_srid))
 where gps_validity_code in (1,2,3) and utm_x is null;
 
--- DEM+SLOPE+ASPECT COPERNICUS
-update
+-- FOREST DENSITY COPERNICUS
+UPDATE
   main.gps_data_animals
-set
+SET
+  forest_density = st_value(forest_density.rast, st_transform(gps_data_animals.geom,3035))
+FROM
+  env_data.forest_density, 
+  main.animals
+WHERE 
+  forest_density IS null AND
+  gps_validity_code IN (1,2,3) AND
+  animals.animals_id = gps_data_animals.animals_id AND
+  animals.study_areas_id = forest_density.study_areas_id AND
+  st_intersects(forest_density.rast,st_transform(gps_data_animals.geom,3035));
+
+-- DEM+SLOPE+ASPECT COPERNICUS
+UPDATE
+  main.gps_data_animals
+SET
   altitude_copernicus = st_value(dem_copernicus.rast, st_transform(gps_data_animals.geom,3035))
 FROM
   env_data.dem_copernicus, 
   main.animals
 WHERE 
-  altitude_copernicus is null and
-  and gps_validity_code in (1,2,3) AND
+  altitude_copernicus IS null AND
+  gps_validity_code IN (1,2,3) AND
   animals.animals_id = gps_data_animals.animals_id AND
   animals.study_areas_id = dem_copernicus.study_areas_id and
   st_intersects(dem_copernicus.rast,st_transform(gps_data_animals.geom,3035));
@@ -57,7 +72,7 @@ FROM
   main.animals
 WHERE 
   slope_copernicus is null and
-  and gps_validity_code in (1,2,3) AND
+  gps_validity_code in (1,2,3) AND
   animals.animals_id = gps_data_animals.animals_id AND
   animals.study_areas_id = slope_copernicus.study_areas_id and
   st_intersects(slope_copernicus.rast,st_transform(gps_data_animals.geom,3035));
@@ -71,7 +86,7 @@ FROM
   main.animals
 WHERE 
   aspect_copernicus is null and
-  and gps_validity_code in (1,2,3) AND
+  gps_validity_code in (1,2,3) AND
   animals.animals_id = gps_data_animals.animals_id AND
   animals.study_areas_id = aspect_copernicus.study_areas_id and
   st_intersects(aspect_copernicus.rast,st_transform(gps_data_animals.geom,3035));
