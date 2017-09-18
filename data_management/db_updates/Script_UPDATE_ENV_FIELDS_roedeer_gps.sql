@@ -138,13 +138,14 @@ INSERT INTO roedeer.temp_study_areas_mcp_individuals
 		(SELECT (st_dump(st_transform(st_union(geom_mcp_individuals),3035))).geom as geom
 		FROM roedeer.study_areas) a;
 
-TRUNCATE analysis.corine_study_areas_mcp_individuals;
-INSERT INTO analysis.corine_study_areas_mcp_individuals
+TRUNCATE roedeer.corine_study_areas_mcp_individuals;
+INSERT INTO roedeer.corine_study_areas_mcp_individuals
 	SELECT * 
-	FROM analysis.view_corine_study_areas_mcp_individuals;
--- In eurodeer db
-TRUNCATE env_data.corine_study_areas_mcp_individuals;
-INSERT INTO env_data.corine_study_areas_mcp_individuals
+	FROM roedeer.view_corine_study_areas_mcp_individuals;
+
+-- In EURODEER db
+TRUNCATE env_data.corine_study_areas_mcp_individuals_imp;
+INSERT INTO env_data.corine_study_areas_mcp_individuals_imp
 	SELECT * 
 	FROM env_data.corine_2012_vector_mcp_individuals;
 
