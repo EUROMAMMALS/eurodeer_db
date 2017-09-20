@@ -17,7 +17,7 @@ raster2pgsql -c -R -C -I -x -t 256x256 -M E:\eurodeer_data\raster\land_cover\cor
 ogr2ogr -f "PostgreSQL" PG:"host=localhost port=5432 dbname=corine user=postgres" E:/eurodeer_data/vector/corine/clc12_Version_18_5.gdb -overwrite -progress --config PG_USE_COPY YES
 
 -- I create a table to permanently store the polygons of the study area and fill it with the last version of the geometry
-DROP TABLE if exists roedeer.temp_study_areas_mcp_individuals;
+/*DROP TABLE if exists roedeer.temp_study_areas_mcp_individuals;
 CREATE TABLE roedeer.temp_study_areas_mcp_individuals
 (
   id integer NOT NULL,
@@ -27,13 +27,14 @@ CREATE TABLE roedeer.temp_study_areas_mcp_individuals
 CREATE INDEX sidx_study_areas_geom_mcp_individuals
   ON roedeer.temp_study_areas_mcp_individuals
   USING gist
-  (geom);
+  (geom);*/
 
+TRUNCATE roedeer.temp_study_areas_mcp_individuals;
 INSERT INTO roedeer.temp_study_areas_mcp_individuals
 	SELECT row_number() over(), geom 
 	FROM 
-		(SELECT (st_dump(st_transform(st_union(geom_mcp_individuals),3035))).geom as geom
-		FROM roedeer.study_areas) a;
+		(SELECT (st_dump(st_transform(st_union(geom),3035))).geom as geom
+FROM (select geom_mcp_individuals as geom from roedeer.study_areas union select geom_vhf from roedeer.study_areas) a) b;;
 
 -- This is just to initialize 
 CREATE OR REPLACE VIEW roedeer.view_corine_study_areas_mcp_individuals AS 
