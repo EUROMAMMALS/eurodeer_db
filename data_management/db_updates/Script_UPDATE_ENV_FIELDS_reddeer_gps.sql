@@ -79,10 +79,10 @@ FROM env_data.aspect_copernicus, main.animals
 WHERE aspect_copernicus IS NULL AND gps_validity_code IN (1,2,3) AND animals.animals_id = gps_data_animals.animals_id AND animals.study_areas_id = aspect_copernicus.study_areas_id AND st_intersects(aspect_copernicus.rast,st_transform(gps_data_animals.geom,3035));
 
 -- Update CORINE 2012 from vector layer
-UPDATE analysis.gps_update_env_fields 
-SET corine_land_cover_2012_vector_code = corine_study_areas_mcp_individuals.clc_code::integer
-FROM env_data.corine_study_areas_mcp_individuals_imp
-WHERE st_coveredby(gps_data_animals.geom, corine_study_areas_mcp_individuals.geom) AND gps_validity_code IN (1,2,3) AND corine_land_cover_2012_vector_code IS NULL;
+UPDATE main.gps_data_animals
+SET corine_land_cover_2012_vector_code = corine_land_cover_2012_vector.clc_code::integer
+FROM env_data.corine_land_cover_2012_vector
+WHERE st_coveredby(gps_data_animals.geom, corine_land_cover_2012_vector.geom) AND gps_validity_code IN (1,2,3) AND corine_land_cover_2012_vector_code IS NULL;
 
 ----------------------
 --> IN EURODEER DB <--
@@ -124,20 +124,7 @@ WHERE
       WHEN extract (year FROM (snow_modis.acquisition_date + INTERVAL '8 days')) = extract (year FROM (snow_modis.acquisition_date)) then (snow_modis.acquisition_date + INTERVAL '8 days')
       else ('1-1-' || extract (year FROM snow_modis.acquisition_date)+1)::date
     END);
--- MODIS NDVI --
-UPDATE analysis.gps_update_env_fields
-SET ndvi_modis = (st_value(rast, geom))/10000
-FROM env_data_ts.ndvi_modis
-WHERE
-  gps_validity_code in (1,2,3) and 
-  ndvi_modis is null and 
-  st_intersects(geom, rast) and 
-  acquisition_time::date >= ndvi_modis.acquisition_date and  
-  acquisition_time::date <  
-    (case 
-    WHEN extract (year FROM (ndvi_modis.acquisition_date + INTERVAL '16 days')) = extract (year FROM (ndvi_modis.acquisition_date)) then (ndvi_modis.acquisition_date + INTERVAL '16 days')
-    else ('1-1-' || extract (year FROM ndvi_modis.acquisition_date)+1)::date
-    END)  ;
+
 -- MODIS NDVI SMOOTHED --
 UPDATE
 analysis.gps_update_env_fields
