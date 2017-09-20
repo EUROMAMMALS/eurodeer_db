@@ -111,7 +111,8 @@ SET corine_land_cover_2012_code = st_value(rast,geom_3035)
 FROM env_data.corine_land_cover_2012
 WHERE corine_land_cover_2012_code IS NULL AND st_intersects(geom_3035, rast);
 -- MODIS SNOW 
-UPDATE analysis.gps_update_env_fields
+UPDATE 
+env_data.reddeer_update_gps_update_env_fields 
 SET snow_modis = st_value(rast, geom)
 FROM env_data_ts.snow_modis
 WHERE
@@ -127,7 +128,7 @@ WHERE
 
 -- MODIS NDVI SMOOTHED --
 UPDATE
-analysis.gps_update_env_fields
+env_data.reddeer_update_gps_update_env_fields 
 SET
 ndvi_modis_smoothed = (st_value(pre.rast, geom)*(post.acquisition_date - acquisition_time::date)/(post.acquisition_date - pre.acquisition_date) +
 st_value(post.rast, geom)*(- (pre.acquisition_date - acquisition_time::date))/(post.acquisition_date - pre.acquisition_date)) * 0.0048 -0.2
@@ -150,7 +151,7 @@ WHERE
     WHEN extract ('day' FROM acquisition_time) < 26 then (extract('year' FROM acquisition_time::date)||'-'||extract ('month' FROM acquisition_time::date)||'-26')::date
     else  (extract('year' FROM acquisition_time::date+6)||'-'||extract ('month' FROM acquisition_time::date+6)||'-06')::date end;
 -- MODIS NDVI BOKU --
-UPDATE analysis.gps_update_env_fields
+UPDATE env_data.reddeer_update_gps_update_env_fields 
 SET ndvi_modis_boku = (trunc((st_value(pre.rast, geom) * (date_trunc('week', acquisition_time::date + 7)::date -acquisition_time::date)::integer +
 st_value(post.rast, geom) * (acquisition_time::date - date_trunc('week', acquisition_time::date)::date))::integer/7)) * 0.0048 -0.2
 FROM env_data_ts.ndvi_modis_boku pre, env_data_ts.ndvi_modis_boku post
