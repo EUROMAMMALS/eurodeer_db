@@ -2,7 +2,7 @@
 --> CORINE db <--
 -----------------
 -- I create a table to permanently store the polygons of the study area and fill it with the last version of the geometry
-DROP TABLE if exists reddeer.temp_study_areas_mcp_individuals;
+/* DROP TABLE if exists reddeer.temp_study_areas_mcp_individuals;
 CREATE TABLE reddeer.temp_study_areas_mcp_individuals
 (
   id integer NOT NULL,
@@ -12,16 +12,17 @@ CREATE TABLE reddeer.temp_study_areas_mcp_individuals
 CREATE INDEX sidx_study_areas_geom_mcp_individuals
   ON reddeer.temp_study_areas_mcp_individuals
   USING gist
-  (geom);
+  (geom);*/
 
-INSERT INTO roedeer.temp_study_areas_mcp_individuals
+TRUNCATE exists reddeer.temp_study_areas_mcp_individuals;
+INSERT INTO reddeer.temp_study_areas_mcp_individuals
 	SELECT row_number() over(), geom 
 	FROM 
-		(SELECT (st_dump(st_transform(st_union(geom_mcp_individuals),3035))).geom as geom
-		FROM roedeer.study_areas) a;
+		(SELECT (st_dump(st_transform(st_union(geom),3035))).geom as geom
+		FROM (select geom_mcp_individuals  as geom from roedeer.study_areas union select geom_vhf from roedeer.study_areas) a) b;
 
 -- This is just to initialize (main.gps_data_animals and main.animals are loaded as foreign tables in schema reddeer)
-CREATE OR REPLACE VIEW reddeer.view_corine_study_areas_mcp_individuals AS 
+/*CREATE OR REPLACE VIEW reddeer.view_corine_study_areas_mcp_individuals AS 
  SELECT row_number() OVER ()::integer AS id,
     a.clc_code,
     st_transform(a.geom, 4326)::geometry(Polygon,4326) AS geom
@@ -37,25 +38,28 @@ CREATE OR REPLACE VIEW reddeer.view_corine_study_areas_mcp_individuals AS
 -- This is to fix a problem (in case it is referenced from other db
   ALTER FUNCTION st_intersects(geometry, geometry) SET search_path TO pg_catalog, public;
   ALTER FUNCTION st_transform(geometry, integer) SET search_path TO pg_catalog, public;
-  ALTER FUNCTION st_dump(geometry) SET search_path TO pg_catalog, public; 
+  ALTER FUNCTION st_dump(geometry) SET search_path TO pg_catalog, public; */
 
 -- I make a physical table that must be updated every time locations far from existing ones are uploaded
-DROP TABLE IF EXISTS reddeer.corine_study_areas_mcp_individuals;
+/*DROP TABLE IF EXISTS reddeer.corine_study_areas_mcp_individuals;
 CREATE TABLE  reddeer.corine_study_areas_mcp_individuals AS 
-SELECT * from reddeer.view_corine_study_areas_mcp_individuals;
-  
+SELECT * from reddeer.view_corine_study_areas_mcp_individuals;*/
+TRUNCATE reddeer.corine_study_areas_mcp_individuals;
+INSERT INTO  reddeer.corine_study_areas_mcp_individuals 
+SELECT * FROM reddeer.view_corine_study_areas_mcp_individuals;  
+
 ----------------------------
 --> This is EUREDDEER db <--
 ----------------------------
-CREATE FOREIGN TABLE env_data.corine_land_cover_2012_vector 
+/*CREATE FOREIGN TABLE env_data.corine_land_cover_2012_vector 
 (  id integer,
   clc_code character varying(3),
   geom geometry(Polygon,4326))
 SERVER corine_fdw
- OPTIONS (schema_name 'roedeer', table_name 'corine_study_areas_mcp_individuals'); 
+ OPTIONS (schema_name 'roedeer', table_name 'corine_study_areas_mcp_individuals');*/
 
 -- Then I need a local table (to speed up), that must be updated every time that study areas are updated (to be created just when I initialize)
-DROP TABLE IF EXISTS env_data.corine_land_cover_2012_vector_imp;
+/*DROP TABLE IF EXISTS env_data.corine_land_cover_2012_vector_imp;
 CREATE TABLE env_data.corine_land_cover_2012_vector_imp
 (
   id integer NOT NULL,
@@ -66,8 +70,8 @@ CREATE TABLE env_data.corine_land_cover_2012_vector_imp
 CREATE INDEX corine_land_cover_2012_vector_imp_gist
   ON env_data.corine_land_cover_2012_vector_imp
   USING gist
-  (geom);
-
+  (geom);*/
+TRUNCATE env_data.corine_land_cover_2012_vector_imp;
 INSERT INTO env_data.corine_land_cover_2012_vector_imp
 SELECT id, clc_code::integer, geom FROM env_data.corine_land_cover_2012_vector;
  
