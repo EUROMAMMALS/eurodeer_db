@@ -14,12 +14,12 @@ CREATE INDEX sidx_study_areas_geom_mcp_individuals
   USING gist
   (geom);*/
 
-TRUNCATE exists reddeer.temp_study_areas_mcp_individuals;
+TRUNCATE reddeer.temp_study_areas_mcp_individuals;
 INSERT INTO reddeer.temp_study_areas_mcp_individuals
 	SELECT row_number() over(), geom 
 	FROM 
 		(SELECT (st_dump(st_transform(st_union(geom),3035))).geom as geom
-		FROM (select geom_mcp_individuals  as geom from roedeer.study_areas union select geom_vhf from roedeer.study_areas) a) b;
+		FROM (select geom_mcp_individuals  as geom from reddeer.study_areas union select geom_vhf from reddeer.study_areas) a) b;
 
 -- This is just to initialize (main.gps_data_animals and main.animals are loaded as foreign tables in schema reddeer)
 /*CREATE OR REPLACE VIEW reddeer.view_corine_study_areas_mcp_individuals AS 
