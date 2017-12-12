@@ -195,7 +195,7 @@ SELECT (tools.geom_parameters(770, 60*60*8, 60*10)).*; -- 8h interval and 10 min
 SELECT (tools.geom_parameters(770, 60*60*12, 60*10)).*; -- 12h interval and 10 min buffer  
 ```
 
-**Example for multiple animals (770,771) where start_time and end_time are costumized** 
+**Example for multiple animals (770,771) where start_time and end_time are customized** 
 ```sql
 SELECT 
 (tools.geom_parameters(animals_id, 
@@ -207,7 +207,7 @@ WHERE animals_id in (770,771)
 GROUP BY animals_id;
 ```
 
-**Example for multiple animals (770,771) where start_time and end_time are costumized and linked back to the main table** 
+**Example for multiple animals (770,771) where start_time and end_time are customized and linked back to the main table** 
 ```sql
 WITH geom_parameters AS 
 (
