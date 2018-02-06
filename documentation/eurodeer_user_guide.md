@@ -34,9 +34,13 @@ The [EUROUNGULATES spatial databases](http://eurodeer2.fmach.it/phppgadmin/) are
 
 More information on the projects, including activities, partners, outcomes and news can be found at their website:
 
-* [www.euroungulates.org](www.euroungulates.org)
-* [www.eurodeer.org](www.eurodeer.org)
-* [www.eureddeer.org](www.eureddeer.org)
+* <externalLink>
+    <linkText>www.euroungulates.org</linkText>
+    <linkUri>www.euroungulates.org</linkUri>
+</externalLink>
+* (www.euroungulates.org)
+* [www.eurodeer.org]
+* www.eureddeer.org
 * [www.euroboar.org](www.euroboar.org) 
 
 ### EURODEER
