@@ -1,8 +1,25 @@
 # EURODEER USERS GUIDE
 
-[SUMMARY here ]
+* [EUROUNGULATES Project](#EUROUNGULATES)
+* [Scope of this User Guide](#scope)
+* [EURODEER Database Overview](#EURODEER_Overview)
+* [EURODEER Database Content](#EURODEER_Content)  
+* [EURODEER Database Objects Description](#EURODEER_objects)  
+* [Connecting with the Database](#connection) 	  
+    * [phpPgAdmin](#phpPgAdmin)  
+    * [pgAdmin 3](#pgAdmin)  
+    * [QGIS](#QGIS)  
+    * [R](#R)  
+    * [LibreOffice](#LibreOffice)  
+    * [Other Tools](#Others)  
+* [User Support](#Others) 
 
-## EUROUNGULATES project
+
+### <a name="EUROUNGULATES"></a> Introduction  
+
+[...]
+
+## <a name="EUROUNGULATES"></a> EUROUNGULATES Project
 
 ![](images/euroungulates_logo.png)
 
@@ -42,7 +59,7 @@ These are the premises of the EUropean ROe DEER Information System (EURODEER).
 [...]
 
 
-## Scope of this document
+## <a name="EUROUNGULATES"></a> Scope of this User Guide
 This manual is the reference documentation about the use of EURODEER database for EURODEER partners, but it is useful also for EUREDDEER and EUROBOAR database users, as the e-infrastructure is shared and large part of the database objects is similar. 
 
 Note that this is not a comprehensive manual about database. It shortly describes the EURODEER database content and the main operations that can be done on it. There are also information on how to connect with the database and visualize/download the data but not on how data can be combined or processed with the database language (SQL). 
@@ -57,7 +74,7 @@ In addition, for they who want to understand the EURODEER database structure and
 
 EUROUNGULATES database manager and data curators are always available for EUROUNGULATES databases users whenever technical support is needed.
   
-## EURODEER Database - Introduction
+## <a name="EURODEER_Overview"></a> EURODEER Database Overview
 
 The main goal of EURODEER project is to join in a common data repository, roe deer tracking data and additional information from different research groups (using different software tools) located in different European countries. To achieve this goal, we set up a software platform that enables all partners to access, manage and analyze the shared data in a cost-effective fashion. The main requirements of the project and the assessment of possible solutions are described in the paper [Wildlife tracking data management: a new vision ](http://rstb.royalsocietypublishing.org/content/365/1550/2177)(Urbano et al., 2013).
 
@@ -116,46 +133,58 @@ Although any application that support standard database connection can be used i
 
 Finally, open source philosophy is perfectly in line with data sharing perspective that guides EURODEER project. 
 
-## EURODEER database content
+## <a name="EURODEER_content"></a> EURODEER database content
 [introduction]
 ### Sensor data
 ### Additional data on individuals and populations (to be detailed)
 ### Environmental data
 
 
-## EURODEER database objects description
+## <a name="EURODEER_objects"></a> EURODEER Database Objects Description
 [Everything is described inside he database (visible with...).
 A report generated with (link) is available in (link)]
 
-## 3 Connecting with the database
-### ?? 3.1 Introduction
-### 3.2 Connection parameters
---> describe limitation of users
+## <a name="connection"></a> Connecting with the Database
 
-### 4.1.1 phpPgAdmin
+PostgreSQL is a database server. The role of the database server is to distribute data to client applications keeping the data into a centralized repository. Many different interfaces can be used. Some are focussed on the creation, maintenance and development of the database, others to visualize and edit/manipulate tabular or spatial data. Statistical tools can be used to perform analysis on the data. Many graphical interface can be used to offer data in a user-friendly fashion, including through web applications.  
+Users with a permission to access the data can use their favourite application. Examples of how to connect with the database from different software tools are reported in the next sub-section.   
+Any client need the following parameters to connect with the database:
+
+	  IP or Domain name of the server: eurodeer2.fmach.it
+	  Server Port: 5432
+	  Name of the Database: eurodeer_db
+	  User Name: ...
+	  Password: ...
+
+
+If you don't have yet a user account (and you are entitle to have one) please contact Francesca Cagnacci or Ferdinando Urbano. We will create an account for you (with a permission level that correspond to your role in the project)
+
+### <a name="phpPgAdmin"></a>phpPgAdmin
 connect
 visualize
 query
 download
 
-### 4.1.2 pgAdmin 3
+### <a name="pgAdmin"></a>pgAdmin 3
 connect
 visualize
 query
 download
 
-### 4.2.1 QGIS 
+### <a name="QGIS"></a>QGIS 
 connect
 visualize
 download
 
-### 4.3.1 LibreOffice Base
-### 4.3.2 LibreOffice Calc
-### 4.4.1 R
-### Other tools 
-mention pgadmin4, access, excel, arcgis
+### <a name="R"></a>R
 
-# 6. User support (?)
+### <a name="LibreOffice"></a>LibreOffice
 
-# 7. Further readings (?)
+### <a name="Others"></a>Other Tools 
+[mention pgadmin4, access, excel, arcgis]
+
+## <a name="Usersupport"></a>User Support
+[...]
+
+
 
