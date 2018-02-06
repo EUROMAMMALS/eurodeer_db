@@ -1,9 +1,11 @@
 # EURODEER USERS GUIDE
 
-[SUMMARY here]
+[SUMMARY here ]
 
 ## EUROUNGULATES project
-<logo_euroungulates.png>
+
+![](images/euroungulates_logo.png)
+
 
 EUROUNGULATES is an umbrella project that coordinates and connects different open, bottom-up projects that promote collaborative science among research institutes based on knowledge and data sharing to investigate the movement ecology of European ungulates in their different habitats and management regimes. At the moment (2017) the EUROUNGULATES network is made of three species specific projects: **EURODEER** (roe deer, *Capreolus capreolus*), **EUREDDEER** (red deer, *Cervus elaphus*), **EUROBOAR** (wild boar, *Sus scrofa*).
 
@@ -21,7 +23,7 @@ More information on the projects, including activities, partners, outcomes and n
 * [www.euroboar.org](www.euroboar.org) 
 
 ### EURODEER
-<logo_eurodeer.png>
+![](images/eurodeer_logo.png)
 
 European roe deer is a very well studied species, because of its crucial role in European ecosystems and because it is a very good model species, both for ecological and evolutionary reasons. However, the time might have come for synthesising our knowledge into a wider and more complex picture, that would allow to clarify ecosystemic relationships (e.g., resource balance), reveal evolutionary patterns (e.g., animal performance), and underpin predictions on future scenarios (e.g., climate change effect). Recent technological advancement, such as GPS collars and activity sensors, allowed to obtain more data and of better quality. A spatial database populated with data from different areas can support the development of a complete picture of roe deer biology, within a ecological and evolutionary context. At the same time, it offers the opportunity to join the data of different research groups into a well supported repository, with transparent accessibility.
 These are the premises of the EUropean ROe DEER Information System (EURODEER).
@@ -30,12 +32,12 @@ These are the premises of the EUropean ROe DEER Information System (EURODEER).
 [short synthesis (ref to presentations? maybe up? and link to the document)]
 
 ### EUREDDEER
-<logo_eureddeer.png>
+![](images/eureddeer_logo.png)
 
 [...]
 
 ### EUROBOAR
-<logo_euroboar.png>
+![](images/euroboar_logo.png)
 
 [...]
 
