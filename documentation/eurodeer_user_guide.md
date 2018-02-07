@@ -13,9 +13,9 @@
     * [LibreOffice](#LibreOffice)  
     * [Other Tools](#Others)  
 * [User Support](#Others) 
-
-
-### <a name="EUROUNGULATES"></a> Introduction  
+local://base_request.html/#EURODEER_Content
+local://base_request.html/#EUROUNGULATES
+### Introduction  
 
 [...]
 
@@ -63,7 +63,7 @@ These are the premises of the EUropean ROe DEER Information System (EURODEER).
 [...]
 
 
-## <a name="EUROUNGULATES"></a> Scope of this User Guide
+## <a name="scope"></a> Scope of this User Guide
 This manual is the reference documentation about the use of EURODEER database for EURODEER partners, but it is useful also for EUREDDEER and EUROBOAR database users, as the e-infrastructure is shared and large part of the database objects is similar. 
 
 Note that this is not a comprehensive manual about database. It shortly describes the EURODEER database content and the main operations that can be done on it. There are also information on how to connect with the database and visualize/download the data but not on how data can be combined or processed with the database language (SQL). 
@@ -137,7 +137,7 @@ Although any application that support standard database connection can be used i
 
 Finally, open source philosophy is perfectly in line with data sharing perspective that guides EURODEER project. 
 
-## <a name="EURODEER_content"></a> EURODEER database content
+## <a name="EURODEER_Content"></a> EURODEER database content
 [introduction]
 ### Sensor data
 ### Additional data on individuals and populations (to be detailed)
