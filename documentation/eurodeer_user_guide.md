@@ -13,8 +13,7 @@
     * [LibreOffice](#LibreOffice)  
     * [Other Tools](#Others)  
 * [User Support](#Others) 
-local://base_request.html/#EURODEER_Content
-local://base_request.html/#EUROUNGULATES
+
 ### Introduction  
 
 [...]
@@ -38,9 +37,13 @@ More information on the projects, including activities, partners, outcomes and n
     <linkText>www.euroungulates.org</linkText>
     <linkUri>www.euroungulates.org</linkUri>
 </externalLink>
+
 * (www.euroungulates.org)
+
 * [www.eurodeer.org]
+
 * www.eureddeer.org
+
 * [www.euroboar.org](www.euroboar.org) 
 
 ### EURODEER
