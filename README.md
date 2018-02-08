@@ -3,7 +3,7 @@
 
 EUropean ROe DEER is an open, bottom-up project joined by 33 research centres and environmental institutes to produce **collaborative science** based on **knowledge and data sharing** to investigate the **movement ecology** of European deer in their different habitats and management regimes.
 
-## EURODEER GitHub repo: Documentation and SQL code for db use and management
+## EURODEER GitHub repo: Docs and SQL code for db use and management
 
 This repository contains the documentation of the EURODEER database structure and content. In addition, it stores the SQL queries and function used to maintain and update the database. It is shared among database managers, curators and users (i.e. EURODEER Project partners.
 
