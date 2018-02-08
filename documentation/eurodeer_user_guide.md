@@ -169,7 +169,7 @@ Some additional resources for spatial SQL with raster data produced by the EUORD
 In 2013, EURODEER organized a course on SQL and the use of eurodeer_db in Venice, Italy.
 
 #### Main database objects
-* **Schemas**. A database contains one or more named [schemas](https://www.postgresql.org/docs/current/static/ddl-schemas.html), which in turn contain tables. Schemas also contain other kinds of named objects, including data types, functions, and operators.  
+* **Schemas**. A database contains one or more named schemas, which in turn contain tables. Schemas also contain other kinds of named objects, including data types, functions, and operators.  
 Schema are used to organize database objects into logical groups, to make them more manageable, and to allow many users to use one database without interfering with each other. Schemas are similar to folders in a file system.
 * **Tables**. The table is where all the data in a database is stored.Each table is made up of rows and columns. Each row in a relational is uniquely  identified by a primary key.  This can be by one or more sets of column values. Every relational table has one primary key.  Its purpose is to uniquely identify each row in the database. Columns are defined to hold a specific type of data, such as dates, numeric, or textual data. A table has a specified number of columns, but can have any number of rows.
 * **Data type**. Each column in a table is associated to a data type that specify the kind of information that can stored (e.g. integer, float, text, date, polygons) and therefore the type of operations that can be performed on it (e.g. sum, division, concatenation, calculation of time interval, calculation of an area).
@@ -180,7 +180,6 @@ Schema are used to organize database objects into logical groups, to make them m
   * **not null** - each value in a column must not be NULL
   * **unique** - value(s) in specified column(s) must be unique for each row in a table
   * **check** - an expression is specified, which must evaluate to true for constraint to be satisfied  
-<br>
 
 * **Triggers**. A trigger is a speciﬁcation that the database should automatically execute a particular function whenever a certain type of operation is performed on a particular table in the database. The trigger ﬁres a speciﬁc function to perform some actions BEFORE or AFTER records are DELETED, UPDATED, or INSERTED in a table. The trigger function must be deﬁned before the trigger itself is created. The trigger function must be declared as a
 function taking no arguments and returning type trigger. For example, when you insert a new record in a table, you can modify the values of the attributes before they are uploaded
