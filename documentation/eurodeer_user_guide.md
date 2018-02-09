@@ -271,15 +271,60 @@ There are other (better) ways to export data. The easiest one is to write the SQ
 
 
 ### <a name="QGIS"></a>QGIS 
-connect
-visualize
-download
+
+[QGIS](www.qgis.org) is a desktop GIS that is very well integrated with PostgreSQL and PostGIS and offers a large set of tools to deal with spatial data in the database. Connecting to the database is pretty simple and the process is well documented, for example [here](http://docs.qgis.org/2.18/en/docs/training_manual/databases/index.html). Data can be accessed in three steps: create a connection to the db. Open the connection. Get the data.  
+ 
+The first time you connect with the database, you must create the connection using the **Add PostGIS Layer** icon (see screenshot belo) and insert the connection parameters.
+
+![](images/qgis_connection.png)
+
+Once the connection is created, you can use the **DB Manager** interface (see below) where you can explore, preview, visualize in the main canvas and also export spatial data (both vector and raster).
+
+![](images/qgis_export.png)
+
+An interesting feature in QGIS is the possibility to visualize EURODEER data on topo of one of the main global spatial layers like Google map or Bing map.
 
 ### <a name="R"></a>R
 
+You can easily import data from the database into [R](https://www.r-project.org/) using a code like the one reported below (through the library RPostgreSQL):
+
+
+```R   
+library(RPostgreSQL)  
+drv <- dbDriver("PostgreSQL")  
+con <- dbConnect(drv, dbname="eurodeer_db", host="eurodeer2.fmach.it", port="5432", user="YOURUSER", password="YOURPASSWORD")  
+rs <- dbSendQuery(con, "select * from main.animals")  
+df <- fetch(rs,-1)  
+df[1:4,]  
+str(df)  
+dbClearResult(rs)
+```
+  
+In the *dbSendQuery* command, you can include any SQL code.
+
+Note that in the database is activated [Pl/R](http://www.joeconway.com/plr.html), a tool that permits to embed R code into SQL. Contact us if you want to explore this possibility. 
+
 ### <a name="LibreOffice"></a>LibreOffice
 
+BASE and CALC are two tools of the suite [LibreOffice](https://www.libreoffice.org/) that allow the connection with the database and offer the possibility to create queries with graphical tools, build masks, edit the data (if you have the permission to do so) in a user-friendly environment (BASE, equivalent of MS ACCESS) and visualize the information as spreadsheet (CALC, but in this case it is not possible to modify the data stored in the database).  
+First of all, you have to create a connection with the database in BASE (see the two images below for the parameters to insert in the first two steps, then enter your credentials and save and register the connection).
+
+![](images/base1.png) ![](images/base2.png)
+
+Once created the connection, you will be able to visualize all the eurodeer_db tables, create form and design queries with a graphical interface.
+
+![](images/base3.png)
+
+If you want to visualize and maniputale the data in CALC (equivalent of MS EXCEL), once you created the connection with CALC, you can load eurodeer_db tables though the **Data Source Manager** (to visulize it, go to View/Data Source, see image below).
+
+![](images/calc1.png)
+
+Now you can simply drag and drop the table into the spreadsheet panel (see below): Note that changes made in the spreadsheet are not reflected into the database.
+
+![](images/calc2.png)
+
 ### <a name="Others"></a>Other Tools 
-[mention pgadmin4, access, excel, arcgis]
+
+There are may other clients that can be easily connected with PostgreSQL. SOme examples are SAS, STATA, MS ACCESS, MS EXCEL, ArcGIS. Most of the functionalies offered by these commercial tools are covered by The open source tools listed above. If you are used to deal with data with other tools, you can check the software specific documentation about how to connect with a PostgreSQL/PostGIS database.
 
 
