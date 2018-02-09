@@ -11,7 +11,7 @@
     * [QGIS](#QGIS)  
     * [R](#R)  
     * [LibreOffice](#LibreOffice)  
-    * [Other Tools](#Others)  
+    * [Other Client Tools](#Others)  
 
 ## <a name="Introduction"></a> Introduction  
 
@@ -113,24 +113,26 @@ The server-client structure of the system offers the opportunity to build a very
 In the section [Connecting with the Database](#connection) you can see some of these applications and how to connect them with the EURODEER database, while in [EURODEER Database Content](#EURODEER_Content) and [EURODEER Database Objects Description](#EURODEER_objects)  you can explore database structure and content.  
 In this section, you find an overview of the whole process from data acquisition to data ingestion into the EURODEER database, with a very short introduction to the main features of relational database. 
 
-### Data collection
-[to be written] 
+### EURODEER data work flow
 
-### Data harmonization
-[to be written] 
+#### Data collection
+Data stored in the eurodeer_db is collected by project partners who fully own the data. No data are collected by EURODEER project itself, which is instead a project to share data of individual institutions. Nevertheless, having to harmonize data sets from different sources, EURODEER partner decided to identify a set of data collection protocols that facilitate the integration and comparison of information from different institution. There is no obligation to adopt these protocols but but there are considered a useful reference. Documents with the protocols are available to project partners (restricted access) in the [EURODEER web site](http://eurodeer.org/protocols-for-data-collection/).
 
-### Quality checks
-[to be written] 
+#### Data harmonization
+The most complicate challenge in the creation of the eurodeer_db has been (and still is) the harmonization of data sets from different sources. First of all, it is necessary to identify a set of information that are collected by all (or at least most of) the partners. Then, even when the information is the related to the same objects phenomena, it can be collected, coded or stored in different ways (e.g., sampling methods, units, classes). The data have been processed to speak "the same language". In some cases this requires the aggregation of the original data, but this is the only way to run analysis over different areas and environmental gradients.  
+Particularly, data owners are asked (with the support of the EURODEER data curators) to  format the data in order to be consistent with the eurodeer_db. On the EURODEER web site, [guidelines](http://eurodeer.org/protocols-for-data-preparation/) (restricted access) are available about how to prepare the data data sets.  
+Whenever a new kind of information is integrated into the database (e.g., hinting pressure) a discussion among EURODEER partners is promoted to identify the information to be included.  
+Then, it is up to the database manager and data curators to process data and upload into the database.
 
-### Data upload
-[to be written]  
-[who does it, continuous changes and improvements of the data with their use]
+#### Quality checks
 
-### Some preliminary words on database for data management
+Tracking data (and in general wildlife monitoring data) can potentially be affected by a large set of errors in different steps of data acquisition and processing. Erroneous data can heavily affect analysis, leading to biased inference and misleading wildlife management/ conservation suggestions. Data quality assessment is therefore a key step in EURODEER data management. In fact, a key step in the upload of data from partners to the shared database is quality check. Even if data are supposed to be quality checked by data owners, thanks to the procedures and protocols implemented into the database (and to the functionalities available in a proper database vs other simpler way to store data), many potential errors and inconsistencies are detected when screened by EURODEER data managers. The errors are then reported to data owners who provide the information to fix them, in an iterative process that might require several steps. No data is removed from the data set. Erroneous information are flagged as such keeping the synchronization with the original data set. While in some cases incorrect data are evident, in many situations, it is not possible to clearly identify information as outliers (even by they who collected the information) because although they are suspicious they might still be correct, leaving a margin of uncertainty. In this case a specific flag is used so data can be excluded from analysis, according to the criteria defined in each case.  
+The continuous quality check, not only through automated algorithms, is a distinctive trait of the EURODEER approach as compared to other larger shared repository. And this is because quality of scientific output is the main concern of the project.
+
+### A very short introduction to database for data management
 
 #### Database and spatial database
-A database is an application that can store and manage a large amount of data very efficiently and rapidly. The relational bit refers to how the data is stored in the database and how it is organized. In a relational database, all data is stored in tables. These have the same structure repeated in each row (like a spreadsheet) and it is the relations between the tables that make it a "relational" table. 
-
+A database is an application that can store and manage a large amount of data very efficiently and rapidly. The relational bit refers to how the data is stored in the database and how it is organized. In a relational database, all data is stored in tables. These have the same structure repeated in each row (like a spreadsheet) and it is the relations between the tables that make it a "relational" table.  
 The use of a RDBMS has several advantages.
 
 * It has a persistent and very large data storage capability.
@@ -202,17 +204,42 @@ Although any application that support standard database connection can be used w
 Finally, open source philosophy is perfectly in line with knowledge sharing perspective that guides the EURODEER project. 
 
 ## <a name="EURODEER_Content"></a> EURODEER database content
+short intro
 * [to be written] What data set are included
 * [to be written] Need for harmonization (common core)
 
-### Sensor data
-### Additional data on individuals and populations (to be detailed)
+for each set, a short description, data model, things to know, notes (e.g. views, etc.)
+
+### Research groups, study areas and individuals
+
+### GPS data
+--> spatial views
+
+### VHF data
+
+### Accelerometer data
+
+### Sub-areas (predation, competition, human pressure)
+
+### Capture
+
+### Contacts
+
+### Feeding site
+
 ### Environmental data
 
+### Tools
+reference to johannes document  
+[functions](eurodeer_db_functions.md)
+
+### Datasets for specific areas
+working schema
 
 ## <a name="EURODEER_objects"></a> EURODEER Database Objects Description
-[Everything is described inside he database (visible with...).
-A report generated with (link) is available in (link)]
+Every single object in the eurodeer_db (schemas, tables, columns, views, functions) is described inside the database (as [comment](https://www.postgresql.org/docs/devel/static/sql-comment.html)). The descriptions are visible in all db interface (e.g., pgAdmin) when the element is selected. 
+
+An extended report, **[eurodeer_db Dictionary](eurodeer_db_dictionary.md)** that includes the description of the objects of the database (generate with this [SQL code](generate_database_dictionary_sql/generate_dictionary.md) in markdown format, taking the comments from the database itself).
 
 ## <a name="connection"></a> Connecting with the Database
 
@@ -323,7 +350,7 @@ Now you can simply drag and drop the table into the spreadsheet panel (see below
 
 ![](images/calc2.png)
 
-### <a name="Others"></a>Other Tools 
+### <a name="Others"></a>Other Client Tools 
 
 There are may other clients that can be easily connected with PostgreSQL. SOme examples are SAS, STATA, MS ACCESS, MS EXCEL, ArcGIS. Most of the functionalies offered by these commercial tools are covered by The open source tools listed above. If you are used to deal with data with other tools, you can check the software specific documentation about how to connect with a PostgreSQL/PostGIS database.
 
