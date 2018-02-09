@@ -7,7 +7,7 @@
 * [EURODEER Database Objects Description](#EURODEER_objects)  
 * [Connecting with the Database](#connection) 	  
     * [phpPgAdmin](#phpPgAdmin)  
-    * [pgAdmin 3](#pgAdmin)  
+    * [pgAdmin](#pgAdmin)  
     * [QGIS](#QGIS)  
     * [R](#R)  
     * [LibreOffice](#LibreOffice)  
@@ -218,7 +218,7 @@ A report generated with (link) is available in (link)]
 
 [PostgreSQL](https://www.postgresql.org/) is a database server. The role of the database server is to distribute data to client applications keeping the data into a centralized repository. Many different interfaces can be used. Some are focussed on the creation, maintenance and development of the database, others to visualize and edit/manipulate tabular or spatial data. Statistical tools can be used to perform analysis on the data. Many graphical interface can be used to offer data in a user-friendly fashion, including through web applications.  
 Users with a permission to access the data can use their favourite application. Examples of how to connect with the database from different software tools are reported in the next sub-section.   
-You do **NOT** need to install PostgreSQL to connect with EURODEER db. The database is stored on a PostgreSQL server at the Edmund Mach Foundations. You only need a client application, or, in the case of phpPgAdmin, a web browser (e.g. Mozilla Firefox).
+You do **NOT** need to install PostgreSQL to connect with EURODEER db. The database is stored on a PostgreSQL server at the Edmund Mach Foundation. You only need a client application, or, in the case of phpPgAdmin, a web browser (e.g. Mozilla Firefox).
 
 Any client need the following parameters to connect with the database:
 
@@ -237,25 +237,38 @@ phpPgAdmin is a web-based administration tool for PostgreSQL written in PHP. You
 The interface is very intuitive and similar to PgAdmin, with a structure pretty similar to a file system explorer.    
 While for basic operations this tool is very good, we recommend to use pgAdmin for more intense or sophisticated interactions with the database.
 
-##### Connect
 To connect with the database, go to the web page [http://eurodeer2.fmach.it/phppgadmin/](http://eurodeer2.fmach.it/phppgadmin/) and enter your credentials (see image below).
 
 ![](images/phppgadmin_connect.png)
 
-
-##### Visualize and export data in a table
-bla bla bla
+Once connected, you will see a list of database. While you can see the structure of all the database, you will only be able to access data in the database for which you are enables (i.e. eurodeer_db). You can explore the database content using the navigation menu in the left panel. Open the schema you are interested it (in most of the cases it is *main*) and select a table. In the right panel you will see the list of fields (columns) in the table with a description of their content.  
+To visualize the data, click on **Browse**, to download the data in a set of possible formats (including .csv) click on **Export** (see image below).
 
 ![](images/phppgadmin_visualize.png)
 
-##### Run a query
+If you want to run a query (i.e. SQL code), click on **SQL** on the upper right (see image below). A new window will open where you can write your SQL. Click on **EXECUTE** to see the results on the main page.
 
+![](images/phppgadmin_query.png)
 
-### <a name="pgAdmin"></a>pgAdmin 3
-connect
-visualize
-query
-download
+### <a name="pgAdmin"></a>pgAdmin
+[PgAdmin](https://www.pgadmin.org/) is the most popular and feature rich Open Source administration and development platform for PostgreSQL. There are two versions: 3 and 4 (the former is more intuitive, the latter more modern and powerful but without some key features available in version 3). Note that eurodeer_db uses PostgreSQL 9.5 that is compatible with both versions. This is the best tool to manage the data and explore both structure and content, including the formulation of advanced queries and the creation of new database objects.
+Here below and example of the window with the connection parameters. The interface is very similat to that of phpPgAdmin.
+
+![](images/pgadmin_connection.png)
+
+And this is the interface of pgAdmin4.  
+
+![](images/pgadmin_4.png)
+
+To visualize data, click on the table in the left panel and then on the **table** icon on the menu (see below). You can add criteria (menu: **Tools/Sort-Filter**) to order the record and/or limit the selection to a subset of records.
+If you select rows, you can copy/past the records as comma-separated values.
+
+![](images/pgadmin_visualization.png)
+
+There are other (better) ways to export data. The easiest one is to write the SQl query in the SQL window (clicl on the **SQL** icon, see image below). Then, instead of simply run the query, click the button to write the data to an external .csv file (see image).  
+
+![](images/pgadmin_export.png)
+
 
 ### <a name="QGIS"></a>QGIS 
 connect
