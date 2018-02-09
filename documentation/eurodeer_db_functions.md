@@ -19,12 +19,12 @@
 This function returns the sunrise and sunset times (as a text array) for a spatial point expressed as a 
 WKT, with its associated SRID, a timestamp to give the date and a time zone. 
 
-**Example 1**
+**Example 1**  
 ```sql
 SELECT tools.daylight('POINT(11.001 46.001)', 4326, '2012-09-01'::timestamp, 'UTC');
 ```
 
-**Example for animal 770**
+**Example for animal 770**  
 ```sql
 SELECT acquisition_time, 
 (tools.daylight(ST_AsText(geom), 4326, acquisition_time::timestamp, 'UTC'))[1] as sunset, 

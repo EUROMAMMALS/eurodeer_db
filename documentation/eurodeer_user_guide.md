@@ -149,8 +149,10 @@ The database support SQL language. SQL is short for Structured Query Language an
 SQL commands have a syntax similar to the common language. They begin with a command statement describing the action to take (e.g. SELECT), followed by a clause that describes the target of the command (such as the tables affected by the command) (e.g. FROM) and finally, a series of clauses that provide additional instructions that usually specify the subset of data needed by the users (WHERE).
 
 An example is : 
- 
-    SELECT animal_id FROM main.animal WHERE sex = 'f';
+
+```sql 
+SELECT animal_id FROM main.animal WHERE sex = 'f';
+```
 
 The information returned is the *animals_id* stored in the table *main.animals* (i.e. name of the schema + "." + name of the table) for all those individuals that are female.
 
@@ -185,7 +187,6 @@ Schema are used to organize database objects into logical groups, to make them m
 function taking no arguments and returning type trigger. For example, when you insert a new record in a table, you can modify the values of the attributes before they are uploaded
 or you can update another table that should be affected by this new upload.
 * **Views**. A view is the result set of a stored query on the data, which the database users can query just as they would in a persistent database collection object. This pre-established query command is kept in the database dictionary. Unlike ordinary base tables in a relational database, a view does not form part of the physical schema: as a result set, it is a virtual table computed or collated dynamically from data in the database when access to that view is requested. Changes applied to the data in a relevant underlying table are reflected in the data shown in subsequent invocations of the view. 
-* **Sequences**. 
 * **Functions**. A function is a program code that is implemented inside the database using SQL or a set of other languages (e.g. PSQL, Python, C). Functions allow you to create complex processes and algorithms when plain SQL queries alone cannot do the job. Once created, a function becomes part of the database library and can be called inside SQL queries.
 * **Domains**. A data domain refers to all the values which a data element may contain. The rule for determining the domain boundary may be as simple as a data type with an enumerated list of values. Domains can help to keep the integrity of the database restricting the accepted values to a set of valid options. A domain can be implemented as list of values stored in the so-called look up table or as a constraint (check) to the specific column. The data type per se limit the set of accepted values (e.g. an integer cannot accept character as valid value).
 * **Users**. In a database, multiple users can access data at the same time, and the database server manage the different requests and ensure the consistency of the data. Each user can be associated to different permission levels on different database objects. For example, a defined user can edit and even delete some tables, while can only visualize some other tables or have no access at all on others. The database administration has full control of all database objects. Permissions can also be associated with user groups, in which case new users can be added to each group and will inherit all the related permissions on database objects. 
@@ -215,10 +216,10 @@ A report generated with (link) is available in (link)]
 
 ## <a name="connection"></a> Connecting with the Database
 
-NO NEED TO INSTALL POSTGRES!
-
-PostgreSQL is a database server. The role of the database server is to distribute data to client applications keeping the data into a centralized repository. Many different interfaces can be used. Some are focussed on the creation, maintenance and development of the database, others to visualize and edit/manipulate tabular or spatial data. Statistical tools can be used to perform analysis on the data. Many graphical interface can be used to offer data in a user-friendly fashion, including through web applications.  
+[PostgreSQL](https://www.postgresql.org/) is a database server. The role of the database server is to distribute data to client applications keeping the data into a centralized repository. Many different interfaces can be used. Some are focussed on the creation, maintenance and development of the database, others to visualize and edit/manipulate tabular or spatial data. Statistical tools can be used to perform analysis on the data. Many graphical interface can be used to offer data in a user-friendly fashion, including through web applications.  
 Users with a permission to access the data can use their favourite application. Examples of how to connect with the database from different software tools are reported in the next sub-section.   
+You do **NOT** need to install PostgreSQL to connect with EURODEER db. The database is stored on a PostgreSQL server at the Edmund Mach Foundations. You only need a client application, or, in the case of phpPgAdmin, a web browser (e.g. Mozilla Firefox).
+
 Any client need the following parameters to connect with the database:
 
 	  IP or Domain name of the server: eurodeer2.fmach.it
@@ -227,14 +228,28 @@ Any client need the following parameters to connect with the database:
 	  User Name: ...
 	  Password: ...
 
+If you don't have yet a user account (and you are entitle to have one) please contact Francesca Cagnacci or Ferdinando Urbano. We will create an account for you (with a permission level that corresponds to your role in the project)
 
-If you don't have yet a user account (and you are entitle to have one) please contact Francesca Cagnacci or Ferdinando Urbano. We will create an account for you (with a permission level that correspond to your role in the project)
+In the next subsections, you can learn how to connect, visualize data and download data with a set of client applications.
 
 ### <a name="phpPgAdmin"></a>phpPgAdmin
-connect
-visualize
-query
-download
+phpPgAdmin is a web-based administration tool for PostgreSQL written in PHP. You can see the database content, display and download data and run any SQL statement. You do not need to install any software as it only requires that you have a web browser.  
+The interface is very intuitive and similar to PgAdmin, with a structure pretty similar to a file system explorer.    
+While for basic operations this tool is very good, we recommend to use pgAdmin for more intense or sophisticated interactions with the database.
+
+##### Connect
+To connect with the database, go to the web page [http://eurodeer2.fmach.it/phppgadmin/](http://eurodeer2.fmach.it/phppgadmin/) and enter your credentials (see image below).
+
+![](images/phppgadmin_connect.png)
+
+
+##### Visualize and export data in a table
+bla bla bla
+
+![](images/phppgadmin_visualize.png)
+
+##### Run a query
+
 
 ### <a name="pgAdmin"></a>pgAdmin 3
 connect
