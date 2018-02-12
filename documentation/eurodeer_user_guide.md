@@ -70,18 +70,22 @@ More information on the projects, including activities, partners, outcomes and n
 
 EURODEER financial resources come from the voluntary contributions of each partner. On top of this, since 2012, [Vectronic Aerospace GmbH](https://www.vectronic-aerospace.com/wildlife-monitoring/) is the official sponsor of EUORODEER project. It supports activities and spatial database development.
 
-### ![](images/eurodeer_logo.png)
+
+
+  
+
+### <img src="images/eurodeer_logo.png" Height="37"/>	
 
 European roe deer is a very well studied species, because of its crucial role in European ecosystems and because it is a very good model species, both for ecological and evolutionary reasons. However, the time has come for synthesising our knowledge into a wider and more complex picture, that would allow to clarify ecosystemic relationships (e.g., resource balance), reveal evolutionary patterns (e.g., animal performance), and underpin predictions on future scenarios (e.g., climate change effect). The technological advancement, such as GPS collars and activity sensors, allowed to obtain large data sets of high quality. A spatial database populated with data from different study areas can support the development of a complete picture of roe deer biology, within a ecological and evolutionary context. At the same time, it offers the opportunity to join and harmonize the data of different research groups into a well supported, centralized repository, with transparent accessibility.  
 These are the premises of the EUropean ROe DEER Information System (EURODEER).
 
 The participation to the project and the use of the data stored in the database is ruled by the [Terms of Use](http://eurodeer.org/terms-of-use/) signed by each partner. It is a kind of gentlemen agreement mainly based on good sense. The most important point is "*The Partners maintain full property and control of their own dataset"*. No ownership is transferred and data are used only if data owners explicitly authorize it for each specific research. This also mean that data are not open to the public. But the network is open to any interested scientist.
 
-###  ![](images/eureddeer_logo.png)
+### <img src="images/eureddeer_logo.png" Height="37"/>
 
 While there is a specific database for red deer (EUREDDEER), the network (i.e., project partners) is shared between EURODEER and EUREDDEER that *de facto* belong to the same project. Consequently, most of the information provided about the EURODEER projects apply to both EURODEER and EUREDDEER database.
 
-###  ![](images/euroboar_logo.png)  
+### <img src="images/euroboar_logo.png" Height="37"/> 
 
 Wild boar is a very challenging species in terms of biology, demography and movement ecology. The species has an important human dimension, showing increasing interactions with environmental and socio-economic issues including spread of diseases. Developing science about wild boar should be the priority of many European regions because of its huge demographical and geographical expansion.  
 
