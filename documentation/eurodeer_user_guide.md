@@ -71,21 +71,18 @@ More information on the projects, including activities, partners, outcomes and n
 EURODEER financial resources come from the voluntary contributions of each partner. On top of this, since 2012, [Vectronic Aerospace GmbH](https://www.vectronic-aerospace.com/wildlife-monitoring/) is the official sponsor of EUORODEER project. It supports activities and spatial database development.
 
 
-
-  
-
-### <img src="images/eurodeer_logo.png" Height="37"/>	
+### <img src="images/eurodeer_logo.png" Height="35"/>	
 
 European roe deer is a very well studied species, because of its crucial role in European ecosystems and because it is a very good model species, both for ecological and evolutionary reasons. However, the time has come for synthesising our knowledge into a wider and more complex picture, that would allow to clarify ecosystemic relationships (e.g., resource balance), reveal evolutionary patterns (e.g., animal performance), and underpin predictions on future scenarios (e.g., climate change effect). The technological advancement, such as GPS collars and activity sensors, allowed to obtain large data sets of high quality. A spatial database populated with data from different study areas can support the development of a complete picture of roe deer biology, within a ecological and evolutionary context. At the same time, it offers the opportunity to join and harmonize the data of different research groups into a well supported, centralized repository, with transparent accessibility.  
 These are the premises of the EUropean ROe DEER Information System (EURODEER).
 
 The participation to the project and the use of the data stored in the database is ruled by the [Terms of Use](http://eurodeer.org/terms-of-use/) signed by each partner. It is a kind of gentlemen agreement mainly based on good sense. The most important point is "*The Partners maintain full property and control of their own dataset"*. No ownership is transferred and data are used only if data owners explicitly authorize it for each specific research. This also mean that data are not open to the public. But the network is open to any interested scientist.
 
-### <img src="images/eureddeer_logo.png" Height="37"/>
+### <img src="images/eureddeer_logo.png" Height="35"/>
 
 While there is a specific database for red deer (EUREDDEER), the network (i.e., project partners) is shared between EURODEER and EUREDDEER that *de facto* belong to the same project. Consequently, most of the information provided about the EURODEER projects apply to both EURODEER and EUREDDEER database.
 
-### <img src="images/euroboar_logo.png" Height="37"/> 
+### <img src="images/euroboar_logo.png" Height="35"/> 
 
 Wild boar is a very challenging species in terms of biology, demography and movement ecology. The species has an important human dimension, showing increasing interactions with environmental and socio-economic issues including spread of diseases. Developing science about wild boar should be the priority of many European regions because of its huge demographical and geographical expansion.  
 
@@ -189,7 +186,7 @@ Schema are used to organize database objects into logical groups, to make them m
   * **unique** - value(s) in specified column(s) must be unique for each row in a table
   * **check** - an expression is specified, which must evaluate to true for constraint to be satisfied  
 
-* **Triggers**. A trigger is a speciﬁcation that the database should automatically execute a particular function whenever a certain type of operation is performed on a particular table in the database. The trigger ﬁres a speciﬁc function to perform some actions BEFORE or AFTER records are DELETED, UPDATED, or INSERTED in a table. The trigger function must be deﬁned before the trigger itself is created. The trigger function must be declared as a
+* **Triggers**. A trigger is a specification that the database should automatically execute a particular function whenever a certain type of operation is performed on a particular table in the database. The trigger fires a specific function to perform some actions BEFORE or AFTER records are DELETED, UPDATED, or INSERTED in a table. The trigger function must be defined before the trigger itself is created. The trigger function must be declared as a
 function taking no arguments and returning type trigger. For example, when you insert a new record in a table, you can modify the values of the attributes before they are uploaded
 or you can update another table that should be affected by this new upload.
 * **Views**. A view is the result set of a stored query on the data, which the database users can query just as they would in a persistent database collection object. This pre-established query command is kept in the database dictionary. Unlike ordinary base tables in a relational database, a view does not form part of the physical schema: as a result set, it is a virtual table computed or collated dynamically from data in the database when access to that view is requested. Changes applied to the data in a relevant underlying table are reflected in the data shown in subsequent invocations of the view. 
@@ -209,21 +206,33 @@ Finally, open source philosophy is perfectly in line with knowledge sharing pers
 
 ## <a name="EURODEER_Content"></a> EURODEER database content
 
-The EURODEER database is the repositories where data coming from the different partners are standardized, stored and shared to be analyzed. The first goal of the project is to investigate variation in roe deer behavioural ecology along environmental gradients or population responses to specific conditions, such as habitat changes, impact of human activities, different hunting regime. Therefore, the main set of data stored into the EURODEER database are those generated by biotelemetry sensors to monitor animals movement, particularly:
+The EURODEER database is the repositories where data coming from the different partners of the EURODEER network are harmonized, stored and shared to be analyzed. The first goal of EURODEER is to investigate variations in roe deer behavioural ecology along environmental gradients or population responses to specific conditions, such as habitat changes, impact of human activities, different hunting regime. Therefore, the main set of data stored into the EURODEER database are those generated by biotelemetry sensors to monitor animals movement, particularly:
 
 * GPS data
 * VHF data
 * Accelerometer data
 
-While these data sets provide a huge mine of data to be mined, it is when they are couple with additional information like that of the individuals, populations, management regimes and the environment that they can help to fully decipher the mechanisms of animals movement. This is why EURODEER is investing a lot in getting these information from each partner, standardize them and integrate into the analysis. This is a complex process but ultimately it is the biggest added value of the collaboration among scientist in addition to the integration in a single repository of the data coming from sensors. The work of data standardization requires long and iterative discussions but it is also an opportunity to identify good practice that can then be shared with a wider scientific community
+These are the core information that was initially collected and shared in the EURODEER framework. After some years, we realized that while these data sets provide a huge mine of data to be digged, it is when they are couple with additional information like that of the individuals, populations, management regimes and the environment that they can help to fully decipher the mechanisms of animals movement. This is why in the last years EURODEER has been and is still investing a lot in getting these additional information from each partner, harmonize them and integrate into the analysis. This is a complex process but ultimately it is the biggest added value of the collaboration among scientist on top of the integration into a single repository of the data coming from sensors. The work of data harmonization requires long and iterative discussions but it is also an opportunity to identify good practice (e.g. data collection protocols) that can then be shared with a wider scientific community.
 
+Sensor data sets (GPS, VHF, accellerometer) in addition to the measures collected by the sensors include the list of animals (with key attributes like sex and age), the list and type/model of sensors, and the start and end of sensor deployment (with the reason for the end of deployment).
+In addition to sensor data, at the moment in the EURODEER data sets we have information on:
 
-* [to be written] What data set are included - to introduce following sections
-* data logically structures in schema (image), all info in main + look up tables, and briefly analsyis and env data (external dataset)
+* Research groups, study areas and subareas
+* Intra- and inter-species interaction and human pressure (predation, competition, human pressure)
+* Captures
+* Contacts
+* Feeding site
+* Environmental data
 
-for each set, a short description, data model, things to know, notes (e.g. views, etc.)
+A short description of the information content of these data sets is reported in the next sub-sections together with a schema of the data model. In the document **[eurodeer_db Dictionary](eurodeer_db_dictionary.md)** is reported the full description of each table/attribute.
 
-### Research groups, study areas and individuals
+All the core information is stored in the schema **main**, with the exception of the environmental data that are available in the schema **env_data** and the schema **env_data_ts** (for layers with a time series, e.g., NDVI and snow). In the schema **tools** there are the functions created by EURODEER to process and analyze the data (see [functions](eurodeer_db_functions.md)). The schema **analysis** is used to store informations related to analysis that can be reused by all EURODEER partners. The working schema **ws\_*** are spaces where each partner institution can create table and process the data (one per institute). Finally, in the **lu_tables** schema, the database stores all the look up tables, i.e., those tables used to define (code) a valid domain of values for specific fields (e.g., the list of capture methods).
+
+### Research groups, study areas and sub-areas
+Sensor data are always related to animals. Each animal is assigned to one (and only one) study area. Each study area belongs to a research group. The same research group can have more than one study area. Each study area is divided into one or more sub-areas, that roughly recall the concept of population.
+The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+
+### <img src="images/core1.png" height="600"/>
 
 ### GPS data
 --> spatial views
@@ -234,7 +243,7 @@ for each set, a short description, data model, things to know, notes (e.g. views
 
 ### Sub-areas (predation, competition, human pressure)
 
-### Capture
+### Captures
 
 ### Contacts
 
@@ -242,12 +251,7 @@ for each set, a short description, data model, things to know, notes (e.g. views
 
 ### Environmental data
 
-### Tools
-reference to johannes document  
-[functions](eurodeer_db_functions.md)
 
-### Datasets for specific areas
-working schema
 
 ## <a name="EURODEER_objects"></a> EURODEER Database Objects Description
 Every single object in the eurodeer_db (schemas, tables, columns, views, functions) is described inside the database (as [comment](https://www.postgresql.org/docs/devel/static/sql-comment.html)). The descriptions are visible in all db interface (e.g., pgAdmin) when the element is selected. 
