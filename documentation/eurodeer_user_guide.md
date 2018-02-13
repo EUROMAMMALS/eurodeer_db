@@ -258,16 +258,49 @@ The entity-relationship (ER) diagram of the tables is reported here below (click
 <center><img src="images/er_activity.png" height="600"/></center>
 
 ### Sub-areas (predation, competition, human pressure)
+Each sub-area is characterized by a information on different aspects.
+
+* Estimation of roe deer density. The information is linked to the method of estimation, and can have an estimation per year per method of estimation. If know, also the start and end date of the sampling is reported, otherwise only the year and optionally the season.
+* Human disturbance (tourism, agriculture, forestry works). This information is expected to change very slowly, but a reference year is given in case a long term monitoring is done.
+* Hunting periods per sex (male and female). The periods have a start (and end) month and day. More than a period per year is possible. If the period is across years, it is divided in two sub periods (until 31 December and from 1st of January) As this information can change (e.g. modification to the hunting regulation). The time interval of validity can also be specified.
+* Hunting periods for species different from roe deer. 
+* Table with information on statistics taken from animals hunted and measured for biometry related to a specific year. 
+* Roe deer inter-specific competitors. The information is linked to the method of estimation, and can have an estimation per year per method of estimation. If know, also the start and end date of the sampling is reported, otherwise only the year and optionally the season.
+* Predators density. Each estimation for each predator for each year and for each sampling method corresponds to a row. The id of the species is linked with **main.species** where all the species are listed. If available, an estimation of the density is given as class and (if possible) number of individual per squared kilometre, otherwise only presence/absence is reported.
+Estimation of road density. The value is linked to a specific year. It might change both because the road network change or because the areal of the subarea changes.
+
+The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+<center><img src="images/er_subareas.png" height="600"/></center>
 
 ### Captures
+Information on captures are stored in the database in the tables **main.animals_captures** and **main.animals_captures_sedation** (many sedation records can be associated to a capture event). Every animal can be captured more than once. Only captures of animals that have been monitored are included. This includes successful collaring, but also recapture of a collared animal or failed collaring because for example the death of the animal during the capture (it is possible to have a capture event without any deployment registered). All capture events of monitored animals are recorded in this table. Each deployment is associated to a capture.
+
+The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+<center><img src="images/er_captures.png" height="600"/></center>
 
 ### Contacts
+This dataset keeps track of the information on contacts with animals. These can be both sightings of the animal – dead or alive – or the finding of the sensor, or others. This information is specially useful for survival analysis. All contacts with the animals are reported here with the exception of the contacts when the animal is captured (see table **main.animals_captures**). The view **main.view_survival** joins the information in **main.animals_contacts** and **main.animals_captures** for a complete history of the contacts with the animal. If a deployment ends because of the death of an animal, while this is marked in the *end_deployment_code* in the deployment table, the information on the death (i.e. the reason) is recorded in the table **animals_contacts**.
+
+The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+<center><img src="images/er_contacts.png" height="600"/></center>
 
 ### Feeding site
+This data set contains the information on the management of the feeding sites, including where these are used.
+
+The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+<center><img src="images/er_feeding.png" height="600"/></center>
 
 ### Environmental data
+Spatial data collected with tracking devices are coupled in the database with environmental information coming from external environmental monitoring projects. These layers are aailable consistently for all Europe so they can be associated to tracking data of all study areas and thus be compared. Some layers are statics while others are time series. The collection and integration of these external sources is challanging but it is key to represent the information derived from sensors in an ecological rather then a simple geographical space. A syntetic list of environamental layers available in the database is reported below. More information are available on the [EURODEER web site](http://eurodeer.org/environmental-covariates/). 
 
-
+* Administrative units (European sub national administrative units; vector)
+* DEM, Aspect and Slope from Copernicus project (raster)
+* Corine Land Cover (1990, 2000, 2006, 2012; raster)
+* Corine Land Cover (2012; vector)
+* NDVI Constancy, Contingency, Predictability (raster)
+* NDVI MODIS (raster; time series)
+* SNOW MODIS (raster; time series)
+* Winter Severity (raster; time series)
 
 ## <a name="EURODEER_objects"></a> EURODEER Database Objects Description
 Every single object in the eurodeer_db (schemas, tables, columns, views, functions) is described inside the database (as [comment](https://www.postgresql.org/docs/devel/static/sql-comment.html)). The descriptions are visible in all db interface (e.g., pgAdmin) when the element is selected. 
@@ -348,7 +381,6 @@ An interesting feature in QGIS is the possibility to visualize EURODEER data on 
 
 You can easily import data from the database into [R](https://www.r-project.org/) using a code like the one reported below (through the library RPostgreSQL):
 
-
 ```R   
 library(RPostgreSQL)  
 drv <- dbDriver("PostgreSQL")  
@@ -388,3 +420,4 @@ Now you can simply drag and drop the table into the spreadsheet panel (see below
 There are may other clients that can be easily connected with PostgreSQL. SOme examples are SAS, STATA, MS ACCESS, MS EXCEL, ArcGIS. Most of the functionalies offered by these commercial tools are covered by The open source tools listed above. If you are used to deal with data with other tools, you can check the software specific documentation about how to connect with a PostgreSQL/PostGIS database.
 
 
+**LAST (important) UPDATE: 13 Feb 2018**
