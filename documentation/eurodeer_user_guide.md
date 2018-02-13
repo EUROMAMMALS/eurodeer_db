@@ -146,7 +146,7 @@ The use of a RDBMS has several advantages.
 
 Spatially enabled relational database management systems (also called "spatial database", "Spatial Relational DataBase Management System - SRDBMS", "geodatabase") are database designed to store, query, and manipulate spatial data. The main advantage of SRDBMS, as compared to flat file based spatial data storage, is that they let a GIS build on the existing capabilities of RDBMS. This includes support for SQL and the ability to generate complex geospatial queries. While traditional GIS are focused on advanced data analysis and visualization, providing a rich set of spatial operations, on few data; spatial databases allow simple spatial operations which can be efficiently undertaken on a large set of elements. This approach suits perfectly the peculiarities of GPS data. Spatial database and GIS software can be integrated in the EURODEER platform, to take advantages of both approaches.
 
-#### What is SQL
+#### SQL
 The database support SQL language. SQL is short for Structured Query Language and is a simple language that provides instructions for building and modifying the structure of databases and, most importantly for EURODEER users, for retrieving and modifying the data stored in the tables. 
 
 SQL commands have a syntax similar to the common language. They begin with a command statement describing the action to take (e.g. SELECT), followed by a clause that describes the target of the command (such as the tables affected by the command) (e.g. FROM) and finally, a series of clauses that provide additional instructions that usually specify the subset of data needed by the users (WHERE).
@@ -221,7 +221,7 @@ In addition to sensor data, at the moment in the EURODEER data sets we have info
 * Intra- and inter-species interaction and human pressure (predation, competition, human pressure)
 * Captures
 * Contacts
-* Feeding site
+* Feeding sites
 * Environmental data
 
 A short description of the information content of these data sets is reported in the next sub-sections together with a diagram of the data model. In the document **[eurodeer_db Dictionary](eurodeer_db_dictionary.md)** is reported the full description of each table/attribute.
@@ -282,7 +282,7 @@ The entity-relationship (ER) diagram of the tables is reported here below (click
 This dataset keeps track of the information on contacts with animals. These can be both sightings of the animal – dead or alive – or the finding of the sensor, or others. This information is specially useful for survival analysis. All contacts with the animals are reported here with the exception of the contacts when the animal is captured (see table **main.animals_captures**). The view **main.view_survival** joins the information in **main.animals_contacts** and **main.animals_captures** for a complete history of the contacts with the animal. If a deployment ends because of the death of an animal, while this is marked in the *end_deployment_code* in the deployment table, the information on the death (i.e. the reason) is recorded in the table **animals_contacts**.
 
 The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
-<center><img src="images/er_contacts.png" height="600"/></center>
+<center><img src="images/er_contacts.png" height="400"/></center>
 
 ### Feeding site
 This data set contains the information on the management of the feeding sites, including where these are used.
