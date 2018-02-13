@@ -212,34 +212,50 @@ The EURODEER database is the repositories where data coming from the different p
 * VHF data
 * Accelerometer data
 
-These are the core information that was initially collected and shared in the EURODEER framework. After some years, we realized that while these data sets provide a huge mine of data to be digged, it is when they are couple with additional information like that of the individuals, populations, management regimes and the environment that they can help to fully decipher the mechanisms of animals movement. This is why in the last years EURODEER has been and is still investing a lot in getting these additional information from each partner, harmonize them and integrate into the analysis. This is a complex process but ultimately it is the biggest added value of the collaboration among scientist on top of the integration into a single repository of the data coming from sensors. The work of data harmonization requires long and iterative discussions but it is also an opportunity to identify good practice (e.g. data collection protocols) that can then be shared with a wider scientific community.
+These are the core information that was initially collected and shared in the EURODEER framework. After some years, we realized that while these data sets provide a huge mine of data to dig, it is when they are couple with additional information like that of the individuals, populations, management regimes and the environment that they can help to fully decipher the mechanisms of animals movement. This is why in the last years EURODEER has been and is still investing a lot in getting these additional information from each partner, harmonize them and integrate into the analysis. This is a complex process but ultimately it is the biggest added value of the collaboration among scientist on top of the integration into a single repository of the data coming from sensors. The work of data harmonization requires long and iterative discussions but it is also an opportunity to identify good practice (e.g. data collection protocols) that can then be shared with a wider scientific community.
 
-Sensor data sets (GPS, VHF, accellerometer) in addition to the measures collected by the sensors include the list of animals (with key attributes like sex and age), the list and type/model of sensors, and the start and end of sensor deployment (with the reason for the end of deployment).
+Sensor data sets (GPS, VHF, accelerometer) in addition to the measures collected by the sensors include the list of animals (with key attributes like sex and age), the list and type/model of sensors, and the start and end of sensor deployment (with the reason for the end of deployment).
 In addition to sensor data, at the moment in the EURODEER data sets we have information on:
 
-* Research groups, study areas and subareas
+* Research groups, study areas and sub-areas
 * Intra- and inter-species interaction and human pressure (predation, competition, human pressure)
 * Captures
 * Contacts
 * Feeding site
 * Environmental data
 
-A short description of the information content of these data sets is reported in the next sub-sections together with a schema of the data model. In the document **[eurodeer_db Dictionary](eurodeer_db_dictionary.md)** is reported the full description of each table/attribute.
+A short description of the information content of these data sets is reported in the next sub-sections together with a diagram of the data model. In the document **[eurodeer_db Dictionary](eurodeer_db_dictionary.md)** is reported the full description of each table/attribute.
 
 All the core information is stored in the schema **main**, with the exception of the environmental data that are available in the schema **env_data** and the schema **env_data_ts** (for layers with a time series, e.g., NDVI and snow). In the schema **tools** there are the functions created by EURODEER to process and analyze the data (see [functions](eurodeer_db_functions.md)). The schema **analysis** is used to store informations related to analysis that can be reused by all EURODEER partners. The working schema **ws\_*** are spaces where each partner institution can create table and process the data (one per institute). Finally, in the **lu_tables** schema, the database stores all the look up tables, i.e., those tables used to define (code) a valid domain of values for specific fields (e.g., the list of capture methods).
 
 ### Research groups, study areas and sub-areas
-Sensor data are always related to animals. Each animal is assigned to one (and only one) study area. Each study area belongs to a research group. The same research group can have more than one study area. Each study area is divided into one or more sub-areas, that roughly recall the concept of population.
+Sensor data are always related to animals. Each animal is assigned to one (and only one) study area. Each study area belongs to (is monitored by) a research group. The same research group can have more than one study area. Each study area is divided into one or more sub-areas, that roughly recall the concept of population. Each sub-area is characterized by a set of information (human disturbance, performance, predators, interspecific competition, hunting pressure, road density, which are collected every one or more years. Sensors (GPS, VHF, accelerometer) are also attributed to a specific research group.
+In the view **main.view_reasearch_groups_euroungulates** all the groups belonging to EUROUNGULATES are reported (through external tables that connect with EUREDDEER and EUROBOAR database).
+  
 The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
-
-### <img src="images/core1.png" height="600"/>
+<img src="images/er_core.png" height="600"/>
 
 ### GPS data
---> spatial views
+GPS locations are stored already associated to animals (which is a non-trivial step, specially when the same sensor is associated to different animals once recovered from the previous one). The locations, with a list of derived ancillary information calculated using the information on coordinates and acquisition time, and intersecting with environmental layers are stoerd in the table **main.gps_data_animals**. The original file coming from the sensor is not stored in EURODEER as in the database are shared data already preprocessed by the partners and only quality checked before being uploaded into eurodeer_db. It is important to note that all the outliers are not removed from the dataset but flagged using the field *gps_validity_code*. This includes, among the others, records with no coordinates, records with wrong coordinates, record with suspicious coordinates, records not registered while the sensor was deployed on the animal. When data are analyzed, records must be selected according to the quality level required by the specific analysis.  
+The information on the deployment are stored in the table **main.gps_sensors_animals**, including the reasons of the end of the deployment. This table is used to check the correct attribution of locations to animals in the table **main.gps_data_animals**. Information on sensors are stored in **main.sensors**, while the information on animals in **main.animals**. A set of look up tables are used to store the list of valid values for some columns of these tables.  
+In the views **analysis.view_convexhull** and ** analysis.view_trajectories** are available the trajectories and convex hull polygons related to each animal (and dynamically updated). These can be loaded in QGIS for spatial visualization. In the view **analysis.view_ltraj_class** data are formatted according to [R adehabitat package](https://cran.r-project.org/web/packages/adehabitat/adehabitat.pdf) to facilitate the import for analysis. See **[eurodeer_db Dictionary](eurodeer_db_dictionary.md)** for the complete list of view associted to GPS data.
+
+The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+<center><img src="images/er_gps.png" height="600"/></center>
+
 
 ### VHF data
+VHF data content and structure is very similar to the one illustrated for GPS.
+ 
+The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+<center><img src="images/er_vhf.png" height="600"/></center>
+
 
 ### Accelerometer data
+Accelerometer (sometimes also called *activity*) data content and structure is very similar to the one illustrated for GPS. In this case there are 5 tables called **main.activity\_data\_animals\_code\***. Given the size of the dataset, and the different kind of sensors that measure accelerometer, each table is associated to animals with a specific type of sensor (see table **lu_tables.lu\_activity\_sensor_mode**). As data come from different types of sensors, the information must be properly precessed to be correctly analyzed. The data stored in these tables are already an aggregation of the original data coming from sensor. The original data are stored in a different schema (**activity_data_raw**).
+
+The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+<center><img src="images/er_activity.png" height="600"/></center>
 
 ### Sub-areas (predation, competition, human pressure)
 
