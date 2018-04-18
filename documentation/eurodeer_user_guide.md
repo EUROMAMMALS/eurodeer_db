@@ -367,7 +367,7 @@ There are other (better) ways to export data. The easiest one is to write the SQ
 
 [QGIS](www.qgis.org) is a desktop GIS that is very well integrated with PostgreSQL and PostGIS and offers a large set of tools to deal with spatial data in the database. Connecting to the database is pretty simple and the process is well documented, for example [here](http://docs.qgis.org/2.18/en/docs/training_manual/databases/index.html). Data can be accessed in three steps: create a connection to the db. Open the connection. Get the data.  
  
-The first time you connect with the database, you must create the connection using the **Add PostGIS Layer** icon (see screenshot belo) and insert the connection parameters.
+The first time you connect with the database, you must create the connection using the **Add PostGIS Layer** icon (see screenshot below) and insert the connection parameters.
 
 ![](images/qgis_connection.png)
 
@@ -407,7 +407,7 @@ Once created the connection, you will be able to visualize all the eurodeer_db t
 
 ![](images/base3.png)
 
-If you want to visualize and maniputale the data in CALC (equivalent of MS EXCEL), once you created the connection with CALC, you can load eurodeer_db tables though the **Data Source Manager** (to visulize it, go to View/Data Source, see image below).
+If you want to visualize and manipulate the data in CALC (equivalent of MS EXCEL), once you created the connection with CALC, you can load eurodeer_db tables though the **Data Source Manager** (to visulize it, go to View/Data Source, see image below).
 
 ![](images/calc1.png)
 
@@ -417,7 +417,7 @@ Now you can simply drag and drop the table into the spreadsheet panel (see below
 
 ### <a name="Others"></a>Other Client Tools 
 
-There are may other clients that can be easily connected with PostgreSQL. SOme examples are SAS, STATA, MS ACCESS, MS EXCEL, ArcGIS. Most of the functionalies offered by these commercial tools are covered by The open source tools listed above. If you are used to deal with data with other tools, you can check the software specific documentation about how to connect with a PostgreSQL/PostGIS database.
+There are may other clients that can be easily connected with PostgreSQL. SOme examples are SAS, STATA, MS ACCESS, MS EXCEL, ArcGIS. Most of the functionalities offered by these commercial tools are covered by The open source tools listed above. If you are used to deal with data with other tools, you can check the software specific documentation about how to connect with a PostgreSQL/PostGIS database.
 
 
 **LAST (important) UPDATE: 13 Feb 2018**
