@@ -195,7 +195,7 @@ raster2pgsql.exe -a -F -M -R -s 4326 -t 100x100 -N 251 E:\eurodeer_data\raster\r
 raster2pgsql.exe -a -F -M -R -t 100x100 -N 251 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*ndvi_smoothed.img env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres
 -- DO NOT USE -s BUT TO DO SO HDR MUST HAVE CORRECT INFORMATION ON SRID.
 -- I have to adapt header
---> map info = {Geographic Lat/Lon, 1, 1, -10, 65, 0.0020833, 0.0020833WGS-84,units=Degrees}
+--> map info = {Geographic Lat/Lon, 1, 1, -10, 65, 0.0020833, 0.0020833, WGS-84,units=Degrees}
 --> no coordinate system string (see SPIRITS scenario)
 
 ----------------
