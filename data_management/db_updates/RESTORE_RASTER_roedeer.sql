@@ -189,16 +189,16 @@ raster2pgsql -a -t 100x100 -F -M -R E:\eurodeer_data\raster\remote_sensing\modis
 --------------------
 DELETE FROM env_data_ts.ndvi_modis_smoothed WHERE acquisition date > DATEX --(or you can delete all and reload)
 -- an option is to delete all those of the concerned years to use 2016*
-raster2pgsql.exe -a -F -M -R -s 4326 -t 128x128 -N -99 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*smoothed.img env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres
+raster2pgsql.exe -a -F -M -R -t 128x128 -N -99 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*.tif env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres
 
-raster2pgsql.exe -a -F -M -R -t 128x128 -N -99 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*ndvi_smoothed.img env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres
+raster2pgsql.exe -a -F -M -R -t 128x128 -N -99 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*.tif env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres
 -- DO NOT USE -s BUT TO DO SO HDR MUST HAVE CORRECT INFORMATION ON SRID.
 -- I have to adapt header
 --> map info = {Geographic Lat/Lon, 1, 1, -10, 65, 0.0020833, 0.0020833, WGS-84,units=Degrees}
 --> no coordinate system string (see SPIRITS scenario)
 
--- generate table '-c' instead of '-a' and add '-C -I -x' and use '*.tif' as name of file, then
-raster2pgsql.exe -c -F -M -R -C -I -x -s 4326 -t 128x128 -N -99 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*ndvi_spirits.tif env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres								  
+-- generate table for initialization (first time)
+raster2pgsql.exe -c -F -M -R -C -x -t 128x128 -N -99 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*ndvi_spirits.tif env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres								  
 ALTER TABLE env_data_ts.ndvi_modis_smoothed ADD COLUMN acquisition_date date;
 UPDATE env_data_ts.ndvi_modis_smoothed SET acquisition_date = to_date(substring(filename from 6 for 8), 'YYYYMMDD')+5;
 								  
