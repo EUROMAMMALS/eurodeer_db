@@ -15,23 +15,6 @@ WHERE
       else ('1-1-' || extract (year FROM snow_modis.acquisition_date)+1)::date
     END);
 
-----------------
--- MODIS NDVI --
-----------------
-UPDATE main.gps_data_animals
-SET ndvi_modis = (st_value(rast, geom))/10000
-FROM env_data_ts.ndvi_modis
-WHERE
-  gps_validity_code in (1,2,3) and 
-  ndvi_modis is null and 
-  st_intersects(geom, rast) and 
-  acquisition_time::date >= ndvi_modis.acquisition_date and  
-  acquisition_time::date <  
-    (case 
-    WHEN extract (year FROM (ndvi_modis.acquisition_date + INTERVAL '16 days')) = extract (year FROM (ndvi_modis.acquisition_date)) then (ndvi_modis.acquisition_date + INTERVAL '16 days')
-    else ('1-1-' || extract (year FROM ndvi_modis.acquisition_date)+1)::date
-    END)  ;
-
 -------------------------
 -- MODIS NDVI SMOOTHED --
 -------------------------
@@ -39,7 +22,7 @@ UPDATE
 main.gps_data_animals
 SET
 ndvi_modis_smoothed = (st_value(pre.rast, geom)*(post.acquisition_date - acquisition_time::date)/(post.acquisition_date - pre.acquisition_date) +
-st_value(post.rast, geom)*(- (pre.acquisition_date - acquisition_time::date))/(post.acquisition_date - pre.acquisition_date)) * 0.0048 -0.2
+st_value(post.rast, geom)*(- (pre.acquisition_date - acquisition_time::date))/(post.acquisition_date - pre.acquisition_date))
 FROM env_data_ts.ndvi_modis_smoothed pre, env_data_ts.ndvi_modis_smoothed post
 WHERE
   ndvi_modis_smoothed IS NULL AND 
@@ -72,30 +55,3 @@ WHERE
   st_intersects(geom, post.rast) and 
   date_trunc('week', acquisition_time::date)::date = pre.acquisition_date and 
   date_trunc('week', acquisition_time::date + 7)::date = post.acquisition_date;
-
-----------------
--- DEPRECATED --
-----------------
-----------------------
---  SPOT VEGETATION --
-----------------------
-UPDATE main.gps_data_animals
-SET fapar_vegetation = st_value(rast, geom)
-FROM env_data_ts.fapar_vegetation
-WHERE fapar_vegetation is null and gps_validity_code = 1 and st_intersects(geom, rast) and  extract(year FROM fapar_vegetation.acquisition_date) = extract(year FROM gps_data_animals.acquisition_time)
-and extract(month FROM fapar_vegetation.acquisition_date) = extract(month FROM gps_data_animals.acquisition_time)
-and extract(day FROM fapar_vegetation.acquisition_date) = CASE
-WHEN extract(day FROM gps_data_animals.acquisition_time) < 11 THEN 1
-WHEN extract(day FROM gps_data_animals.acquisition_time) < 21 THEN 11
-ELSE 21
-END;
-UPDATE main.gps_data_animals
-SET ndvi_vegetation = st_value(rast, geom)
-FROM env_data_ts.ndvi_vegetation
-WHERE gps_validity_code = 1 and ndvi_vegetation is null and st_intersects(geom, rast) and  extract(year FROM ndvi_vegetation.acquisition_date) = extract(year FROM gps_data_animals.acquisition_time)
-and extract(month FROM ndvi_vegetation.acquisition_date) = extract(month FROM gps_data_animals.acquisition_time)
-and extract(day FROM ndvi_vegetation.acquisition_date) = CASE
-WHEN extract(day FROM gps_data_animals.acquisition_time) < 11 THEN 1
-WHEN extract(day FROM gps_data_animals.acquisition_time) < 21 THEN 11
-ELSE 21
-END;
