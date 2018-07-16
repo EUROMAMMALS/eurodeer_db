@@ -37,7 +37,7 @@ ORDER BY acquisition_time;
 
 ## age_class
 
-This function returs the age class at the acquisition time of a location. It has two input parameters: 
+This function returns the age class at the acquisition time of a location. It has two input parameters: 
 the id of the animal and the timestamp. According to the age class at first capture, the function increases 
 the class by 1 every time the animal goes through a defined day of the year (1st April).
  
