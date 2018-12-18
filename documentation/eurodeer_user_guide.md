@@ -1,7 +1,7 @@
 # EURODEER USERS GUIDE
 
 * [Introduction](#Introduction)
-* [EUROUNGULATES Project](#EUROUNGULATES)
+* [EUROMAMMALS Project](#EUROMAMMALS)
 * [EURODEER Database Overview](#EURODEER_Overview)
 * [EURODEER Database Content](#EURODEER_Content)  
 * [EURODEER Database Objects Description](#EURODEER_objects)  
@@ -16,7 +16,7 @@
 ## <a name="Introduction"></a> Introduction  
 
 The primary content of this manual is the technical documentation about the use of **EURODEER database** for the project partners.   
-The first section, [EUROUNGULATES Project](#EUROUNGULATES), is a general introduction to the EURODEER network and to the other federated initiatives (at the moment, **EUREDDEER** and **EUROBOAR**) under the umbrella project **EUROUNGULATES**.  
+The first section, [EUROMAMMALS Project](#EUROMAMMALS), is a general introduction to the EURODEER network and to the other federated initiatives (at the moment, **EUREDDEER**, **EUROBOAR**, **EUROLYNX**, **EUROWILDCAT** and the African network **AFRIMOVE**) under the umbrella project **EUROMAMMALS**.  
 The second section, [EURODEER Database Overview](#EURODEER_Overview), illustrates the characteristics of the EURODEER e-infrastructure and the data processing (acquisition, harmonization, quality check). It also provides a very general overview of  the main features of relational databases for they who do not have any background in data management.  
 In the section [EURODEER Database Content](#EURODEER_Content), we describe the data that are stored in the EURODEER database and how they are organized.  
 The section [EURODEER Database Objects Description](#EURODEER_objects) provides the information to retrieve the description of each table and field stored in the database.  
@@ -41,7 +41,7 @@ An introduction to PostGIS (the spatial extention of PostgreSQL) give a look her
 
 In addition, for they who want to understand the technicalities of (or replicate the) EURODEER database structure and tools or to get more skills on data management for wildlife tracking data, we suggest the book [Spatial Database for GPS Wildlife Tracking Data- A Practical Guide to Creating a Data Management System with PostgreSQL/PostGIS and R](https://www.springer.com/us/book/9783319037424) (Urbano & Cagnacci Ed., 2014). You can find a digital version of the chapters of the book in the [EURODEER documents repository](http://eurodeer.org/internal-documents/) (for EURODEER partners).
 
-EURODEER **database manager** (Ferdinando) and **data curators** (Johannes) are always available for EUROUNGULATES databases users whenever technical support is needed. For example for:  
+EURODEER **database manager** (Ferdinando) and **data curators** (Johannes) are always available for EUROMAMMALS databases users whenever technical support is needed in collaboration with the data curators of each network. For example for:  
 
 * preparation of data before they are sent to EURODEER for uploading to the shared database
 * creation/management of users
@@ -50,23 +50,25 @@ EURODEER **database manager** (Ferdinando) and **data curators** (Johannes) are 
 * questions on data content
 * fix of data errors
 
-## <a name="EUROUNGULATES"></a>  ![](images/euroungulates_logo.png) 
+## <a name="EUROMAMMALS"></a>  ![](images/euromammals_logo.png) 
 
-**EUROUNGULATES** is an umbrella project that coordinates and connects different open, bottom-up projects that promote collaborative science among research institutes. It is based on knowledge and data sharing to investigate the movement ecology of European ungulates in their different habitats and management regimes. At the moment (January 2018) the EUROUNGULATES network is made of three species-specific database: **EURODEER** (roe deer, *Capreolus capreolus*), **EUREDDEER** (red deer, *Cervus elaphus*), **EUROBOAR** (wild boar, *Sus scrofa*).
+**EUROMAMMALS** is an umbrella project that coordinates and connects different open, bottom-up projects that promote collaborative science among research institutes. It is based on knowledge and data sharing to investigate the movement ecology of European mammals in their different habitats and management regimes. At the moment (December 2018) the EUROMAMMALS network is made of five species-specific database: **EURODEER** (roe deer, *Capreolus capreolus*), **EUREDDEER** (red deer, *Cervus elaphus*), **EUROBOAR** (wild boar, *Sus scrofa*), **EUROLYNX** (Eurasian lynx, *Lynx lynx*) and **EUROWILDCAT** (European wildcat, *Felis silvestris silvestris*).
 
-EUROUNGULATES is first of all an open network of researchers who collaborate to produce better science by sharing data and knowledge. It is based on species-specific spatial database that store shared movement data and a wide set of additional information on ungulate species. The aim is to investigate variation in their behavioural ecology along environmental gradients or population responses to specific conditions, such as habitat changes, impact of human activities, different hunting regimes.   
-EURODEER, EUREDDEER and EUROBOAR partners are trying to fully explore the opportunities given by the new monitoring technologies for conservation and management at both local and continental scale. 
+EUROMAMMALS is first of all an open network of researchers who collaborate to produce better science by sharing data and knowledge. It is based on species-specific spatial database that store shared movement data and a wide set of additional information on ungulate species. The aim is to investigate variation in their behavioural ecology along environmental gradients or population responses to specific conditions, such as habitat changes, impact of human activities, different hunting regimes.   
+EURODEER, EUREDDEER, EUROBOAR, EUROLYNX and EUROWILDCAT partners are trying to fully explore the opportunities given by the new monitoring technologies for conservation and management at both local and continental scale. 
 
-Even if EURODEER, EUREDDEER and EUROBOAR are open projects, the data in the three database are accessible only by whom actively contributes with data or expertise, according to what is stated in the EURODEER and EUROBOAR Terms of Use. Permissions are specific to each of the three databases (they who contribute to one of the three database, can access data only in that database).
+Even if EURODEER, EUREDDEER, EUROBOAR, EUROLYNX and EUROWILDCAT are open projects, the data in the three database are accessible only by whom actively contributes with data or expertise, according to what is stated in the EURODEER and EUROBOAR Terms of Use. Permissions are specific to each of the three databases (they who contribute to one of the three database, can access data only in that database).
 
-The [EUROUNGULATES spatial databases](http://eurodeer2.fmach.it/phppgadmin/) are hosted at [Edmund Mach Foundation](http://www.fmach.it/).
+The [EUROMAMMALS spatial databases](http://eurodeer2.fmach.it/phppgadmin/) are hosted at [Edmund Mach Foundation](http://www.fmach.it/).
 
 More information on the projects, including activities, partners, outcomes and news can be found at their website:
 
-* [EUROUNGULATES website](http://www.euroungulates.org)
+* [EUROMAMMALS website](http://www.euromammals.org)
 * [EURODEER website](http://www.eurodeer.org)
 * [EUREDDEER website](http://www.eureddeer.org)
 * [EUROBOAR website](http://www.euroboar.org) 
+* [EUROLYNX website](http://www.EUROLYNX.org) 
+* [EUROWILDCAT website](http://www.EUROWILDCAT.org) 
 
 EURODEER financial resources come from the voluntary contributions of each partner. On top of this, since 2012, [Vectronic Aerospace GmbH](https://www.vectronic-aerospace.com/wildlife-monitoring/) is the official sponsor of EUORODEER project. It supports activities and spatial database development.
 
@@ -86,7 +88,7 @@ While there is a specific database for red deer (EUREDDEER), the network (i.e., 
 
 Wild boar is a very challenging species in terms of biology, demography and movement ecology. The species has an important human dimension, showing increasing interactions with environmental and socio-economic issues including spread of diseases. Developing science about wild boar should be the priority of many European regions because of its huge demographical and geographical expansion.  
 
-The EUROBOAR project aims to take benefit from the experience of the existing EURODEER platform under the umbrella of EUROUNGULATES. It is first of all an open network of researchers who collaborate sharing data and knowledge to produce better science.  
+The EUROBOAR project aims to take benefit from the experience of the existing EURODEER platform under the umbrella of EUROMAMMALS. It is first of all an open network of researchers who collaborate sharing data and knowledge to produce better science.  
 EUROBOAR group is trying to fully explore the opportunities given by the new tracking  technologies for conservation and management at both local and continental scale. EUROBOAR group is also trying to explore the “non-movement” data usually collected on wild boar such like demographical parameters associated or not to tracking data.
 
 The ultimate goal of the EUROBOAR project is to investigate ecological aspects that require the collaboration and data sharing of multiple institutes and researchers. Joining knowledge and information from different study areas and research projects open up many perspectives for scientists at both global and local scale. The final goal is to produce knowledge and in particular to support a science-driven sustainable management of environmental resources and conservation. EUROBOAR is about collaborative science.
@@ -102,7 +104,15 @@ The activities of the project that underpin the intense and motivating collabora
 * Promote education of young researchers, particularly on topics related to data management, movement ecology and collaborative science
 * Create a larger network of collaborations with other projects, scientific communities, environmental managers
 * Promote an open approach to science, which include both data sharing and use and development of open source tools
-  
+
+### EROLYNX
+
+Coming soon
+
+### EUROWILDCAT
+
+Coming soon
+
 ## <a name="EURODEER_Overview"></a> EURODEER Database Overview
 
 The main goal of EURODEER project is to join and harmonize roe deer tracking data and additional information from different research groups located in different European countries in a common data repository. To achieve this goal, we set up a software platform that enables all partners to access, manage and analyze the shared data in a cost-effective fashion. The main requirements of the project and the assessment of possible solutions are described in the paper [Wildlife tracking data management: a new vision ](http://rstb.royalsocietypublishing.org/content/365/1550/2177)(Urbano et al., 2013).
