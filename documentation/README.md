@@ -1,6 +1,6 @@
 # EURODEER documentation
 
-**In this folder you can find a set of documents that introduce, describe and document the EURODEER project**
+**In this folder you can find a set of documents that introduce, describe and document the EURODEER project and the EUROMAMMALS umbrella project**
 
 The documents are particularly focussed on the software platform and the database. The goal is to provide project partners with the information needed to understand and use the database.
 At the moment there are:
