@@ -1,8 +1,8 @@
 
 # [![](documentation/images/eurodeer_logo.png)](http://www.eurodeer.org) 
 
-EUropean ROe DEER project is an open, bottom-up network joined by 33 research centres and environmental institutes to produce collaborative science based on knowledge and data sharing to investigate the movement ecology of European deer in their different habitats and management regimes.
-The **[EURODEER User Guide](https://github.com/feurbano/eurodeer_db/blob/master/documentation/eurodeer_user_guide.md)** is the most relevant document to have an introduction to **EURODEER** and **EUROMAMMALS** (that includes other species-specific networks: red deer, wild boar, lynx, wildcat) in general.
+EUropean ROe DEER project is an open, bottom-up network joined by more than 40 research centres and environmental institutes from 18 countries  to produce collaborative science based on knowledge and data sharing to investigate the movement ecology of European deer in their different habitats and management regimes.
+The **[EURODEER User Guide](http://feurbano.github.io/eurodeer_db/documentation/eurodeer_user_guide.html)** is the most relevant document to have an introduction to **EURODEER** and **EUROMAMMALS** (that includes other species-specific networks: red deer, wild boar, European lynx, wildcat) in general.
 
 
 ## EURODEER GitHub repo: Docs and SQL code for db use and management
