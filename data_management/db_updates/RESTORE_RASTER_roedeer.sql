@@ -2,10 +2,10 @@
 -- CORINE --
 ------------
 -- generate table '-c' instead of '-a' and add '-C -I -x' --> next time load as external
-raster2pgsql -a -t 256x256 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_06.tif env_data.corine_land_cover_2006| psql -d eurodeer_db -U postgres  -p 5432
-raster2pgsql -a -t 256x256 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_00.tif env_data.corine_land_cover_2000| psql -d eurodeer_db -U postgres  -p 5432
-raster2pgsql -a -t 256x256 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_90.tif env_data.corine_land_cover_1990| psql -d eurodeer_db -U postgres  -p 5432
-raster2pgsql -a -t 256x256 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_12.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
+raster2pgsql -a -t 64x64 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_06.tif env_data.corine_land_cover_2006| psql -d eurodeer_db -U postgres  -p 5432
+raster2pgsql -a -t 64x64 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_00.tif env_data.corine_land_cover_2000| psql -d eurodeer_db -U postgres  -p 5432
+raster2pgsql -a -t 64x64 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_90.tif env_data.corine_land_cover_1990| psql -d eurodeer_db -U postgres  -p 5432
+raster2pgsql -a -t 64x64 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_12.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
 
 gdal_translate -a_srs EPSG:3035 -co "TILED=YES" -co "BLOCKXSIZE=256" -co "BLOCKYSIZE=256" -co COMPRESS=PACKBITS E:\eurodeer_data\raster\land_cover\corine\g100_clc12_V18_5.tif E:\eurodeer_data\raster\land_cover\corine\g100_12_c.tif
 raster2pgsql -c -R -C -I -x -t 256x256 -M E:\eurodeer_data\raster\land_cover\corine\g100_12.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
@@ -249,7 +249,7 @@ on  filename = 'MCD13Q1.A'|| datey || '.005.' || tile ||'.250m_7_days_NDVI.REFMI
 where filename is null)
 
 select 
-'E:\PostgreSQL\9.5\bin\raster2pgsql.exe -a -t 112x112 -F -R E:\eurodeer_data\raster\remote_sensing\modis\modis_boku\' ||tile|| '\REFMIDw\MCD13Q1.A'||datey||'.005.'|| tile ||'.250m_7_days_NDVI.REFMIDw.tif env_data_ts.ndvi_modis_boku| E:\PostgreSQL\9.5\bin\psql.exe -d eurodeer_db -U postgres  -p 5432'
+'E:\PostgreSQL\9.5\bin\raster2pgsql.exe -a -t 48x48 -F -R E:\eurodeer_data\raster\remote_sensing\modis\modis_boku\' ||tile|| '\REFMIDw\MCD13Q1.A'||datey||'.005.'|| tile ||'.250m_7_days_NDVI.REFMIDw.tif env_data_ts.ndvi_modis_boku| E:\PostgreSQL\9.5\bin\psql.exe -d eurodeer_db -U postgres  -p 5432'
 from missing_images
 order by datex, tile;
 
@@ -258,7 +258,7 @@ order by datex, tile;
 -- **************************************
 -- ******** MODIS BUKU INITIALIZE *******
 -- **************************************
-E:\PostgreSQL\9.3\bin\raster2pgsql.exe -p -t 112x112 -N 255 -F -M -I -R F:\raster\remote_sensing\modis_boku\H17V04_h09v03\REFMIDw\MCD13Q1.A2000269.005.H17V04_h09v03.250m_7_days_NDVI.REFMIDw.tif env_data_ts.ndvi_modis_boku| E:\PostgreSQL\9.3\bin\psql.exe -d eurodeer_db -U postgres  -p 5432
+E:\PostgreSQL\9.5\bin\raster2pgsql.exe -p -t 48x48 -N 255 -F -M -I -R E:\eurodeer_data\raster\remote_sensing\modis\modis_boku\H17V04_h09v03\REFMIDw\MCD13Q1.A2000269.005.H17V04_h09v03.250m_7_days_NDVI.REFMIDw.tif env_data_ts.ndvi_modis_boku| E:\PostgreSQL\9.5\bin\psql.exe -d eurodeer_db -U postgres  -p 5432
 
 ALTER TABLE env_data_ts.ndvi_modis_boku ADD COLUMN filepath character varying(13);
 ALTER TABLE env_data_ts.ndvi_modis_boku ADD COLUMN acquisition_date date;
