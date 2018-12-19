@@ -69,7 +69,7 @@ WITH x AS (
     FROM main.gps_sensors_animals ORDER BY bool 
   )
   SELECT study_areas_id, animals_original_id, x.animals_id,gps_sensors_id, gps_sensors_animals_id, start_time start_time1, end_time end_time1, gps_sensors_animals_id2, start_time2, end_time2, overlap FROM x join main.animals USING (animals_id) WHERE bool = TRUE 
-  ORDER BY study_areas_id, animals_id, start_time 
+  ORDER BY study_areas_id, animals_id, start_time; 
 
 
 
