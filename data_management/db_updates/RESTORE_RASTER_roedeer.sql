@@ -1,15 +1,16 @@
 ------------
 -- CORINE --
 ------------
--- generate table '-c' instead of '-a' and add '-C -I -x' --> next time load as external
+-- Import data in existing tables
 raster2pgsql -a -t 50x50 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_06.tif env_data.corine_land_cover_2006| psql -d eurodeer_db -U postgres  -p 5432
 raster2pgsql -a -t 50x50 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_00.tif env_data.corine_land_cover_2000| psql -d eurodeer_db -U postgres  -p 5432
 raster2pgsql -a -t 50x50 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_90.tif env_data.corine_land_cover_1990| psql -d eurodeer_db -U postgres  -p 5432
 raster2pgsql -a -t 50x50 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_12.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
+-- If i want to create the tables while importing
+raster2pgsql -c -R -C -I -t 50x50 -M E:\eurodeer_data\raster\land_cover\corine\g100_12.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
 
-gdal_translate -a_srs EPSG:3035 -co "TILED=YES" -co "BLOCKXSIZE=128" -co "BLOCKYSIZE=128" -co COMPRESS=PACKBITS E:\eurodeer_data\raster\land_cover\corine\g100_clc12_V18_5.tif E:\eurodeer_data\raster\land_cover\corine\g100_12_c.tif
-
-raster2pgsql -c -R -C -I -x -t 50x50 -M E:\eurodeer_data\raster\land_cover\corine\g100_12.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
+-- 2012 must be clip because it includes overseas lands (files are compressed) 
+gdal_translate -a_srs EPSG:3035 -projwin 1500000 5500000 7400000 900000 -co "TILED=YES" -co "BLOCKXSIZE=256" -co "BLOCKYSIZE=256" -co COMPRESS=DEFLATE E:\eurodeer_data\raster\land_cover\corine\g100_clc12_V18_5.tif E:\eurodeer_data\raster\land_cover\corine\g100_12.tif
 
 -----------------
 --> CORINE db <--
@@ -189,40 +190,31 @@ FROM
 cd /d E:\eurodeer_data\raster\remote_sensing\modis\snow
 dir /b /a *.tif > E:\eurodeer_data\raster\remote_sensing\modis\snow\list.txt
 -- example translate
-gdal_translate -a_srs EPSG:3035 -co "tiled=yes" -co "blockxsize=128" -co "blockysize=128"  E:\eurodeer_data\raster\remote_sensing\modis\snow\MOD10A2_2000_02_26.Maximum_Snow_Extent.tif E:\eurodeer_data\raster\remote_sensing\modis\snow_processed\MOD10A2_2000_02_26.Maximum_Snow_Extent.tif
+gdal_translate -a_srs EPSG:4326 -co "tiled=yes" -co "blockxsize=128" -co "blockysize=128"  E:\eurodeer_data\raster\remote_sensing\modis\snow\MOD10A2_2000_02_26.Maximum_Snow_Extent.tif E:\eurodeer_data\raster\remote_sensing\modis\snow_processed\MOD10A2_2000_02_26.Maximum_Snow_Extent.tif
 -- example import
 raster2pgsql -a -t 128x128 -F -M -R E:\eurodeer_data\raster\remote_sensing\modis\snow_processed\MOD10A2_2000_02_26.Maximum_Snow_Extent.tif env_data_ts.snow_modis| psql -d eurodeer_db -U postgres  -p 5432
 
-
-
-cd /d E:\eurodeer_data\raster\remote_sensing\modis\snow
-dir /b /a *.tif > E:\eurodeer_data\raster\remote_sensing\modis\snow\list.txt
-
 -- RESTORE FROM SCRATCH
-ALTER TABLE env_data_ts.snow_modis ADD COLUMN acquisition_date date;
+raster2pgsql -c -t 128x128 -F -C -I -M -R E:\eurodeer_data\raster\remote_sensing\modis\snow_processed\MOD10A2_2000_02_26.Maximum_Snow_Extent.tif env_data_ts.snow_modis| psql -d eurodeer_db -U postgres  -p 5432
 
+ALTER TABLE env_data_ts.snow_modis ADD COLUMN acquisition_date date;
 CREATE TRIGGER insert_ts_modis_snow
   BEFORE INSERT
   ON env_data_ts.snow_modis
   FOR EACH ROW
   EXECUTE PROCEDURE tools.update_timestamp_ts_modis_snow();
-
-
 CREATE INDEX snow_modis_acquisition_date_index
   ON env_data_ts.snow_modis
   USING btree
   (acquisition_date);
-
 CREATE INDEX snow_modis_acquisition_date_year_index
   ON env_data_ts.snow_modis
   USING btree
   (extract (year FROM acquisition_date));
-
 CREATE INDEX snow_modis_acquisition_date_year8days_index
   ON env_data_ts.snow_modis
   USING btree
   (extract (year FROM acquisition_date + INTERVAL '8 days'));
-  
 TRUNCATE env_data_ts.snow_modis;
 
 raster2pgsql -a -t 128x128 -F -M -R E:\eurodeer_data\raster\remote_sensing\modis\snow_processed\MOD10A2_*.Maximum_Snow_Extent.tif env_data_ts.snow_modis| psql -d eurodeer_db -U postgres -p 5432
