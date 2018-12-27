@@ -73,3 +73,6 @@ WHERE animals_id in (SELECT DISTINCT animals_id FROM main.animals_captures) and 
 UPDATE main.animals
 SET capture_data = 'FALSE'
 WHERE capture_data is NULL;
+
+-- Update time of last update
+UPDATE main.animals set update_relatedinfo_timestamp = now();
