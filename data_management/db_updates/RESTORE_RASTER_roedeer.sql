@@ -163,10 +163,10 @@ E:\PostgreSQL\9.3\bin\raster2pgsql.exe -t 256x256 -C -F -M -R -r -I E:\eurodeer_
 ---------------------
 -- WINTER SEVERITY --
 ---------------------
--- Queary that generates all the query (just change the range in the generate_series)
+-- Query that generates all the queries to create the rasters (IN-db) (just change the range in the generate_series)
 SELECT 'INSERT INTO env_data_ts.winter_severity(rast, start_date, end_date, reference_year)
 SELECT  
-  ST_UNION(st_reclass(rast,1, ''0:255, 1:255, 11:255, 25:0, 37:0,39:0, 50:255, 100:0, 200:200, 254:255, 255:255'',''16BUI'', 255), ''MEAN'') AS rast,
+  ST_UNION(st_reclass(rast,1, ''0:255, 1:255, 11:255, 25:0, 37:255,39:255, 50:255, 100:255, 200:100, 254:255, 255:255'',''8BUI'', 255), ''MEAN'') AS rast,
   '''||yearx||'-10-01''::date AS start_date,
   '''||yearx + 1||'-03-31''::DATE AS end_date,
   '||yearx||' AS reference_year
@@ -178,7 +178,7 @@ WHERE
 GROUP BY
   st_convexhull(rast);'
 FROM
-  (select generate_series(2000,2016,1) yearx) a
+  (select generate_series(2000,2017,1) yearx) a
 
 ----------------
 -- MODIS SNOW --
