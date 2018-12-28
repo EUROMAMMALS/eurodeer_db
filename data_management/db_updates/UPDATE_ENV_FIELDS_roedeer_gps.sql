@@ -38,6 +38,7 @@ UPDATE main.gps_data_animals
 SET corine_land_cover_2012_code = st_value(rast,st_transform(geom,3035)) 
 FROM env_data.corine_land_cover_2012
 WHERE corine_land_cover_2012_code IS NULL AND gps_validity_code IN (1,2,3) AND st_intersects(st_transform(geom,3035), rast);
+
 -- Update CORINE 2012 from vector layer
 UPDATE main.gps_data_animals
 SET corine_land_cover_2012_vector_code = corine_study_areas_mcp_INdividuals.clc_code::integer
@@ -80,6 +81,7 @@ FROM
 	FROM analysis.view_convexhull 
 	GROUP BY studies_id) AS foo 
 WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
+
 -- geom_mcp_individuals: union of individual MCP of all animals + buffer of 500 meters
 UPDATE main.study_areas 
 SET geom_mcp_individuals = foo.qq FROM 
@@ -87,6 +89,7 @@ SET geom_mcp_individuals = foo.qq FROM
 	FROM analysis.view_convexhull 
 	GROUP BY studies_id) AS foo 
 WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
+
 -- geom_traj_buffer: union of trajectories of all animals with a buffer of 1000 meters
 -- This definition involves additional calculations and is a bit slow
 DROP TABLE IF EXISTS temp.locations_24h_traj;
@@ -96,7 +99,7 @@ CREATE TABLE temp.locations_24h_traj AS
 		(SELECT foo.animals_id,study_areas_id, st_makeline(foo.geom) AS geom
 		FROM 
 			(SELECT study_areas_id, geom, animals_id, acquisition_time
-			FROM temp.locations_24h
+			FROM  analysis.view_locations_24h
 			ORDER BY study_areas_id, animals_id, acquisition_time) foo
 		GROUP BY foo.animals_id, study_areas_id) foo2
 	WHERE st_geometrytype(foo2.geom) = 'ST_LineString'::text;
@@ -120,8 +123,10 @@ FROM
 	FROM analysis.view_convexhull_vhf 
 	GROUP BY studies_id) AS foo 
 WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
+
 -- geom_grid300:  trajectories (1 location every 12 hours) are intersected with a grid of 250 meters (modis grid) and only cells with a minimum of time spent on it are kept + a buffer of 1 km
 --> missing code
+
 -- geom_kernel95_5km_buffer: kernel home range is calculated using all the data of a study area (1 location every 12 hours) + buffer of 5 km
 --> missing code
 

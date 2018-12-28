@@ -160,13 +160,14 @@ E:\PostgreSQL\9.3\bin\raster2pgsql.exe -t 256x256 -C -F -M -R -r -I E:\eurodeer_
 E:\PostgreSQL\9.3\bin\raster2pgsql.exe -t 256x256 -C -F -M -R -r -I E:\eurodeer_data\raster\remote_sensing\modis\ndvi_variability\constancy.tif env_data.ndvi_predictability | E:\PostgreSQL\9.3\bin\psql.exe -d eurodeer_db -U postgres  -p 5432
 E:\PostgreSQL\9.3\bin\raster2pgsql.exe -t 256x256 -C -F -M -R -r -I E:\eurodeer_data\raster\remote_sensing\modis\ndvi_variability\contingency.tif env_data.ndvi_contingency | E:\PostgreSQL\9.3\bin\psql.exe -d eurodeer_db -U postgres  -p 5432
 
+
 ---------------------
 -- WINTER SEVERITY --
 ---------------------
 -- Query that generates all the queries to create the rasters (IN-db) (just change the range in the generate_series)
 SELECT 'INSERT INTO env_data_ts.winter_severity(rast, start_date, end_date, reference_year)
 SELECT  
-  ST_UNION(st_reclass(rast,1, ''0:255, 1:255, 11:255, 25:0, 37:255,39:255, 50:255, 100:255, 200:100, 254:255, 255:255'',''8BUI'', 255), ''MEAN'') AS rast,
+  ST_UNION(st_reclass(rast,1, ''0:255, 1:255, 11:255, 25:0, 37:255,39:255, 50:255, 100:255, 200:100, 254:255, 255:255'',''16BUI'', 255),''MEAN'') AS rast,
   '''||yearx||'-10-01''::date AS start_date,
   '''||yearx + 1||'-03-31''::DATE AS end_date,
   '||yearx||' AS reference_year
@@ -178,7 +179,67 @@ WHERE
 GROUP BY
   st_convexhull(rast);'
 FROM
-  (select generate_series(2000,2017,1) yearx) a
+  (select generate_series(2000,2018,1) yearx) a;
+  
+-- CREATE TABLE FIRST TIME (1 year) [about 40 minutes]
+CREATE TABLE env_data_ts.winter_severity AS
+  SELECT
+    ST_UNION(st_reclass(rast,1, '0:255, 1:255, 11:255, 25:0, 37:255,39:255, 50:255, 100:255, 200:100, 254:255, 255:255','16BUI', 255),'MEAN') AS rast,
+    '2000-10-01'::date AS start_date,
+    '2001-03-31'::DATE AS end_date,
+    2000 AS reference_year
+  FROM 
+    env_data_ts.snow_modis
+  WHERE 
+    acquisition_date >= '2000-10-01' AND
+    acquisition_date <= '2001-03-31'
+  GROUP BY 
+    st_convexhull(rast);
+  
+-- ADD PKEY, INDEX AND CONSTRAINTS
+ALTER TABLE env_data_ts.winter_severity ADD COLUMN id SERIAL;
+ALTER TABLE env_data_ts.winter_severity ADD CONSTRAINT winter_severity_pkey PRIMARY KEY(id);
+SELECT AddRasterConstraints('env_data_ts'::name, 'winter_severity'::name, 'rast'::name,'srid', 'blocksize', 'pixel_types', 'nodata_values');
+CREATE INDEX winter_severity_st_convexhull_idx ON env_data_ts.winter_severity USING gist (st_convexhull(rast));
+
+-- EXPORT raster
+-- First create a table where you union all the tiles of a single year
+CREATE TABLE 
+ temp.raster_export as
+SELECT 
+  st_union(rast) AS rast 
+FROM 
+  env_data_ts.winter_severity 
+where 
+  reference_year = 2001;
+-- Then add constraint
+SELECT AddRasterConstraints('temp'::name, 'raster_export'::name, 'rast'::name);
+
+-- Now you can visualize e.g. in QGIS (pretty fast) or export to a file using GDAL (very fast on the server, slow for remote users)
+gdal_translate -of GTIFF "PG:host=localhost dbname='eurodeer_db' user='????' password='?????' schema='temp' table='raster_export' mode=2" E:\eurodeer_data\raster\remote_sensing\modis\winter_severity\winter_severity_2001.tif
+
+-- Remove temp table
+DROP TABLE temp.raster_export;
+
+-- Code to test results (winter severity vs modis snow data)
+with point as
+  (select st_setsrid(st_makepoint(11.0711283437237, 46.1327264991473),4326) geom)
+
+SELECT 
+ st_value(a.rast, geom) original_value, st_value(b.rast, geom) value_ws, acquisition_date
+FROM 
+   env_data_ts.snow_modis a, 
+   point,
+   env_data_ts.winter_severity b
+WHERE 
+   acquisition_date >= '2000-10-01' AND
+   acquisition_date <= '2001-03-31' AND
+   reference_year = 2000 and
+   st_intersects(a.rast, geom) and
+   st_intersects(b.rast, geom) 
+order by 
+   original_value;
+
 
 ----------------
 -- MODIS SNOW --
@@ -233,10 +294,10 @@ raster2pgsql.exe -a -F -M -R -t 128x128 -N -99 E:\eurodeer_data\raster\remote_se
 --> no coordinate system string (see SPIRITS scenario)
 
 -- generate table for initialization (first time)
-raster2pgsql.exe -c -F -M -R -C -x -t 128x128 -N -99 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*ndvi_spirits.tif env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres								  
+raster2pgsql.exe -c -F -M -R -C -x -t 128x128 -N -99 E:\eurodeer_data\raster\remote_sensing\modis\ndvi_smoothed\modis*ndvi_spirits.tif env_data_ts.ndvi_modis_smoothed | psql -p 5432 -d eurodeer_db -U postgres  
 ALTER TABLE env_data_ts.ndvi_modis_smoothed ADD COLUMN acquisition_date date;
 UPDATE env_data_ts.ndvi_modis_smoothed SET acquisition_date = to_date(substring(filename from 6 for 8), 'YYYYMMDD')+5;
-								  
+  
 CREATE INDEX ndvi_modis_smoothed_acquisition_date_index
   ON env_data_ts.ndvi_modis_smoothed
   USING btree
