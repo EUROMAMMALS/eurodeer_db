@@ -91,7 +91,7 @@ WHERE st_coveredby(gps_data_animals.geom, corine_land_cover_2012_vector.geom) AN
 TRUNCATE env_data.reddeer_update_gps_update_env_fields;
 INSERT INTO env_data.reddeer_update_gps_update_env_fields
 SELECT gps_data_animals_id, acquisition_time, geom, gps_validity_code, corine_land_cover_2006_code, corine_land_cover_2000_code, corine_land_cover_1990_code, corine_land_cover_2012_code, ndvi_modis_boku, ndvi_modis_smoothed,  snow_modis, st_transform(geom,3035) as geom_3035
-FROM analysis.gps_update_env_fields_reddeer;
+FROM analysis.external_gps_update_env_fields_reddeer;
 
 -- CORINE raster
 UPDATE env_data.reddeer_update_gps_update_env_fields 
