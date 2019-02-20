@@ -54,7 +54,7 @@ WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
 -- geom_kernel95_5km_buffer: kernel home range is calculated using all the data of a study area (1 location every 12 hours) + buffer of 5 km
 --> missing code
 
-/*NOT YET IMPLEMENTED
+
 -- Update forest density (Copernicus layer)
 -- If new study areas or new animals far from the other are uploaded, it is necessary to run the procedure to derive the reference layer
 UPDATE main.gps_data_animals
@@ -84,7 +84,7 @@ UPDATE main.gps_data_animals
 SET corine_land_cover_2012_vector_code = corine_land_cover_2012_vector.clc_code::integer
 FROM env_data.corine_land_cover_2012_vector
 WHERE st_coveredby(gps_data_animals.geom, corine_land_cover_2012_vector.geom) AND gps_validity_code IN (1,2,3) AND corine_land_cover_2012_vector_code IS NULL;
-*/
+
 ----------------------
 --> IN EURODEER DB <--
 ----------------------

@@ -85,7 +85,7 @@ SELECT id, clc_code::integer, geom FROM env_data.corine_land_cover_2012_vector;
 DROP TABLE IF EXISTS env_data.forest_density;
 
 -- Then I import all the images (again form the view;
-raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\remote_sensing\forestcover\copernicus\local_data\forest_density_red_*.tif env_data.forest_density| psql -d euroboar_db -U postgres  -p 5432
+raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\remote_sensing\forestcover\copernicus\local_data\forest_density_wildboar_*.tif env_data.forest_density| psql -d euroboar_db -U postgres  -p 5432
 
 -- Add reference to study area
 ALTER TABLE env_data.forest_density ADD COLUMN study_areas_id integer;
@@ -95,7 +95,7 @@ CREATE INDEX study_areas_forest_density_index
   USING btree
   (study_areas_id);
 
-UPDATE env_data.forest_density SET study_areas_id = (substring(filename FROM 20 FOR 2))::integer;
+UPDATE env_data.forest_density SET study_areas_id = (substring(filename FROM 25 FOR 2))::integer;
 
 ----------------------------
 -- DEM-RELATED COPERNICUS --
@@ -109,9 +109,9 @@ DROP TABLE IF EXISTS env_data.dem_copernicus;
 DROP TABLE IF EXISTS env_data.slope_copernicus;
 DROP TABLE IF EXISTS env_data.aspect_copernicus;
 
-E:\PostgreSQL\9.5\bin\raster2pgsql.exe -c -R -F -C -I -x -t 128x128 -N 32768 -M E:\eurodeer_data\raster\dem\copernicus\local_data\dem_red*.tif env_data.dem_copernicus | E:\PostgreSQL\9.5\bin\psql.exe -d euroboar_db -U postgres  -p 5432
-E:\PostgreSQL\9.5\bin\raster2pgsql.exe -c -R -F -C -I -x -t 128x128 -N -9999 -M E:\eurodeer_data\raster\dem\copernicus\local_data\aspect_red*.tif env_data.aspect_copernicus | E:\PostgreSQL\9.5\bin\psql.exe -d euroboar_db -U postgres  -p 5432
-E:\PostgreSQL\9.5\bin\raster2pgsql.exe -c -R -F -C -I -x -t 128x128 -N -9999 -M E:\eurodeer_data\raster\dem\copernicus\local_data\slope_red*.tif env_data.slope_copernicus | E:\PostgreSQL\9.5\bin\psql.exe -d euroboar_db -U postgres  -p 5432
+E:\PostgreSQL\9.5\bin\raster2pgsql.exe -c -R -F -C -I -x -t 128x128 -N 32768 -M E:\eurodeer_data\raster\dem\copernicus\local_data\dem_wildboar*.tif env_data.dem_copernicus | E:\PostgreSQL\9.5\bin\psql.exe -d euroboar_db -U postgres  -p 5432
+E:\PostgreSQL\9.5\bin\raster2pgsql.exe -c -R -F -C -I -x -t 128x128 -N -9999 -M E:\eurodeer_data\raster\dem\copernicus\local_data\aspect_wildboar*.tif env_data.aspect_copernicus | E:\PostgreSQL\9.5\bin\psql.exe -d euroboar_db -U postgres  -p 5432
+E:\PostgreSQL\9.5\bin\raster2pgsql.exe -c -R -F -C -I -x -t 128x128 -N -9999 -M E:\eurodeer_data\raster\dem\copernicus\local_data\slope_wildboar*.tif env_data.slope_copernicus | E:\PostgreSQL\9.5\bin\psql.exe -d euroboar_db -U postgres  -p 5432
 
 -- I add info on study area
 ALTER TABLE env_data.dem_copernicus ADD COLUMN study_areas_id integer;
@@ -119,21 +119,21 @@ CREATE INDEX study_areas_dem_copernicus_index
   ON env_data.dem_copernicus
   USING btree
   (study_areas_id);
-UPDATE env_data.dem_copernicus SET study_areas_id = (substring(filename FROM 9 FOR 2))::integer;
+UPDATE env_data.dem_copernicus SET study_areas_id = (substring(filename FROM 14 FOR 2))::integer;
 
 ALTER TABLE env_data.slope_copernicus ADD COLUMN study_areas_id integer;
 CREATE INDEX study_areas_slope_copernicus_index
   ON env_data.slope_copernicus
   USING btree
   (study_areas_id);
-UPDATE env_data.slope_copernicus SET study_areas_id = (substring(filename FROM 11 FOR 2))::integer;
+UPDATE env_data.slope_copernicus SET study_areas_id = (substring(filename FROM 16 FOR 2))::integer;
 
 ALTER TABLE env_data.aspect_copernicus ADD COLUMN study_areas_id integer;
 CREATE INDEX study_areas_aspect_copernicus_index
   ON env_data.aspect_copernicus
   USING btree
   (study_areas_id);
-UPDATE env_data.aspect_copernicus SET study_areas_id = (substring(filename FROM 12 FOR 2))::integer;
+UPDATE env_data.aspect_copernicus SET study_areas_id = (substring(filename FROM 18 FOR 2))::integer;
 
 ----------------------------
 --> This is EURODEER db <--
