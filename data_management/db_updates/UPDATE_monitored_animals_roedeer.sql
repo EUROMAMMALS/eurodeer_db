@@ -1,9 +1,18 @@
+-- ALL CODE BELOW CAN BE RUN USING THE FUNCTION:
+SELECT tools.monitored_animals();
+
 -- Check if a new animal has an associated record in gps_sensors_animals. If yes, set gps_deployed to 'TRUE', otherwise to 'FALSE'
 -- To re-initialize all the records, set the field gps_deployed to NULL for all the records, then run this code
 -- UPDATE main.animals SET gps_deployed = NULL;
 UPDATE main.animals
 SET gps_deployed='TRUE' 
 WHERE animals_id in (SELECT DISTINCT animals_id FROM main.gps_sensors_animals) and gps_deployed is NULL;
+
+
+UPDATE main.animals
+   SET gps_deployed= case when animals_id in (Select distinct animals_id from main.gps_sensors_animals) then TRUE else FALSE end;
+
+
 UPDATE main.animals
 SET gps_deployed='FALSE'
 WHERE gps_deployed is NULL;
