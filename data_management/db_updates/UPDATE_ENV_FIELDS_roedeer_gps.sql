@@ -125,10 +125,10 @@ FROM
 WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
 
 -- geom_grid300:  trajectories (1 location every 12 hours) are intersected with a grid of 250 meters (modis grid) and only cells with a minimum of time spent on it are kept + a buffer of 1 km
---> missing code
+--> this column has been removed. too inefficient to compute and little added value.
 
 -- geom_kernel95_5km_buffer: kernel home range is calculated using all the data of a study area (1 location every 12 hours) + buffer of 5 km
---> missing code
+--> this column has been removed. too inefficient to compute and little added value.
 
  -------------------------------
 -- UPDATE CORINE vector 2012  --
