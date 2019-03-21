@@ -17,5 +17,5 @@ The repository is divided in subdirectories:
 
 While all files stored and shared in this repository are pretty specific to the EURODEER projects, in some cases can be of interest for similar projects.
 
-For more information about the EURODEER roject, visit the **[EURODEER website](http://www.eurodeer.org)**. 
+For more information about the EURODEER project, visit the **[EURODEER website](http://www.eurodeer.org)**. 
 For more information about the EUROMAMMALS umbrella project, visit the **[EUROMAMMALS website](http://www.euromammals.org)**. 
