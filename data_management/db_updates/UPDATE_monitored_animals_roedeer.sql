@@ -85,3 +85,22 @@ WHERE capture_data is NULL;
 
 -- Update time of last update
 UPDATE main.animals set update_relatedinfo_timestamp = now();
+
+-- Update of table reasearch_group
+-- Same can be run in eureddeer database (because of the foreign table)
+-- At the moment this field can be updated manually too (that is why it is not set to false before updating)
+UPDATE 
+  main.research_groups
+SET  
+  data_roedeer=TRUE
+WHERE
+  research_groups_id IN
+	(SELECT 
+	  distinct research_groups_id
+	FROM 
+	  main.animals, main.study_areas
+	WHERE
+	  (gps_deployed OR activity_deployed OR vhf_deployed OR capture_data) AND 
+	  study_areas.study_areas_id = animals.study_areas_id
+	ORDER BY 
+	  research_groups_id);
