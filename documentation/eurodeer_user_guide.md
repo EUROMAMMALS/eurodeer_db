@@ -238,13 +238,16 @@ In addition to sensor data, at the moment in the EURODEER data sets we have info
 
 A short description of the information content of these data sets is reported in the next sub-sections together with a diagram of the data model. In the document **[eurodeer_db Dictionary](eurodeer_db_dictionary.md)** is reported the full description of each table/attribute.
 
+Here below there is a schema that summirize all the main elements of the database at 2019-06-13 (click on it to enlarge).
+<img src="images/er_core_all.png" height="900"/>
+
 All the core information is stored in the schema **main**, with the exception of the environmental data that are available in the schema **env_data** and the schema **env_data_ts** (for layers with a time series, e.g., NDVI and snow). In the schema **tools** there are the functions created by EURODEER to process and analyze the data (see [functions](eurodeer_db_functions.md)). The schema **analysis** is used to store informations related to analysis that can be reused by all EURODEER partners. The working schema **ws\_*** are spaces where each partner institution can create table and process the data (one per institute). Finally, in the **lu_tables** schema, the database stores all the look up tables, i.e., those tables used to define (code) a valid domain of values for specific fields (e.g., the list of capture methods).
 
 ### Research groups, study areas and sub-areas
 Sensor data are always related to animals. Each animal is assigned to one (and only one) study area. Each study area belongs to (is monitored by) a research group. The same research group can have more than one study area. Each study area is divided into one or more sub-areas, that roughly recall the concept of population. Each sub-area is characterized by a set of information (human disturbance, performance, predators, interspecific competition, hunting pressure, road density, which are collected every one or more years. Sensors (GPS, VHF, accelerometer) are also attributed to a specific research group.
 In the view **main.view_reasearch_groups_euroungulates** all the groups belonging to EUROUNGULATES are reported (through external tables that connect with EUREDDEER and EUROBOAR database).
   
-The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+The entity-relationship (ER) diagram of the tables at 2018-02-01 is reported here below (click on it to enlarge).
 <img src="images/er_core.png" height="600"/>
 
 ### GPS data
@@ -252,21 +255,21 @@ GPS locations are stored already associated to animals (which is a non-trivial s
 The information on the deployment are stored in the table **main.gps_sensors_animals**, including the reasons of the end of the deployment. This table is used to check the correct attribution of locations to animals in the table **main.gps_data_animals**. Information on sensors are stored in **main.sensors**, while the information on animals in **main.animals**. A set of look up tables are used to store the list of valid values for some columns of these tables.  
 In the views **analysis.view_convexhull** and ** analysis.view_trajectories** are available the trajectories and convex hull polygons related to each animal (and dynamically updated). These can be loaded in QGIS for spatial visualization. In the view **analysis.view_ltraj_class** data are formatted according to [R adehabitat package](https://cran.r-project.org/web/packages/adehabitat/adehabitat.pdf) to facilitate the import for analysis. See **[eurodeer_db Dictionary](eurodeer_db_dictionary.md)** for the complete list of view associted to GPS data.
 
-The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+The entity-relationship (ER) diagram of the tables at 2018-02-01 is reported here below (click on it to enlarge).
 <center><img src="images/er_gps.png" height="600"/></center>
 
 
 ### VHF data
 VHF data content and structure is very similar to the one illustrated for GPS.
  
-The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+The entity-relationship (ER) diagram of the tables at 2018-02-01 is reported here below (click on it to enlarge).
 <center><img src="images/er_vhf.png" height="600"/></center>
 
 
 ### Accelerometer data
 Accelerometer (sometimes also called *activity*) data content and structure is very similar to the one illustrated for GPS. In this case there are 5 tables called **main.activity\_data\_animals\_code\***. Given the size of the dataset, and the different kind of sensors that measure accelerometer, each table is associated to animals with a specific type of sensor (see table **lu_tables.lu\_activity\_sensor_mode**). As data come from different types of sensors, the information must be properly precessed to be correctly analyzed. The data stored in these tables are already an aggregation of the original data coming from sensor. The original data are stored in a different schema (**activity_data_raw**).
 
-The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+The entity-relationship (ER) diagram of the tables at 2018-02-01 is reported here below (click on it to enlarge).
 <center><img src="images/er_activity.png" height="600"/></center>
 
 ### Sub-areas (predation, competition, human pressure)
@@ -281,25 +284,25 @@ Each sub-area is characterized by a information on different aspects.
 * Predators density. Each estimation for each predator for each year and for each sampling method corresponds to a row. The id of the species is linked with **main.species** where all the species are listed. If available, an estimation of the density is given as class and (if possible) number of individual per squared kilometre, otherwise only presence/absence is reported.
 Estimation of road density. The value is linked to a specific year. It might change both because the road network change or because the areal of the subarea changes.
 
-The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+The entity-relationship (ER) diagram of the tables at 2018-02-01 is reported here below (click on it to enlarge).
 <center><img src="images/er_subareas.png" height="600"/></center>
 
 ### Captures
 Information on captures are stored in the database in the tables **main.animals_captures** and **main.animals_captures_sedation** (many sedation records can be associated to a capture event). Every animal can be captured more than once. Only captures of animals that have been monitored are included. This includes successful collaring, but also recapture of a collared animal or failed collaring because for example the death of the animal during the capture (it is possible to have a capture event without any deployment registered). All capture events of monitored animals are recorded in this table. Each deployment is associated to a capture.
 
-The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+The entity-relationship (ER) diagram of the tables at 2018-02-01 is reported here below (click on it to enlarge).
 <center><img src="images/er_captures.png" height="600"/></center>
 
 ### Contacts
 This dataset keeps track of the information on contacts with animals. These can be both sightings of the animal – dead or alive – or the finding of the sensor, or others. This information is specially useful for survival analysis. All contacts with the animals are reported here with the exception of the contacts when the animal is captured (see table **main.animals_captures**). The view **main.view_survival** joins the information in **main.animals_contacts** and **main.animals_captures** for a complete history of the contacts with the animal. If a deployment ends because of the death of an animal, while this is marked in the *end_deployment_code* in the deployment table, the information on the death (i.e. the reason) is recorded in the table **animals_contacts**.
 
-The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+The entity-relationship (ER) diagram of the tables at 2018-02-01 is reported here below (click on it to enlarge).
 <center><img src="images/er_contacts.png" height="400"/></center>
 
 ### Feeding site
 This data set contains the information on the management of the feeding sites, including where these are used.
 
-The entity-relationship (ER) diagram of the tables is reported here below (click on it to enlarge).
+The entity-relationship (ER) diagram of the tables at 2018-02-01 is reported here below (click on it to enlarge).
 <center><img src="images/er_feeding.png" height="600"/></center>
 
 ### Environmental data
