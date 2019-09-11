@@ -41,9 +41,9 @@ WHERE corine_land_cover_2012_code IS NULL AND gps_validity_code IN (1,2,3) AND s
 
 -- Update CORINE 2012 from vector layer
 UPDATE main.gps_data_animals
-SET corine_land_cover_2012_vector_code = corine_study_areas_mcp_INdividuals.clc_code::integer
-FROM env_data.corine_study_areas_mcp_INdividuals
-WHERE st_coveredby(gps_data_animals.geom, corine_study_areas_mcp_INdividuals.geom) AND gps_validity_code IN (1,2,3) AND corine_land_cover_2012_vector_code IS NULL;
+SET corine_land_cover_2012_vector_code = corine_land_cover_2012_vector_imp.clc_code::integer
+FROM env_data.corine_land_cover_2012_vector_imp
+WHERE st_coveredby(gps_data_animals.geom, corine_land_cover_2012_vector_imp.geom) AND gps_validity_code IN (1,2,3) AND corine_land_cover_2012_vector_code IS NULL;
 
 -- Update forest density (Copernicus layer)
 -- If new study areas or new animals far from the other are uploaded, it is necessary to run the procedure to derive the reference layer
@@ -149,10 +149,11 @@ INSERT INTO roedeer.corine_study_areas_mcp_individuals
 	FROM roedeer.view_corine_study_areas_mcp_individuals;
 
 -- In EURODEER db
-TRUNCATE env_data.corine_study_areas_mcp_individuals_imp;
-INSERT INTO env_data.corine_study_areas_mcp_individuals_imp
-	SELECT * 
-	FROM env_data.corine_2012_vector_mcp_individuals;
+TRUNCATE env_data.corine_land_cover_2012_vector_imp;
+INSERT INTO env_data.corine_land_cover_2012_vector_imp
+	SELECT id, clc_code::integer, geom
+	FROM env_data.external_corine_land_cover_2012_vector;
+
 
 --------------------------------------------------------------------
 --DEPRECATED: CODE TO UPDATE ASTER AND SRTM DEM_RELATED VARIABLES --
