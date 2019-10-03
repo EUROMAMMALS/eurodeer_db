@@ -345,7 +345,7 @@ on  filename = 'MCD13Q1.A'|| datey || '.005.' || tile ||'.250m_7_days_NDVI.REFMI
 where filename is null)
 
 select 
-'E:\PostgreSQL\9.5\bin\raster2pgsql.exe -a -t 48x48 -F -R E:\eurodeer_data\raster\remote_sensing\modis\modis_boku\' ||tile|| '\REFMIDw\MCD13Q1.A'||datey||'.005.'|| tile ||'.250m_7_days_NDVI.REFMIDw.tif env_data_ts.ndvi_modis_boku| E:\PostgreSQL\9.5\bin\psql.exe -d eurodeer_db -U postgres  -p 5432'
+'E:\PostgreSQL\9.5\bin\raster2pgsql.exe -a -t 112x112 -F -R E:\eurodeer_data\raster\remote_sensing\modis\modis_boku\' ||tile|| '\REFMIDw\MCD13Q1.A'||datey||'.005.'|| tile ||'.250m_7_days_NDVI.REFMIDw.tif env_data_ts.ndvi_modis_boku| E:\PostgreSQL\9.5\bin\psql.exe -d eurodeer_db -U postgres  -p 5432'
 from missing_images
 order by datex, tile;
 
@@ -354,7 +354,7 @@ order by datex, tile;
 -- **************************************
 -- ******** MODIS BUKU INITIALIZE *******
 -- **************************************
-E:\PostgreSQL\9.5\bin\raster2pgsql.exe -p -t 48x48 -N 255 -F -M -I -R E:\eurodeer_data\raster\remote_sensing\modis\modis_boku\H17V04_h09v03\REFMIDw\MCD13Q1.A2000269.005.H17V04_h09v03.250m_7_days_NDVI.REFMIDw.tif env_data_ts.ndvi_modis_boku| E:\PostgreSQL\9.5\bin\psql.exe -d eurodeer_db -U postgres  -p 5432
+E:\PostgreSQL\9.5\bin\raster2pgsql.exe -p -t 112x112 -N 255 -F -M -I -R E:\eurodeer_data\raster\remote_sensing\modis\modis_boku\H17V04_h09v03\REFMIDw\MCD13Q1.A2000269.005.H17V04_h09v03.250m_7_days_NDVI.REFMIDw.tif env_data_ts.ndvi_modis_boku| E:\PostgreSQL\9.5\bin\psql.exe -d eurodeer_db -U postgres  -p 5432
 
 ALTER TABLE env_data_ts.ndvi_modis_boku ADD COLUMN filepath character varying(13);
 ALTER TABLE env_data_ts.ndvi_modis_boku ADD COLUMN acquisition_date date;
