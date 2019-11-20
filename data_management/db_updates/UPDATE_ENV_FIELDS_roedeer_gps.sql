@@ -92,7 +92,7 @@ WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
 
 -- geom_traj_buffer: union of trajectories of all animals with a buffer of 1000 meters
 -- This definition involves additional calculations and is a bit slow
-DROP TABLE IF EXISTS temp.locations_24h_traj;
+--DROP TABLE IF EXISTS temp.locations_24h_traj;
 CREATE TABLE temp.locations_24h_traj AS
 	SELECT animals_id, study_areas_id , foo2.geom::geometry(LineString,4326) AS geom
 	FROM 
@@ -106,7 +106,7 @@ CREATE TABLE temp.locations_24h_traj AS
 ALTER TABLE temp.locations_24h_traj ADD COLUMN geom_buffer geometry(polygon,4326);
 UPDATE temp.locations_24h_traj 
 SET geom_buffer = (st_buffer(st_simplify(geom, 0.001)::geography, 1000))::geometry;
-DROP TABLE IF EXISTS  temp.locations_24h_studyareas;
+--DROP TABLE IF EXISTS  temp.locations_24h_studyareas;
 CREATE TABLE temp.locations_24h_studyareas AS
 	SELECT study_areas_id, st_multi(st_union(geom_buffer))::geometry(multipolygon, 4326) geom 
 	FROM temp.locations_24h_traj
@@ -123,6 +123,8 @@ FROM
 	FROM analysis.view_convexhull_vhf 
 	GROUP BY studies_id) AS foo 
 WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
+DROP TABLE IF EXISTS temp.locations_24h_traj;
+DROP TABLE IF EXISTS  temp.locations_24h_studyareas;
 
 -- geom_grid300:  trajectories (1 location every 12 hours) are intersected with a grid of 250 meters (modis grid) and only cells with a minimum of time spent on it are kept + a buffer of 1 km
 --> this column has been removed. too inefficient to compute and little added value.
