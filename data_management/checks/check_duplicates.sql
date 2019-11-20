@@ -1,27 +1,27 @@
--- 1 DUPLICATE SENSORS 
+﻿-- 1 DUPLICATE SENSORS 
 -- GPS 
 -- 1a List of all sensors with the same original id (in the same research group) -> potential duplicates
 SELECT a.*
 from
 main.gps_sensors as a,
-(SELECT gps_sensors_original_id, research_groups_id FROM main.gps_sensors group by gps_sensors_original_id, research_groups_id having count(*) > 1) as b
-where a.gps_sensors_original_id = b.gps_sensors_original_id and a.research_groups_id = b.research_groups_id ORDER BY gps_sensors_original_id;
+(SELECT gps_sensors_code, research_groups_id FROM main.gps_sensors group by gps_sensors_code, research_groups_id having count(*) > 1) as b
+where a.gps_sensors_code = b.gps_sensors_code and a.research_groups_id = b.research_groups_id ORDER BY gps_sensors_code;
 
 -- 1b Check which of those gps_sensor_ids are used in the gps_sensors_animals table 
 SELECT DISTINCT gps_sensors_id from main.gps_sensors_animals where gps_sensors_id in (
 SELECT gps_sensors_id 
 from
 main.gps_sensors as a,
-(SELECT gps_sensors_original_id, research_groups_id FROM main.gps_sensors group by gps_sensors_original_id, research_groups_id having count(*) > 1) as b
-where a.gps_sensors_original_id = b.gps_sensors_original_id and a.research_groups_id = b.research_groups_id) order by gps_sensors_id;
+(SELECT gps_sensors_code, research_groups_id FROM main.gps_sensors group by gps_sensors_code, research_groups_id having count(*) > 1) as b
+where a.gps_sensors_code = b.gps_sensors_code and a.research_groups_id = b.research_groups_id) order by gps_sensors_id;
 
 -- 1c Check which of those gps_sensor_ids are used in the gps_data_animals table 
 SELECT DISTINCT gps_sensors_id from main.gps_data_animals where gps_sensors_id in (
 SELECT gps_sensors_id 
 from
 main.gps_sensors as a,
-(SELECT gps_sensors_original_id, research_groups_id FROM main.gps_sensors group by gps_sensors_original_id, research_groups_id having count(*) > 1) as b
-where a.gps_sensors_original_id = b.gps_sensors_original_id and a.research_groups_id = b.research_groups_id) order by gps_sensors_id;
+(SELECT gps_sensors_code, research_groups_id FROM main.gps_sensors group by gps_sensors_code, research_groups_id having count(*) > 1) as b
+where a.gps_sensors_code = b.gps_sensors_code and a.research_groups_id = b.research_groups_id) order by gps_sensors_id;
 
 
 --VHF 
@@ -113,7 +113,7 @@ SELECT count(*), study_areas_id, animals_id, capture_timestamp
 FROM main.animals_captures JOIN main.animals using (animals_id)
 GROUP BY animals_id, capture_timestamp, study_areas_id
 HAVING count(*) > 1
-ORDER BY study_areas_id, animals_id
+ORDER BY study_areas_id, animals_id;
 -- Duplicated rows 
 WITH x AS (
 	SELECT count(*), study_areas_id, animals_id, capture_timestamp
@@ -124,7 +124,7 @@ WITH x AS (
 	)
 SELECT study_areas_id, a.*
 from x join main.animals_captures a using (animals_id, capture_timestamp)
-ORDER BY study_areas_id, animals_id, capture_timestamp
+ORDER BY study_areas_id, animals_id, capture_timestamp;
 
 
 -- 5 DUPLICATE CONTACTS 
@@ -140,9 +140,9 @@ WITH x AS (
 	GROUP BY animals_id, contact_timestamp, study_areas_id
 	HAVING count(*) > 1
 	)
-SELECT a.* FROM x join main.animals_contacts a using (animals_id, contact_timestamp)
+SELECT a.* FROM x join main.animals_contacts a using (animals_id, contact_timestamp);
 -- animals that died twice
-SELECT count(*), study_areas_id, animals_id, death FROM main.animals_contacts 
+SELECT count(*), study_areas_id, animals_id FROM main.animals_contacts 
 JOIN main.animals using (animals_id)
-GROUP BY study_areas_id,animals_id,death
+GROUP BY study_areas_id,animals_id
 HAVING count(*) > 1;

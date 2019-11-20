@@ -1,4 +1,4 @@
--- DEATH INCONSISTENCIES 
+﻿-- DEATH INCONSISTENCIES 
 -- animals death_date before capture_timestamp
 SELECT animals_id, death_date, death_time, capture_timestamp
 FROM main.animals JOIN main.animals_captures USING (animals_id) 
@@ -30,12 +30,12 @@ WHERE end_deployment_code = 4 and end_time != (death_date || ' ' || death_time):
 -- GPS
 SELECT study_areas_id, animals_original_id, animals_id, contact_timestamp, end_time, death_date 
 FROM main.animals_contacts JOIN main.gps_sensors_animals using (animals_id) JOIN main.animals using (animals_id) 
-WHERE end_time > contact_timestamp  
+WHERE end_time > contact_timestamp  ;
 
 -- VHF 
 SELECT study_areas_id, animals_original_id, animals_id, contact_timestamp, end_time, death_date 
 FROM main.animals_contacts JOIN main.vhf_sensors_animals using (animals_id) JOIN main.animals using (animals_id) 
-WHERE end_time > contact_timestamp  
+WHERE end_time > contact_timestamp  ;
 
 
 

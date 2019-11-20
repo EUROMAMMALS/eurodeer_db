@@ -1,4 +1,4 @@
--- ASSESSMENT OF ANIMALS MONITORED WITH GPS
+﻿-- ASSESSMENT OF ANIMALS MONITORED WITH GPS
 
 -- List of animals derived from gps_data_animals (animals with data)
 SELECT animals_id FROM main.gps_data_animals GROUP BY animals_id;
@@ -20,11 +20,11 @@ WHERE a.study_areas_id = b.study_areas_id
 order by b.study_areas_id;
 
 -- Check animals with no info on any collar deployed (i.e. never collared) and without any record in the table animals_capture table
-SELECT a.animals_id, a.study_areas_id, a.first_capture_date, b.* 
+SELECT a.animals_id, a.study_areas_id,  b.* 
 FROM (SELECT * FROM main.animals where gps_deployed = 'f' and activity_deployed= 'f' and vhf_deployed = 'f') a
 LEFT JOIN main.animals_captures b USING (animals_id)
 WHERE b.animals_id IS NULL
-ORDER BY death, a.study_areas_id,  a.animals_id
+ORDER BY  a.study_areas_id,  a.animals_id
 
 -- Associations animals - GPS collars with no data
 SELECT study_areas_id, end_deployment_code, start_time - end_time, * 
@@ -54,7 +54,7 @@ WITH y AS (
   FROM x JOIN main.gps_sensors_animals a USING (animals_id) WHERE bool = TRUE 
   ORDER BY animals_id, start_time 
 )
-SELECT study_areas_id, gps_sensors_animals_id, animals_id, animals_original_id, gps_sensors_original_id, start_time, end_time 
+SELECT study_areas_id, gps_sensors_animals_id, animals_id, animals_original_id, gps_sensors_code, start_time, end_time 
 FROM y JOIN main.animals USING (animals_id) JOIN main.gps_sensors USING (gps_sensors_id) 
 WHERE (bool2 is null OR bool2 = TRUE)
 ORDER BY animals_id, start_time

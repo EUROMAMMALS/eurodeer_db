@@ -1,7 +1,6 @@
--- LONGITUDE LATITUDE
+﻿-- LONGITUDE LATITUDE
 -- longitude/latitude is null but geometry is not NULL
-SELECT animals_id, latitude, longitude, geom FROM main.gps_data_animals WHERE longitude is null and geom is not null;
-SELECT animals_id, latitude, longitude, geom FROM main.gps_data_animals WHERE latitude is null and geom is not null;
+SELECT animals_id, latitude, longitude, geom FROM main.gps_data_animals WHERE (longitude is null or latitude is null) and geom is not null;
 
 -- geom and longitude/latitude do not correspond
 SELECT gps_data_animals_id, study_areas_id, animals_id, latitude, longitude, geom, st_y(geom),st_x(geom), gps_validity_code 
