@@ -119,7 +119,7 @@ An introduction to PostGIS (the spatial extention of PostgreSQL) give a look her
 
 In addition, for they who want to understand the technicalities of (or replicate the) EURODEER database structure and tools or to get more skills on data management for wildlife tracking data, we suggest the book [Spatial Database for GPS Wildlife Tracking Data- A Practical Guide to Creating a Data Management System with PostgreSQL/PostGIS and R](https://www.springer.com/us/book/9783319037424) (Urbano & Cagnacci Ed., 2014). You can find a digital version of the chapters of the book in the [EURODEER documents repository](http://eurodeer.org/internal-documents/) (for EURODEER partners).
 
-EURODEER **database manager** (Ferdinando) and **data curators** (Johannes) are always available for EUROMAMMALS databases users whenever technical support is needed in collaboration with the data curators of each network. For example for:  
+EURODEER **data curators** are always available for EUROMAMMALS databases users whenever technical support is needed in collaboration with the data curators of each network. For example for:  
 
 * preparation of data before they are sent to EURODEER for uploading to the shared database
 * creation/management of users
@@ -183,7 +183,7 @@ Although there are different dialects of SQL, it is very standardized and the sa
 
 There are many (but not too many) other SQL commands to retrieve data (e.g. order by, limit, left/right join, group by, having) and a long list of useful functions to deal with the different data types. Some resources where you can learn more about SQL are suggested in the [Introduction](#Introduction).  
 
-Some additional resources for spatial SQL with raster data produced by the EUORDEER project are available [here](https://github.com/feurbano/integration_raster_tracking_data).
+Some additional resources for spatial SQL with raster data produced by the EURODEER project are available [here](https://github.com/feurbano/integration_raster_tracking_data).
 
 In 2013, EURODEER organized a course on SQL and the use of eurodeer_db in Venice, Italy.
 
