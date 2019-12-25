@@ -85,11 +85,11 @@ The activities of the project that underpin the intense and motivating collabora
 
 ### <img src="images/eurolynx_logo.png" Height="35"/> *Lynx lynx*
 
-The project started in October 2018. The network and the sgared database are still being established.
+The project started in October 2018. More information will be added soon.  
 
 ### <img src="images/eurowildcat_logo.png" Height="35"/> *Felis silvestris silvestris*
 
-The project started in December 2018. The network and the sgared database are still being established.
+The project started in December 2018. More information will be added soon.  
 
 ## <a name="EURODEER_Overview"></a> EURODEER Database Overview
 
@@ -360,7 +360,7 @@ If you want to run a query (i.e. SQL code), click on **SQL** on the upper right 
 
 ### <a name="pgAdmin"></a>pgAdmin
 [PgAdmin](https://www.pgadmin.org/) is the most popular and feature rich Open Source administration and development platform for PostgreSQL. There are two versions: 3 and 4 (the former is more intuitive, the latter more modern and powerful but without some key features available in version 3). Note that eurodeer_db uses PostgreSQL 9.5 that is compatible with both versions. This is the best tool to manage the data and explore both structure and content, including the formulation of advanced queries and the creation of new database objects.
-Here below and example of the window with the connection parameters. The interface is very similat to that of phpPgAdmin.
+Here below and example of the window with the connection parameters. The interface is very similar to that of phpPgAdmin.
 
 ![](images/pgadmin_connection.png)
 
@@ -373,7 +373,7 @@ If you select rows, you can copy/past the records as comma-separated values.
 
 ![](images/pgadmin_visualization.png)
 
-There are other (better) ways to export data. The easiest one is to write the SQl query in the SQL window (clicl on the **SQL** icon, see image below). Then, instead of simply run the query, click the button to write the data to an external .csv file (see image).  
+There are other (better) ways to export data. The easiest one is to write the SQL query in the SQL window (click on the **SQL** icon, see image below). Then, instead of simply run the query, click the button to write the data to an external .csv file (see image).  
 
 ![](images/pgadmin_export.png)
 
@@ -422,7 +422,7 @@ Once created the connection, you will be able to visualize all the eurodeer_db t
 
 ![](images/base3.png)
 
-If you want to visualize and manipulate the data in CALC (equivalent of MS EXCEL), once you created the connection with CALC, you can load eurodeer_db tables though the **Data Source Manager** (to visulize it, go to View/Data Source, see image below).
+If you want to visualize and manipulate the data in CALC (equivalent of MS EXCEL), once you created the connection with CALC, you can load eurodeer_db tables though the **Data Source Manager** (to visualize it, go to View/Data Source, see image below).
 
 ![](images/calc1.png)
 
@@ -432,5 +432,5 @@ Now you can simply drag and drop the table into the spreadsheet panel (see below
 
 ### <a name="Others"></a>Other Client Tools 
 
-There are may other clients that can be easily connected with PostgreSQL. SOme examples are SAS, STATA, MS ACCESS, MS EXCEL, ArcGIS. Most of the functionalities offered by these commercial tools are covered by The open source tools listed above. If you are used to deal with data with other tools, you can check the software specific documentation about how to connect with a PostgreSQL/PostGIS database.
+There are may other clients that can be easily connected with PostgreSQL. Some examples are SAS, STATA, MS ACCESS, MS EXCEL, ArcGIS. Most of the functionalities offered by these commercial tools are covered by the open source tools listed above. If you are used to deal with data with other tools, you can check the software specific documentation about how to connect with a PostgreSQL/PostGIS database.
 
