@@ -15,7 +15,7 @@ WHERE 	end_deployment_code = 4 AND mortality_code = 0;
 
 -- End of deployment is not death but mortality is not alive
 SELECT 	study_areas_id, animals_original_id, animals_id,  gps_sensors_id, 
-	start_time, end_time, end_deployment_code, mortality_code, a.notes 
+	start_time, end_time, end_deployment_code, mortality_code, a.notes, death_date 
 FROM 	main.gps_sensors_animals a JOIN main.animals USING (animals_id) 
 	JOIN main.gps_sensors USING (gps_sensors_id) 
 WHERE 	end_deployment_code != 4 AND mortality_code != 0;
