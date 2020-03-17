@@ -7,14 +7,14 @@ GROUP BY 1,2 ORDER BY 3;
 
 -- Explore suspicious combinations end of deployment/mortality (example gps)
 -- End of deployment is death but mortality code is alive 
-SELECT 	study_areas_id, animals_original_id, animals_id, gps_sensors_code, gps_sensors_id, 
+SELECT 	study_areas_id, animals_original_id, animals_id,  gps_sensors_id, 
 	start_time, end_time, end_deployment_code, mortality_code, a.notes 
 FROM 	main.gps_sensors_animals a JOIN main.animals USING (animals_id) 
 	JOIN main.gps_sensors USING (gps_sensors_id) 
 WHERE 	end_deployment_code = 4 AND mortality_code = 0;
 
 -- End of deployment is not death but mortality is not alive
-SELECT 	study_areas_id, animals_original_id, animals_id, gps_sensors_code, gps_sensors_id, 
+SELECT 	study_areas_id, animals_original_id, animals_id,  gps_sensors_id, 
 	start_time, end_time, end_deployment_code, mortality_code, a.notes 
 FROM 	main.gps_sensors_animals a JOIN main.animals USING (animals_id) 
 	JOIN main.gps_sensors USING (gps_sensors_id) 
@@ -47,7 +47,7 @@ WHERE (a.notes LIKE ('%poach%') OR mortality_code = 9)
 ORDER BY study_areas_id, notes
 
 -- Check all animals-sensors with additional comments for data harmonization 
-SELECT 	study_areas_id, animals_original_id, animals_id, gps_sensors_code, gps_sensors_id, 
+SELECT 	study_areas_id, animals_original_id, animals_id, gps_sensors_id, 
 	start_time, end_time, end_deployment_code, mortality_code, a.notes 
 FROM 	main.gps_sensors_animals a JOIN main.animals USING (animals_id) 
 	JOIN main.gps_sensors USING (gps_sensors_id) 
