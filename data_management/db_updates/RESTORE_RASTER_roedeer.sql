@@ -6,8 +6,11 @@ raster2pgsql -a -t 50x50 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_06
 raster2pgsql -a -t 50x50 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_00.tif env_data.corine_land_cover_2000| psql -d eurodeer_db -U postgres  -p 5432
 raster2pgsql -a -t 50x50 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_90.tif env_data.corine_land_cover_1990| psql -d eurodeer_db -U postgres  -p 5432
 raster2pgsql -a -t 50x50 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_12.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
+raster2pgsql -a -t 128x128 -R -M E:\eurodeer_data\raster\land_cover\corine\g100_18.tif env_data.corine_land_cover_2018| psql -d eurodeer_db -U postgres  -p 5432
+
 -- If i want to create the tables while importing
 raster2pgsql -c -R -C -I -t 50x50 -M E:\eurodeer_data\raster\land_cover\corine\g100_12.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
+raster2pgsql -c -R -C -I -N -128 -t 50x50 -M E:\eurodeer_data\raster\land_cover\corine\g100_18.tif env_data.corine_land_cover_2012| psql -d eurodeer_db -U postgres  -p 5432
 
 -- 2012 must be clip because it includes overseas lands (files are compressed) 
 gdal_translate -a_srs EPSG:3035 -projwin 1500000 5500000 7400000 900000 -co "TILED=YES" -co "BLOCKXSIZE=256" -co "BLOCKYSIZE=256" -co COMPRESS=DEFLATE E:\eurodeer_data\raster\land_cover\corine\g100_clc12_V18_5.tif E:\eurodeer_data\raster\land_cover\corine\g100_12.tif
