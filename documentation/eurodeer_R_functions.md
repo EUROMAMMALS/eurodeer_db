@@ -1,9 +1,4 @@
-# Load functions from github
-
-In github, open the function and open the 'raw' version of the script. Copy this url and paste in the getURL function of RCurl. 
-Here is an example for the functions "export.R" and "opendir.R" stored in the function list. 
-
-**Load functions from github**  
+# Download NDVI MODIS BOKU raster layers 
 
 ```R
 # LOAD FUNCTION
@@ -19,9 +14,9 @@ user=u, # username
 password=pw) # password
 
 # EXTRACT NDVI MODIS BOKU USING STUDY AREAS ID
-# EXAMPLE BAVARIAN FOREST
+# EXAMPLE BAVARIAN FOREST (study area 2) AND BONDONE (study area 1)
 r <- eurodeer_extract_ndvi_modis_boku(con=con,
-                                      #dir=paste0('NDVI_',gsub('-','',Sys.Date())), # name of the directory
+                                      #dir=paste0('NDVI_',gsub('-','',Sys.Date())), # name of the directory where to download the rasters to
                                       #schema='temp', # schema where temporary tables are generated
                                       sa = c(1,2), # eurodeer study area id
                                       buffer= 25000, # buffer around the study area
