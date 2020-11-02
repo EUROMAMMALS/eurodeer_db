@@ -112,7 +112,9 @@ eurodeer_extract_ndvi_modis_boku <- function(con = con, dir=paste0('NDVI_',gsub(
 
   # CREATE A FOLDER IN HOME DIRECTORY 
   setwd('~'); 
-  if(dir.exists(dir)==FALSE){ 
+  if(dir.exists(dir)){
+    setwd(dir)
+  } else { 
     dir.create(dir); setwd(dir); dir.create('ndvi_modis_asc'); dir.create('ndvi_modis_tif'); dir.create('ndvi_modis_png')
   }
 
