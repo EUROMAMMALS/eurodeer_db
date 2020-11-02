@@ -22,7 +22,7 @@ r <- eurodeer_extract_ndvi_modis_boku(con=con,
                                       buffer= 25000, # buffer around the study area
                                       period=c('2017-01-20', '2017-02-08'), # start and end time
                                       load=TRUE) # whether the rasters need to be loaded in R - TRUE/FALSE
-# rescale to eurodeer gps data animals scale 
+# rescale original scale (0-250) to the NDVI scale (-0.2 to 1). Values larger than 1 are missing values (255=1.024) or water (251=1.0048; 252=1.0096)
 r <- lapply(r, function(x) x * 0.0048 - 0.2) # rescale between -0.2 and 1 
 for(i in 1:length(r)){r[[i]][r[[i]] > 1] <- NA} # replace values > 1 with NA (water or missing values)
 
