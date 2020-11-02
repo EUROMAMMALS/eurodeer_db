@@ -1,7 +1,7 @@
 # Download NDVI MODIS BOKU raster layers 
 
 This functions allows to download NDVI MODIS BOKU data as stored in the eurodeer database. Values range between 0 and 255, where values larger than 250 are 
-ocean (251), inland water (252) or missing (255). To scale to the range [-0.2 to 1] apply the following formula **RASTER * 0.0048 - 0.2**. Any value larger 
+ocean (251), inland water (252) or missing (255). To scale to the range [-0.2 to 1] apply the following formula **RASTER * 0.0048 - 0.2** (see example below). Any value larger 
 than 1 will correspond to water (1.0048; 1.0096) or a missing value (1.024).
 
 ```R
