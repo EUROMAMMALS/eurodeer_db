@@ -128,7 +128,8 @@ eurodeer_extract_ndvi_modis_boku <- function(con = con, dir=paste0('NDVI_',gsub(
     dbSendQuery(con, paste0("create table ",schema,".temp_ndvi_samp AS SELECT a.rid, a.rast, a.study_areas_id, a.acquisition_date FROM ",schema,".temp_record JOIN ",schema,".temp_ndvi_modis_boku a USING (study_areas_id, acquisition_date);"))
     # import the raster in r with pgGetRast, pgGetRast will automatically merge the tiles. 
     r <- pgGetRast(con,name =c(schema,'temp_ndvi_samp') ,rast='rast')
-    
+    # set values larger than 250 to NA 
+    r[r > 250] <- NA
     
     # export raster data locally
     writeRaster(r, filename=paste0('ndvi_modis_asc/ndvi_modis_boku_sa',tab[i,'study_areas_id'],'_',gsub('-','',tab[i,'acquisition_date'])), format='ascii', overwrite=TRUE)
