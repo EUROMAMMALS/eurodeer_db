@@ -58,7 +58,6 @@
 #'
 #' # rescale to eurodeer gps data animals scale 
 #' r <- r * 0.0048 - 0.2 #rescale between -0.2 and 1 
-#' r[r > 1] <- NA #replace values > 1 with NA (water or missing values)
 #'
 eurodeer_extract_ndvi_modis_boku <- function(con = con, dir=paste0('NDVI_',gsub('-','',Sys.Date())),schema='temp', sa = c(1,2), buffer= 25000,period=c('2017-01-20', '2017-02-08'), load=TRUE){
   # con = database connection
