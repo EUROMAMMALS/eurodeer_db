@@ -155,7 +155,7 @@ eurodeer_extract_ndvi_modis_boku <- function(con = con, dir=paste0('NDVI_',gsub(
   list_files_l <- split(list_files, f=sa_names)
   if(length(unique(sa_names)) > 1){
      r <- lapply(list_files_l, function(x) stack(x))
-     names(unique(sa_names))
+     names(r) <- unique(sa_names)
    } else {
      if(length(unique(sa_names)) == 1){
        r <- stack(list_files)
