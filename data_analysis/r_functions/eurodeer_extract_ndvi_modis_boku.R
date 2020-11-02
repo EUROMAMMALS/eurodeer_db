@@ -114,7 +114,10 @@ eurodeer_extract_ndvi_modis_boku <- function(con = con, dir=paste0('NDVI_',gsub(
   dbSendQuery(con, paste0("DROP TABLE ",schema,".temp_bbox;"))
 
   # CREATE A FOLDER IN HOME DIRECTORY 
-  setwd('~'); dir.create(dir); setwd(dir); dir.create('ndvi_modis_asc'); dir.create('ndvi_modis_tif'); dir.create('ndvi_modis_png')
+  setwd('~'); 
+  if(dir.exists(dir)==FALSE){ 
+    dir.create(dir); setwd(dir); dir.create('ndvi_modis_asc'); dir.create('ndvi_modis_tif'); dir.create('ndvi_modis_png')
+  }
 
   tab <- dbGetQuery(con, paste0("SELECT DISTINCT study_areas_id, acquisition_date FROM ",schema,".temp_ndvi_modis_boku ORDER BY study_areas_id, acquisition_date"))
   # loop to export ndvi layers per timestamp and study area
