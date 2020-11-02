@@ -10,6 +10,7 @@ library(RCurl)
 library(raster)
 library(rpostgis)
 library(RPostgreSQL)
+library(rgdal)
 library(sf)
 
 # LOAD FUNCTION
