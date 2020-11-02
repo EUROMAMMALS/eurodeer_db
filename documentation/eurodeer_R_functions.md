@@ -22,6 +22,10 @@ r <- eurodeer_extract_ndvi_modis_boku(con=con,
                                       buffer= 25000, # buffer around the study area
                                       period=c('2017-01-20', '2017-02-08'), # start and end time
                                       load=TRUE) # whether the rasters need to be loaded in R - TRUE/FALSE
+# rescale to eurodeer gps data animals scale 
+r <- lapply(r, function(x) x * 0.0048 - 0.2) # rescale between -0.2 and 1 
+for(i in 1:length(r)){r[[i]][r[[i]] > 1] <- NA} # replace values > 1 with NA (water or missing values)
+
 
 # EXTRACT NDVI MODIS BOKU USING POLYGON
 # A fake ID is generated for each polygon in the shapefile
