@@ -26,10 +26,25 @@
 #' r <- eurodeer_extract_ndvi_modis_boku(con=con,
 #'                                       #dir=paste0('NDVI_',gsub('-','',Sys.Date())), # name of the directory
 #'                                       #schema='temp', # schema where temporary tables are generated
+#'                                       sa = c(2), # eurodeer study area id
+#'                                       buffer= 25000, # buffer around the study area
+#'                                       period=c('2017-01-20', '2017-02-08'), # start and end time
+#'                                       load=TRUE) # whether the rasters need to be loaded in R - TRUE/FALSE
+#' # rescale to eurodeer gps data animals scale 
+#' r <- r * 0.0048 - 0.2 #rescale between -0.2 and 1 
+#' r[r > 1] <- NA #replace values > 1 with NA (water or missing values)
+#' 
+#' # EXAMPLE TWO DATASETS (BAVARIAN FOREST AND BONDONE)
+#' r <- eurodeer_extract_ndvi_modis_boku(con=con,
+#'                                       #dir=paste0('NDVI_',gsub('-','',Sys.Date())), # name of the directory
+#'                                       #schema='temp', # schema where temporary tables are generated
 #'                                       sa = c(1,2), # eurodeer study area id
 #'                                       buffer= 25000, # buffer around the study area
 #'                                       period=c('2017-01-20', '2017-02-08'), # start and end time
 #'                                       load=TRUE) # whether the rasters need to be loaded in R - TRUE/FALSE
+#' # rescale to eurodeer gps data animals scale 
+#' r <- lapply(r, function(x) x * 0.0048 - 0.2) #rescale between -0.2 and 1 
+#' for(i in 1:length(r)){r[[i]][r[[i]] > 1] <- NA} #replace values > 1 with NA (water or missing values)
 #' 
 #' # EXTRACT NDVI MODIS BOKU USING POLYGON
 #' # A fake ID is generated for each polygon in the shapefile
@@ -42,6 +57,11 @@
 #'                                       buffer= 25000,
 #'                                       period=c('2017-01-20', '2017-02-08'),
 #'                                       load=TRUE) # import them in R
+#'
+#' # rescale to eurodeer gps data animals scale 
+#' r <- r * 0.0048 - 0.2 #rescale between -0.2 and 1 
+#' r[r > 1] <- NA #replace values > 1 with NA (water or missing values)
+#'
 eurodeer_extract_ndvi_modis_boku <- function(con = con, dir=paste0('NDVI_',gsub('-','',Sys.Date())),schema='temp', sa = c(1,2), buffer= 25000,period=c('2017-01-20', '2017-02-08'), load=TRUE){
   # con = database connection
   # dir = specify the directory name 
