@@ -5,8 +5,14 @@ ocean (251), inland water (252) or missing (255). To scale to the range [-0.2 to
 than 1 will correspond to water (1.0048; 1.0096) or a missing value (1.024).
 
 ```R
-# LOAD FUNCTION
+# LOAD PACKAGES 
 library(RCurl)
+library(raster)
+library(rpostgis)
+library(RPostgreSQL)
+library(sf)
+
+# LOAD FUNCTION
 script <- getURL("https://raw.githubusercontent.com/feurbano/eurodeer_db/master/data_analysis/r_functions/eurodeer_extract_ndvi_modis_boku.R", ssl.verifypeer= FALSE)
 eval(parse(text = script))
 
