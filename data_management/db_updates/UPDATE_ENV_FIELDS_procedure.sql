@@ -27,24 +27,28 @@ WHERE gps_data_animals_imp.animals_id = foo.animals_id and gps_data_animals_imp.
 UPDATE env_data.gps_data_animals_imp 
 SET utm_x = st_x(st_transform(geom, utm_srid)), utm_y = st_y(st_transform(geom, utm_srid));
 
+-- I update the geom srid 3035 to speed up intersection with copernicus layers
+update env_data.gps_data_animals_imp set geom_3035 = st_transform(geom,3035);
+
+
 -- CORINE raster
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_1990_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_1990
 WHERE corine_land_cover_1990_code IS NULL AND st_intersects(geom_3035, rast);
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_2000_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_2000
 WHERE corine_land_cover_2000_code IS NULL  AND st_intersects(geom_3035, rast);
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_2006_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_2006
 WHERE corine_land_cover_2006_code IS NULL  AND st_intersects(geom_3035, rast);
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_2012_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_2012
 WHERE corine_land_cover_2012_code IS NULL AND st_intersects(geom_3035, rast);
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_2018_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_2012
 WHERE corine_land_cover_2018_code IS NULL AND st_intersects(geom_3035, rast);
@@ -83,31 +87,31 @@ WHERE st_coveredby(gps_data_animals_imp.geom, corine_land_cover_2012_vector.geom
 --> IN EURODEER DB <--
 ----------------------
 -- I import into EURODEER all the locations with missing values
-TRUNCATE env_data.reddeer_update_gps_update_env_fields;
-INSERT INTO env_data.reddeer_update_gps_update_env_fields
+TRUNCATE env_data.gps_data_animals_imp;
+INSERT INTO env_data.gps_data_animals_imp
 SELECT gps_data_animals_imp_id, acquisition_time, geom, gps_validity_code, corine_land_cover_2006_code, corine_land_cover_2000_code, corine_land_cover_1990_code, corine_land_cover_2012_code, ndvi_modis_boku, ndvi_modis_smoothed,  snow_modis, st_transform(geom,3035) as geom_3035
 FROM analysis.external_gps_update_env_fields_reddeer;
 
 -- CORINE raster
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_1990_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_1990
 WHERE corine_land_cover_1990_code IS NULL AND st_intersects(geom_3035, rast);
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_2000_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_2000
 WHERE corine_land_cover_2000_code IS NULL  AND st_intersects(geom_3035, rast);
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_2006_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_2006
 WHERE corine_land_cover_2006_code IS NULL  AND st_intersects(geom_3035, rast);
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_2012_code = st_value(rast,geom_3035) 
 FROM env_data.corine_land_cover_2012
 WHERE corine_land_cover_2012_code IS NULL AND st_intersects(geom_3035, rast);
 -- MODIS SNOW 
 UPDATE 
-env_data.reddeer_update_gps_update_env_fields 
+env_data.gps_data_animals_imp 
 SET snow_modis = st_value(rast, geom)
 FROM env_data_ts.snow_modis
 WHERE
@@ -123,7 +127,7 @@ WHERE
 
 -- MODIS NDVI SMOOTHED --
 UPDATE
-env_data.reddeer_update_gps_update_env_fields 
+env_data.gps_data_animals_imp 
 SET
 ndvi_modis_smoothed = (st_value(pre.rast, geom)*(post.acquisition_date - acquisition_time::date)/(post.acquisition_date - pre.acquisition_date) +
 st_value(post.rast, geom)*(- (pre.acquisition_date - acquisition_time::date))/(post.acquisition_date - pre.acquisition_date)) * 0.0048 -0.2
@@ -146,7 +150,7 @@ WHERE
     WHEN extract ('day' FROM acquisition_time) < 26 then (extract('year' FROM acquisition_time::date)||'-'||extract ('month' FROM acquisition_time::date)||'-26')::date
     else  (extract('year' FROM acquisition_time::date+6)||'-'||extract ('month' FROM acquisition_time::date+6)||'-06')::date end;
 -- MODIS NDVI BOKU --
-UPDATE env_data.reddeer_update_gps_update_env_fields 
+UPDATE env_data.gps_data_animals_imp 
 SET ndvi_modis_boku = (trunc((st_value(pre.rast, geom) * (date_trunc('week', acquisition_time::date + 7)::date -acquisition_time::date)::integer +
 st_value(post.rast, geom) * (acquisition_time::date - date_trunc('week', acquisition_time::date)::date))::integer/7)) * 0.0048 -0.2
 FROM env_data_ts.ndvi_modis_boku pre, env_data_ts.ndvi_modis_boku post
@@ -169,6 +173,61 @@ UPDATE env_data.gps_data_animals_imp
        ndvi_modis_smoothed=a.ndvi_modis_smoothed, 
        corine_land_cover_2012_code=a.corine_land_cover_2012_code
 FROM
-env_data.reddeer_update_gps_update_env_fields a
+env_data.gps_data_animals_imp a
 WHERE 
 a.gps_data_animals_imp_id = gps_data_animals_imp.gps_data_animals_imp_id;
+
+
+
+------------------------------
+-- CODE TABLE TO BE UPDATED --
+------------------------------
+
+CREATE TABLE env_data.gps_data_animals_imp
+(
+  euro_db character varying NOT NULL,
+  gps_data_animals_id integer NOT NULL,
+  animals_id integer,
+  acquisition_time timestamp with time zone,
+  latitude double precision,
+  longitude double precision,
+  geom geometry(Point,4326),
+  gps_validity_code smallint,
+  snow_modis integer,
+  sun_angle double precision,
+  utm_srid integer,
+  utm_x integer,
+  utm_y integer,
+  corine_land_cover_2006_code integer,
+  corine_land_cover_2000_code integer,
+  corine_land_cover_1990_code integer,
+  corine_land_cover_2012_code integer,
+  corine_land_cover_2012_vector_code integer,
+  corine_land_cover_2018_code integer,
+  ndvi_modis_boku double precision,
+  ndvi_modis_smoothed double precision,
+  update_core_timestamp timestamp with time zone,
+  altitude_copernicus integer,
+  slope_copernicus double precision,
+  aspect_copernicus integer,
+  forest_density integer,
+  gps_sensors_animals_id integer,
+  CONSTRAINT gps_data_animals_impx_pkey PRIMARY KEY (gps_data_animals_id, euro_db)
+);
+CREATE INDEX acquisition_time_index
+  ON env_data.gps_data_animals_imp
+  USING btree
+  (acquisition_time);
+CREATE INDEX animal_index
+  ON env_data.gps_data_animals_imp
+  USING btree
+  (animals_id);
+CREATE INDEX geom_indice
+  ON env_data.gps_data_animals_imp
+  USING gist
+  (geom);
+ALTER TABLE env_data.gps_data_animals_imp ADD COLUMN geom_3035 geometry(Point,3035);
+CREATE INDEX geom3035_indice
+  ON env_data.gps_data_animals_imp
+  USING gist
+  (geom);
