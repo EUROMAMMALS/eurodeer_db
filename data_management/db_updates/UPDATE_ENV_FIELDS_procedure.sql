@@ -8,25 +8,25 @@ where geom is null or acquisition_time is null;
 -- Update field geom (from lat/long)
 UPDATE env_data.gps_data_animals_imp 
 SET geom = st_setsrid(st_makepoint(longitude,latitude),4326)
-where longitude IS NOT NULL AND latitude IS NOT NULL AND (gps_validity_code IN (1,2,3) OR gps_validity_code is null) AND geom IS NULL;
+where longitude IS NOT NULL AND latitude IS NOT NULL AND geom IS NULL;
 
 -- Update sun angle
 UPDATE env_data.gps_data_animals_imp 
 SET sun_angle = tools.sun_elevation_angle(acquisition_time, geom) 
-WHERE sun_angle IS NULL AND gps_validity_code IN (1,2,3);
+WHERE sun_angle IS NULL;
 
 -- Update reference utm zone and related X/Y coordinates
 UPDATE env_data.gps_data_animals_imp 
 SET utm_srid = foo.a 
 FROM
 	(SELECT animals_id, tools.srid_utm(st_x(ST_Centroid(st_collect(geom))), st_y((ST_Centroid(st_collect(geom))))) AS a 
-	FROM env_data.gps_data_animals_imp 
-	WHERE gps_validity_code IN (1,2,3) 
+	FROM env_data.gps_data_animals_imp where utm_srid is null
 	GROUP BY animals_id) AS foo 
 WHERE gps_data_animals_imp.animals_id = foo.animals_id AND gps_data_animals_imp.utm_srid IS NULL;
+
 UPDATE env_data.gps_data_animals_imp 
 SET utm_x = st_x(st_transform(geom, utm_srid)), utm_y = st_y(st_transform(geom, utm_srid))
-WHERE gps_validity_code IN (1,2,3) AND utm_x IS NULL;
+WHERE  utm_x IS NULL;
 
 
 ---------------------------------------
