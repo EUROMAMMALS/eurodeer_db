@@ -19,47 +19,35 @@ WHERE sun_angle IS NULL;
 UPDATE env_data.gps_data_animals_imp 
 SET utm_srid = foo.a 
 FROM
-	(SELECT animals_id, tools.srid_utm(st_x(ST_Centroid(st_collect(geom))), st_y((ST_Centroid(st_collect(geom))))) AS a 
+	(SELECT euro_db, animals_id, tools.srid_utm(st_x(ST_Centroid(st_collect(geom))), st_y((ST_Centroid(st_collect(geom))))) AS a 
 	FROM env_data.gps_data_animals_imp where utm_srid is null
-	GROUP BY animals_id) AS foo 
-WHERE gps_data_animals_imp.animals_id = foo.animals_id AND gps_data_animals_imp.utm_srid IS NULL;
+	GROUP BY euro_db, animals_id) AS foo 
+WHERE gps_data_animals_imp.animals_id = foo.animals_id and gps_data_animals_imp.euro_db = foo.euro_db;
 
 UPDATE env_data.gps_data_animals_imp 
-SET utm_x = st_x(st_transform(geom, utm_srid)), utm_y = st_y(st_transform(geom, utm_srid))
-WHERE  utm_x IS NULL;
+SET utm_x = st_x(st_transform(geom, utm_srid)), utm_y = st_y(st_transform(geom, utm_srid));
 
-
----------------------------------------
--- UPDATE the study areas boundaries --
----------------------------------------
--- Many definition are possible, all related geom must be updated
--- Basic definition (geom): MCP of all points of the study area
-UPDATE env_data.study_areas 
-SET geom = foo.qq 
-FROM 
-	(SELECT studies_id AS ww, (st_multi(st_convexhull(st_collect(geom)))) qq 
-	FROM analysis.view_convexhull 
-	GROUP BY studies_id) AS foo 
-WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
--- geom_mcp_individuals: union of individual MCP of all animals + buffer of 500 meters
-UPDATE env_data.study_areas 
-SET geom_mcp_individuals = foo.qq FROM 
-	(SELECT studies_id AS ww,st_multi(st_buffer((st_multi(st_union(geom)))::geometry(multipolygon, 4326)::geography, 500)::geometry)qq 
-	FROM analysis.view_convexhull 
-	GROUP BY studies_id) AS foo 
-WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
--- geom_vhf: study areas defined by vhf locations (MCP of all locations)
-UPDATE env_data.study_areas 
-SET geom_vhf = foo.qq 
-FROM 
-	(SELECT studies_id AS ww, (st_multi(st_convexhull(st_collect(geom)))) qq 
-	FROM analysis.view_convexhull_vhf 
-	GROUP BY studies_id) AS foo 
-WHERE defined_boundaries = 0 AND study_areas.study_areas_id = foo.ww;
--- geom_grid300:  trajectories (1 location every 12 hours) are intersected with a grid of 250 meters (modis grid) and only cells with a minimum of time spent on it are kept + a buffer of 1 km
---> missing code
--- geom_kernel95_5km_buffer: kernel home range is calculated using all the data of a study area (1 location every 12 hours) + buffer of 5 km
---> missing code
+-- CORINE raster
+UPDATE env_data.reddeer_update_gps_update_env_fields 
+SET corine_land_cover_1990_code = st_value(rast,geom_3035) 
+FROM env_data.corine_land_cover_1990
+WHERE corine_land_cover_1990_code IS NULL AND st_intersects(geom_3035, rast);
+UPDATE env_data.reddeer_update_gps_update_env_fields 
+SET corine_land_cover_2000_code = st_value(rast,geom_3035) 
+FROM env_data.corine_land_cover_2000
+WHERE corine_land_cover_2000_code IS NULL  AND st_intersects(geom_3035, rast);
+UPDATE env_data.reddeer_update_gps_update_env_fields 
+SET corine_land_cover_2006_code = st_value(rast,geom_3035) 
+FROM env_data.corine_land_cover_2006
+WHERE corine_land_cover_2006_code IS NULL  AND st_intersects(geom_3035, rast);
+UPDATE env_data.reddeer_update_gps_update_env_fields 
+SET corine_land_cover_2012_code = st_value(rast,geom_3035) 
+FROM env_data.corine_land_cover_2012
+WHERE corine_land_cover_2012_code IS NULL AND st_intersects(geom_3035, rast);
+UPDATE env_data.reddeer_update_gps_update_env_fields 
+SET corine_land_cover_2018_code = st_value(rast,geom_3035) 
+FROM env_data.corine_land_cover_2012
+WHERE corine_land_cover_2018_code IS NULL AND st_intersects(geom_3035, rast);
 
 -- Update forest density (Copernicus layer)
 -- If new study areas or new animals far from the other are uploaded, it is necessary to run the procedure to derive the reference layer
