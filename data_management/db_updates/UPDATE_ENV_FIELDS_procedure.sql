@@ -50,7 +50,7 @@ FROM env_data.corine_land_cover_2012
 WHERE corine_land_cover_2012_code IS NULL AND st_intersects(geom_3035, rast);
 UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_2018_code = st_value(rast,geom_3035) 
-FROM env_data.corine_land_cover_2012
+FROM env_data.corine_land_cover_2018
 WHERE corine_land_cover_2018_code IS NULL AND st_intersects(geom_3035, rast);
 
 -- Update forest density (Copernicus layer)
@@ -83,32 +83,7 @@ SET corine_land_cover_2012_vector_code = corine_land_cover_2012_vector.clc_code:
 FROM env_data.corine_land_cover_2012_vector
 WHERE st_coveredby(gps_data_animals_imp.geom, corine_land_cover_2012_vector.geom) AND gps_validity_code IN (1,2,3) AND corine_land_cover_2012_vector_code IS NULL;
 
-----------------------
---> IN EURODEER DB <--
-----------------------
--- I import into EURODEER all the locations with missing values
-TRUNCATE env_data.gps_data_animals_imp;
-INSERT INTO env_data.gps_data_animals_imp
-SELECT gps_data_animals_imp_id, acquisition_time, geom, gps_validity_code, corine_land_cover_2006_code, corine_land_cover_2000_code, corine_land_cover_1990_code, corine_land_cover_2012_code, ndvi_modis_boku, ndvi_modis_smoothed,  snow_modis, st_transform(geom,3035) as geom_3035
-FROM analysis.external_gps_update_env_fields_reddeer;
 
--- CORINE raster
-UPDATE env_data.gps_data_animals_imp 
-SET corine_land_cover_1990_code = st_value(rast,geom_3035) 
-FROM env_data.corine_land_cover_1990
-WHERE corine_land_cover_1990_code IS NULL AND st_intersects(geom_3035, rast);
-UPDATE env_data.gps_data_animals_imp 
-SET corine_land_cover_2000_code = st_value(rast,geom_3035) 
-FROM env_data.corine_land_cover_2000
-WHERE corine_land_cover_2000_code IS NULL  AND st_intersects(geom_3035, rast);
-UPDATE env_data.gps_data_animals_imp 
-SET corine_land_cover_2006_code = st_value(rast,geom_3035) 
-FROM env_data.corine_land_cover_2006
-WHERE corine_land_cover_2006_code IS NULL  AND st_intersects(geom_3035, rast);
-UPDATE env_data.gps_data_animals_imp 
-SET corine_land_cover_2012_code = st_value(rast,geom_3035) 
-FROM env_data.corine_land_cover_2012
-WHERE corine_land_cover_2012_code IS NULL AND st_intersects(geom_3035, rast);
 -- MODIS SNOW 
 UPDATE 
 env_data.gps_data_animals_imp 
@@ -149,6 +124,7 @@ WHERE
     WHEN extract ('day' FROM acquisition_time) < 16 then (extract('year' FROM acquisition_time::date)||'-'||extract ('month' FROM acquisition_time::date)||'-16')::date
     WHEN extract ('day' FROM acquisition_time) < 26 then (extract('year' FROM acquisition_time::date)||'-'||extract ('month' FROM acquisition_time::date)||'-26')::date
     else  (extract('year' FROM acquisition_time::date+6)||'-'||extract ('month' FROM acquisition_time::date+6)||'-06')::date end;
+	
 -- MODIS NDVI BOKU --
 UPDATE env_data.gps_data_animals_imp 
 SET ndvi_modis_boku = (trunc((st_value(pre.rast, geom) * (date_trunc('week', acquisition_time::date + 7)::date -acquisition_time::date)::integer +
@@ -161,27 +137,10 @@ WHERE
   date_trunc('week', acquisition_time::date)::date = pre.acquisition_date and 
   date_trunc('week', acquisition_time::date + 7)::date = post.acquisition_date;
 
------------------------
---> IN EUREDDEER DB <--
------------------------
-UPDATE env_data.gps_data_animals_imp
-   SET corine_land_cover_2006_code=a.corine_land_cover_2006_code, 
-       snow_modis=a.snow_modis,
-       corine_land_cover_2000_code=a.corine_land_cover_2000_code, 
-       corine_land_cover_1990_code=a.corine_land_cover_1990_code, 
-       ndvi_modis_boku=a.ndvi_modis_boku, 
-       ndvi_modis_smoothed=a.ndvi_modis_smoothed, 
-       corine_land_cover_2012_code=a.corine_land_cover_2012_code
-FROM
-env_data.gps_data_animals_imp a
-WHERE 
-a.gps_data_animals_imp_id = gps_data_animals_imp.gps_data_animals_imp_id;
 
-
-
-------------------------------
--- CODE TABLE TO BE UPDATED --
-------------------------------
+----------------------------------------------
+-- CODE TO GENERATE THE TABLE TO BE UPDATED --
+----------------------------------------------
 
 CREATE TABLE env_data.gps_data_animals_imp
 (
