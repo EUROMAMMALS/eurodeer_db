@@ -30,7 +30,6 @@ SET utm_x = st_x(st_transform(geom, utm_srid)), utm_y = st_y(st_transform(geom, 
 -- I update the geom srid 3035 to speed up intersection with copernicus layers
 update env_data.gps_data_animals_imp set geom_3035 = st_transform(geom,3035);
 
-
 -- CORINE raster
 UPDATE env_data.gps_data_animals_imp 
 SET corine_land_cover_1990_code = st_value(rast,geom_3035) 
@@ -82,7 +81,6 @@ UPDATE env_data.gps_data_animals_imp
 SET corine_land_cover_2012_vector_code = corine_land_cover_2012_vector.clc_code::integer
 FROM env_data.corine_land_cover_2012_vector
 WHERE st_coveredby(gps_data_animals_imp.geom, corine_land_cover_2012_vector.geom) AND gps_validity_code IN (1,2,3) AND corine_land_cover_2012_vector_code IS NULL;
-
 
 -- MODIS SNOW 
 UPDATE 
@@ -137,7 +135,6 @@ WHERE
   date_trunc('week', acquisition_time::date)::date = pre.acquisition_date and 
   date_trunc('week', acquisition_time::date + 7)::date = post.acquisition_date;
 
-
 ----------------------------------------------
 -- CODE TO GENERATE THE TABLE TO BE UPDATED --
 ----------------------------------------------
@@ -147,6 +144,7 @@ CREATE TABLE env_data.gps_data_animals_imp
   euro_db character varying NOT NULL,
   gps_data_animals_id integer NOT NULL,
   animals_id integer,
+  study_areas_id integer
   acquisition_time timestamp with time zone,
   latitude double precision,
   longitude double precision,
