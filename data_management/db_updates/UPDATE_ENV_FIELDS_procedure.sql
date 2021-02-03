@@ -52,6 +52,34 @@ SET corine_land_cover_2018_code = st_value(rast,geom_3035)
 FROM env_data.corine_land_cover_2018
 WHERE corine_land_cover_2018_code IS NULL AND st_intersects(geom_3035, rast);
 
+-- Generate the geometries to subset the huge DEM Copernicus layers
+drop table if exists env_data.box_union_imp;
+create table env_data.box_union_imp as
+with convex_hull_box as
+(select 
+(row_number() over())::integer as id,
+euro_db,
+animals_id,
+euro_db||'_'||
+animals_id as code,
+(ST_Expand(st_envelope(st_transform(st_convexhull(st_collect(geom)),3035)), 100))::geometry(polygon,3035)
+as geom_3035
+from 
+env_data.gps_data_animals_imp
+group by 
+euro_db,
+animals_id)
+Select (row_number() over())::integer as id, geom_3035
+ from 
+ (select (st_envelope((st_dump(st_union(geom_3035))).geom))::geometry(polygon,3035) geom_3035 from 
+ (select (st_envelope((st_dump(st_union(geom_3035))).geom))::geometry(polygon,3035) geom_3035 from 
+ (select (st_envelope((st_dump(st_union(geom_3035))).geom))::geometry(polygon,3035) geom_3035
+ from convex_hull_box) a
+ where st_geometrytype (geom_3035) = 'ST_Polygon') b) c;
+ ALTER TABLE  env_data.box_union_imp ADD PRIMARY KEY (id);
+
+-----> ADD INTERSECION HERE
+
 -- Update forest density (Copernicus layer)
 -- If new study areas or new animals far from the other are uploaded, it is necessary to run the procedure to derive the reference layer
 UPDATE env_data.gps_data_animals_imp
@@ -76,6 +104,32 @@ SET aspect_copernicus = st_value(aspect_copernicus.rast, st_transform(gps_data_a
 FROM env_data.aspect_copernicus, env_data.animals
 WHERE aspect_copernicus IS NULL AND gps_validity_code IN (1,2,3) AND animals.animals_id = gps_data_animals_imp.animals_id AND animals.study_areas_id = aspect_copernicus.study_areas_id AND st_intersects(aspect_copernicus.rast,st_transform(gps_data_animals_imp.geom,3035));
 
+-- Generate the geometries to clip the huge copernicus corine layer
+DROP table  if exists env_data.convex_hull_imp;
+create table env_data.convex_hull_imp as
+select 
+(row_number() over())::integer as id, st_makevalid(st_simplify(geom_3035,50))::geometry(polygon,3035) geom_3035 from
+(Select
+ ((st_dump(st_union(geom_3035::geometry(polygon,3035)))).geom)::geometry(polygon,3035)
+as geom_3035 from 
+(select 
+euro_db,
+animals_id,
+((st_dump(st_union(ST_Expand(geom_3035, 100)))).geom)
+as geom_3035
+from 
+env_data.gps_data_animals_imp 
+where
+corine_land_cover_2012_vector_code is null
+group by 
+euro_db,
+animals_id) a
+where
+st_geometrytype(geom_3035) = 'ST_Polygon') b;
+ALTER TABLE  env_data.convex_hull_imp ADD PRIMARY KEY (id);
+
+-----> ADD INTERSECION HERE
+
 -- Update CORINE 2012 from vector layer
 UPDATE env_data.gps_data_animals_imp
 SET corine_land_cover_2012_vector_code = corine_land_cover_2012_vector.clc_code::integer
@@ -88,7 +142,6 @@ env_data.gps_data_animals_imp
 SET snow_modis = st_value(rast, geom)
 FROM env_data_ts.snow_modis
 WHERE
-  gps_validity_code in (1,2,3) and 
   snow_modis is null and 
   st_intersects(geom, rast) and 
   acquisition_time::date >= snow_modis.acquisition_date and  
@@ -107,7 +160,6 @@ st_value(post.rast, geom)*(- (pre.acquisition_date - acquisition_time::date))/(p
 FROM env_data_ts.ndvi_modis_smoothed pre, env_data_ts.ndvi_modis_smoothed post
 WHERE
   ndvi_modis_smoothed IS NULL AND 
-  gps_validity_code in (1,2,3) and 
   st_intersects(geom, pre.rast) and 
   st_intersects(geom, post.rast) and 
   pre.acquisition_date = 
@@ -129,7 +181,6 @@ SET ndvi_modis_boku = (trunc((st_value(pre.rast, geom) * (date_trunc('week', acq
 st_value(post.rast, geom) * (acquisition_time::date - date_trunc('week', acquisition_time::date)::date))::integer/7)) * 0.0048 -0.2
 FROM env_data_ts.ndvi_modis_boku pre, env_data_ts.ndvi_modis_boku post
 WHERE
-  ndvi_modis_boku IS NULL AND gps_validity_code in (1,2,3) and 
   st_intersects(geom, pre.rast) and 
   st_intersects(geom, post.rast) and 
   date_trunc('week', acquisition_time::date)::date = pre.acquisition_date and 
