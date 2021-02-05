@@ -52,7 +52,12 @@ SET corine_land_cover_2018_code = st_value(rast,geom_3035)
 FROM env_data.corine_land_cover_2018
 WHERE corine_land_cover_2018_code IS NULL AND st_intersects(geom_3035, rast);
 
--- Generate the geometries to subset the huge DEM Copernicus layers
+-- Copernicus layer (I have first to clip and import the areas of interest from the huge original layers)
+-- First I generate a bounding box for each area
+-- Then I create the gdal commands to clip the raster 
+-- Then I import the raster and run the intersection
+
+-- Bounding boxes (might take 1-2 minutes)
 drop table if exists env_data.box_union_imp;
 create table env_data.box_union_imp as
 with convex_hull_box as
@@ -62,7 +67,7 @@ euro_db,
 animals_id,
 euro_db||'_'||
 animals_id as code,
-(ST_Expand(st_envelope(st_transform(st_convexhull(st_collect(geom)),3035)), 100))::geometry(polygon,3035)
+(ST_Expand(st_envelope(st_transform(st_convexhull(st_collect(geom)),3035)), 5000))::geometry(polygon,3035)
 as geom_3035
 from 
 env_data.gps_data_animals_imp
@@ -77,64 +82,96 @@ Select (row_number() over())::integer as id, geom_3035
  from convex_hull_box) a
  where st_geometrytype (geom_3035) = 'ST_Polygon') b) c;
  ALTER TABLE  env_data.box_union_imp ADD PRIMARY KEY (id);
+ALTER TABLE  env_data.box_union_imp OWNER TO data_curators_eurodeer;
 
------> ADD INTERSECION HERE
+-- FOREST DENSITY
 
--- Update forest density (Copernicus layer)
--- If new study areas or new animals far from the other are uploaded, it is necessary to run the procedure to derive the reference layer
-UPDATE env_data.gps_data_animals_imp
-SET forest_density = st_value(forest_density.rast, st_transform(gps_data_animals_imp.geom,3035))
-FROM env_data.forest_density, env_data.animals
-WHERE forest_density IS NULL AND gps_validity_code IN (1,2,3) AND animals.animals_id = gps_data_animals_imp.animals_id AND animals.study_areas_id = forest_density.study_areas_id AND st_intersects(forest_density.rast,st_transform(gps_data_animals_imp.geom,3035));
+-- I generate the gdal command to clip the raster image (copy past the results from the query output file into GDAL dos on the server)
+-- Clear the folder E:\eurodeer_data\raster\local_intersection\ before you run the gdal command 
+
+with bbox_20 as
+(SELECT id, 
+            right(((id+1000)::text),3) AS code,
+    floor(st_xmin(geom_3035::box3d) / 2560::double precision) * 2560::double precision AS xmin,
+    ceil(st_xmax(geom_3035::box3d) / 2560::double precision) * 2560::double precision AS xmax,
+    floor(st_ymin(geom_3035::box3d) / 2560::double precision) * 2560::double precision AS ymin,
+    ceil(st_ymax(geom_3035::box3d) / 2560::double precision) * 2560::double precision AS ymax
+   FROM env_data.box_union_imp)
+SELECT ((((((((((('gdal_translate -ot BYTE -a_nodata 255 -projwin '::text || xmin) || ' '::text) || ymax) || ' '::text) || xmax) || ' '::text) || ymin) || ' -co "TILED=YES" -co "BLOCKXSIZE=128" -co "BLOCKYSIZE=128" E:\eurodeer_data\raster\remote_sensing\forestcover\copernicus\forest_density.tif E:\eurodeer_data\raster\local_intersection\forest_density_'::text))) ||code::text) || '.tif'::text AS query
+   FROM bbox_20;
+
+-- In the database
+DROP TABLE IF EXISTS env_data.forest_density;
+-- In DOS
+raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\local_intersection\forest_density_*.tif env_data.forest_density| psql -d eurodeer_db -U postgres  -p 5432
+-- In the databse
+ALTER TABLE  env_data.env_data.forest_density OWNER TO data_curators_eurodeer;
+
+-- Intersection
+UPDATE main.env_data.gps_data_animals_imp
+SET forest_density = st_value(forest_density.rast, geom_3035)
+FROM env_data.forest_density
+WHERE forest_density IS NULL AND st_intersects(forest_density.rast,geom_3035);
 
 -- Update DEM+SLOPE+ASPECT (Copernicus layer)
--- If new study areas or new animals far from the other are uploaded, it is necessary to run the procedure to derive the reference layer
+
+-- First I generate the tiles that I need, as for forest density
+-- I copy past the result of the query into gdal prompt to generate the .tif files
+ WITH bbox_clip_25 AS (
+ SELECT id, 
+            right(((id+1000)::text),3) AS code,
+    floor(st_xmin(geom_3035) / 3200::double precision) * 3200::double precision AS xmin,
+    ceil(st_xmax(geom_3035) / 3200::double precision) * 3200::double precision AS xmax,
+    floor(st_ymin(geom_3035) / 3200::double precision) * 3200::double precision AS ymin,
+    ceil(st_ymax(geom_3035) / 3200::double precision) * 3200::double precision AS ymax
+   FROM env_data.box_union_imp)
+SELECT query from(
+ SELECT ((((((((((('gdal_translate -ot Int16 -a_nodata -32768 -projwin '::text || bbox_clip_25.xmin) || ' '::text) || bbox_clip_25.ymax) || ' '::text) || bbox_clip_25.xmax) || ' '::text) || bbox_clip_25.ymin) || ' -co "TILED=YES" -co "BLOCKXSIZE=128" -co "BLOCKYSIZE=128" E:\eurodeer_data\raster\dem\copernicus\eudem_dem_3035_europe.tif E:\eurodeer_data\raster\local_intersection\dem_'::text) )) || bbox_clip_25.code::text) || '.tif'::text AS query,
+    1 AS orderx
+   FROM bbox_clip_25
+UNION
+ SELECT ((((((('gdaldem slope -co "TILED=YES" -co "BLOCKXSIZE=128" -co "BLOCKYSIZE=128"  E:\eurodeer_data\raster\local_intersection\dem_'::text )) || bbox_clip_25.code::text) || '.tif E:\eurodeer_data\raster\local_intersection\slope_'::text))) || bbox_clip_25.code::text) || '.tif'::text AS query,
+    2 AS orderx
+   FROM bbox_clip_25
+UNION
+ SELECT ((((((('gdaldem aspect -co "TILED=YES" -co "BLOCKXSIZE=128" -co "BLOCKYSIZE=128" E:\eurodeer_data\raster\local_intersection\dem_'::text )) || bbox_clip_25.code::text) || '.tif E:\eurodeer_data\raster\local_intersection\aspect_'::text))) || bbox_clip_25.code::text) || '.tif'::text AS query,
+    3 AS orderx
+   FROM bbox_clip_25) a
+  ORDER BY orderx, query;
+
+-- In the database
+DROP TABLE IF EXISTS env_data.altitude_copernicus;
+DROP TABLE IF EXISTS env_data.slope_copernicus;
+DROP TABLE IF EXISTS env_data.aspect_copernicus;
+-- In GDAL DOS
+raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\local_intersection\dem_*.tif env_data.altitude_copernicus| psql -d eurodeer_db -U postgres  -p 5432
+
+-- In GDAL DOS
+raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\local_intersection\slope_*.tif env_data.slope_copernicus| psql -d eurodeer_db -U postgres  -p 5432
+
+-- In GDAL DOS
+raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\local_intersection\aspect_*.tif env_data.aspect_copernicus| psql -d eurodeer_db -U postgres  -p 5432
+
+-- In the database
+ALTER TABLE  env_data.env_data.altitude_copernicus OWNER TO data_curators_eurodeer;
+ALTER TABLE  env_data.env_data.slope_copernicus OWNER TO data_curators_eurodeer;
+ALTER TABLE  env_data.env_data.aspect_copernicus OWNER TO data_curators_eurodeer;
+
+-- Intersection
 UPDATE env_data.gps_data_animals_imp
-SET altitude_copernicus = st_value(dem_copernicus.rast, st_transform(gps_data_animals_imp.geom,3035))
-FROM env_data.dem_copernicus,   env_data.animals
-WHERE altitude_copernicus IS NULL AND gps_validity_code IN (1,2,3) AND animals.animals_id = gps_data_animals_imp.animals_id AND animals.study_areas_id = dem_copernicus.study_areas_id AND st_intersects(dem_copernicus.rast,st_transform(gps_data_animals_imp.geom,3035));
+SET altitude_copernicus = st_value(dem_copernicus.rast, geom_3035)
+FROM env_data.dem_copernicus, env_data.animals
+WHERE altitude_copernicus IS NULL AND st_intersects(dem_copernicus.rast,geom_3035);
 
 UPDATE env_data.gps_data_animals_imp 
-SET slope_copernicus = st_value(slope_copernicus.rast, st_transform(gps_data_animals_imp.geom,3035))
+SET slope_copernicus = st_value(slope_copernicus.rast, geom_3035)
 FROM env_data.slope_copernicus, env_data.animals
-WHERE slope_copernicus IS NULL AND gps_validity_code IN (1,2,3) AND animals.animals_id = gps_data_animals_imp.animals_id AND animals.study_areas_id = slope_copernicus.study_areas_id AND st_intersects(slope_copernicus.rast,st_transform(gps_data_animals_imp.geom,3035));
+WHERE slope_copernicus IS NULL AND st_intersects(slope_copernicus.rast,geom_3035);
 
 UPDATE env_data.gps_data_animals_imp
-SET aspect_copernicus = st_value(aspect_copernicus.rast, st_transform(gps_data_animals_imp.geom,3035))
+SET aspect_copernicus = st_value(aspect_copernicus.rast, geom_3035)
 FROM env_data.aspect_copernicus, env_data.animals
-WHERE aspect_copernicus IS NULL AND gps_validity_code IN (1,2,3) AND animals.animals_id = gps_data_animals_imp.animals_id AND animals.study_areas_id = aspect_copernicus.study_areas_id AND st_intersects(aspect_copernicus.rast,st_transform(gps_data_animals_imp.geom,3035));
-
--- Generate the geometries to clip the huge copernicus corine layer
-DROP table  if exists env_data.convex_hull_imp;
-create table env_data.convex_hull_imp as
-select 
-(row_number() over())::integer as id, st_makevalid(st_simplify(geom_3035,50))::geometry(polygon,3035) geom_3035 from
-(Select
- ((st_dump(st_union(geom_3035::geometry(polygon,3035)))).geom)::geometry(polygon,3035)
-as geom_3035 from 
-(select 
-euro_db,
-animals_id,
-((st_dump(st_union(ST_Expand(geom_3035, 100)))).geom)
-as geom_3035
-from 
-env_data.gps_data_animals_imp 
-where
-corine_land_cover_2012_vector_code is null
-group by 
-euro_db,
-animals_id) a
-where
-st_geometrytype(geom_3035) = 'ST_Polygon') b;
-ALTER TABLE  env_data.convex_hull_imp ADD PRIMARY KEY (id);
-
------> ADD INTERSECION HERE
-
--- Update CORINE 2012 from vector layer
-UPDATE env_data.gps_data_animals_imp
-SET corine_land_cover_2012_vector_code = corine_land_cover_2012_vector.clc_code::integer
-FROM env_data.corine_land_cover_2012_vector
-WHERE st_coveredby(gps_data_animals_imp.geom, corine_land_cover_2012_vector.geom) AND gps_validity_code IN (1,2,3) AND corine_land_cover_2012_vector_code IS NULL;
+WHERE aspect_copernicus IS NULL AND st_intersects(aspect_copernicus.rast,geom_3035);
 
 -- MODIS SNOW 
 UPDATE 
