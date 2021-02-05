@@ -57,6 +57,8 @@ WHERE corine_land_cover_2018_code IS NULL AND st_intersects(geom_3035, rast);
 -- Then I create the gdal commands to clip the raster 
 -- Then I import the raster and run the intersection
 
+-- NOTE: NON_EUROPEAN COUNTRIES ARE NOT COVERED BY COPERNICUS
+
 -- Bounding boxes (might take 1-2 minutes)
 drop table if exists env_data.box_union_imp;
 create table env_data.box_union_imp as
@@ -112,6 +114,12 @@ UPDATE main.env_data.gps_data_animals_imp
 SET forest_density = st_value(forest_density.rast, geom_3035)
 FROM env_data.forest_density
 WHERE forest_density IS NULL AND st_intersects(forest_density.rast,geom_3035);
+
+-- Update points in water (forest is null)
+  
+update env_data.gps_data_animals_imp  
+set forest_density = 0
+where forest_density is null and corine_land_cover_2018_code = 44;
 
 -- Update DEM+SLOPE+ASPECT (Copernicus layer)
 
