@@ -140,11 +140,11 @@ UNION
   ORDER BY orderx, query;
 
 -- In the database
-DROP TABLE IF EXISTS env_data.altitude_copernicus;
+DROP TABLE IF EXISTS env_data.dem_copernicus;
 DROP TABLE IF EXISTS env_data.slope_copernicus;
 DROP TABLE IF EXISTS env_data.aspect_copernicus;
 -- In GDAL DOS
-raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\local_intersection\dem_*.tif env_data.altitude_copernicus| psql -d eurodeer_db -U postgres  -p 5432
+raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\local_intersection\dem_*.tif env_data.dem_copernicus| psql -d eurodeer_db -U postgres  -p 5432
 
 -- In GDAL DOS
 raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\local_intersection\slope_*.tif env_data.slope_copernicus| psql -d eurodeer_db -U postgres  -p 5432
@@ -153,9 +153,9 @@ raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\loca
 raster2pgsql -c -R -F -C -I -x -t 128x128 -N 255 -M E:\eurodeer_data\raster\local_intersection\aspect_*.tif env_data.aspect_copernicus| psql -d eurodeer_db -U postgres  -p 5432
 
 -- In the database
-ALTER TABLE  env_data.env_data.altitude_copernicus OWNER TO data_curators_eurodeer;
-ALTER TABLE  env_data.env_data.slope_copernicus OWNER TO data_curators_eurodeer;
-ALTER TABLE  env_data.env_data.aspect_copernicus OWNER TO data_curators_eurodeer;
+ALTER TABLE  env_data.dem_copernicus OWNER TO data_curators_eurodeer;
+ALTER TABLE  env_data.slope_copernicus OWNER TO data_curators_eurodeer;
+ALTER TABLE  env_data.aspect_copernicus OWNER TO data_curators_eurodeer;
 
 -- Intersection
 UPDATE env_data.gps_data_animals_imp
