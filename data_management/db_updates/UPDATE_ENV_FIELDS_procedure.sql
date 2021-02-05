@@ -160,17 +160,17 @@ ALTER TABLE  env_data.aspect_copernicus OWNER TO data_curators_eurodeer;
 -- Intersection
 UPDATE env_data.gps_data_animals_imp
 SET altitude_copernicus = st_value(dem_copernicus.rast, geom_3035)
-FROM env_data.dem_copernicus, env_data.animals
+FROM env_data.dem_copernicus
 WHERE altitude_copernicus IS NULL AND st_intersects(dem_copernicus.rast,geom_3035);
 
 UPDATE env_data.gps_data_animals_imp 
 SET slope_copernicus = st_value(slope_copernicus.rast, geom_3035)
-FROM env_data.slope_copernicus, env_data.animals
+FROM env_data.slope_copernicus
 WHERE slope_copernicus IS NULL AND st_intersects(slope_copernicus.rast,geom_3035);
 
 UPDATE env_data.gps_data_animals_imp
 SET aspect_copernicus = st_value(aspect_copernicus.rast, geom_3035)
-FROM env_data.aspect_copernicus, env_data.animals
+FROM env_data.aspect_copernicus
 WHERE aspect_copernicus IS NULL AND st_intersects(aspect_copernicus.rast,geom_3035);
 
 -- MODIS SNOW 
