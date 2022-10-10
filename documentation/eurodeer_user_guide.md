@@ -14,7 +14,7 @@
     * [Other Client Tools](#Others)  
    
 
-If you read this page from github, you have an html version of this page with a better formatting: [http://feurbano.github.io/eurodeer_db/documentation/eurodeer_user_guide.html](http://feurbano.github.io/eurodeer_db/documentation/eurodeer_user_guide.html)
+If you read this page from github, you have an html version of this page with a better formatting: [http://euromammals.github.io/eurodeer_db/documentation/eurodeer_user_guide.html](http://euromammals.github.io/eurodeer_db/documentation/eurodeer_user_guide.html)
 
 **LAST (important) UPDATE: 18 Dec 2018**
 
@@ -183,7 +183,7 @@ Although there are different dialects of SQL, it is very standardized and the sa
 
 There are many (but not too many) other SQL commands to retrieve data (e.g. order by, limit, left/right join, group by, having) and a long list of useful functions to deal with the different data types. Some resources where you can learn more about SQL are suggested in the [Introduction](#Introduction).  
 
-Some additional resources for spatial SQL with raster data produced by the EURODEER project are available [here](https://github.com/feurbano/integration_raster_tracking_data).
+Some additional resources for spatial SQL with raster data produced by the EURODEER project are available [here](https://github.com/EUROMAMMALS/integration_raster_tracking_data).
 
 In 2013, EURODEER organized a course on SQL and the use of eurodeer_db in Venice, Italy.
 

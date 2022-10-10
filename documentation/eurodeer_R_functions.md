@@ -14,7 +14,7 @@ library(rgdal)
 library(sf)
 
 # LOAD FUNCTION
-script <- getURL("https://raw.githubusercontent.com/feurbano/eurodeer_db/master/data_analysis/r_functions/eurodeer_extract_ndvi_modis_boku.R", ssl.verifypeer= FALSE)
+script <- getURL("https://raw.githubusercontent.com/EUROMAMMALS/eurodeer_db/master/data_analysis/r_functions/eurodeer_extract_ndvi_modis_boku.R", ssl.verifypeer= FALSE)
 eval(parse(text = script))
 
 # CONNECT TO THE DATABASE
